@@ -6,17 +6,16 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
-from fc3.json import JsonResponse
-from fc3.weatherstation.models import Weather
+from fc3.myjson import JsonResponse
+from fc3.utils import ElapsedTime
+from weatherstation.models import Weather
 from noaa import get_NOAA_forecast
 from cbac import CBAC
 from cbtv import CBTV
-import fc3.weather.utils as utils
-from fc3.weather.models import ChartUrl
-from fc3.utils import ElapsedTime
-from fc3.weatherstation.tz import USTimeZone
+import weather.utils as utils
+from weather.models import ChartUrl
+from weatherstation.tz import USTimeZone
 from dateutil.tz import tzlocal
 
 def weather(request):
@@ -199,8 +198,7 @@ def weather_old(request):
 
 
 def current(request):
-    xhr = request.GET.has_key('xhr')
-    if xhr:
+    if request.is_ajax():
         response_dict, current = get_current_weather(request)
         response = JsonResponse(response_dict)
         return response

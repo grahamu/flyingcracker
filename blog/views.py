@@ -4,8 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.conf import settings
 
 def upload_file(request):
-    xhr = request.GET.has_key('xhr')
-    if xhr and request.method == 'POST':
+    if request.is_ajax():
         if 'file' in request.FILES:
             file = request.FILES['file']
             # Other data on the request.FILES dictionary:

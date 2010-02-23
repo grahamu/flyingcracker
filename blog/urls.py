@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from fc3.blog.models import Post
+from blog.models import Post
 
 blog_dict = {
    'queryset' : Post.objects.all(),
@@ -14,6 +14,6 @@ urlpatterns = patterns('django.views.generic',
     url(r'^$',                                                  'date_based.archive_index', blog_dict, name='fc-blog'),
  )
 
-urlpatterns += patterns('fc3.blog.views',
+urlpatterns += patterns('blog.views',
     (r'^upload/$',  'upload_file'),
  )

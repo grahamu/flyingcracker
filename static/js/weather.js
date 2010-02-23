@@ -72,7 +72,8 @@ var current_weather = {
     },
     
     retrieve_current: function() {
-        var cObj = YAHOO.util.Connect.asyncRequest('GET', '/weather/current/?xhr', current_weather.retrieve_current_callback);
+        var post_url = '{% url weather-current %}';
+        var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, current_weather.retrieve_current_callback);
     },
     
     retrieve_current_callback: {
@@ -274,10 +275,10 @@ var current_weather = {
     
     update_server_units: function(type, unit) {
         // async call to server
-        var post_data = "xhr";
-        post_data += "&type="+type;
-        post_data += "&unit="+unit;
-        var cObj = YAHOO.util.Connect.asyncRequest('POST', '/weather/unitchange/', current_weather.update_server_callback, post_data);
+        var post_url = '{% url weather-unit-change %}';
+        var post_data = "type=" + type;
+        post_data += "&unit=" + unit;
+        var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, current_weather.update_server_callback, post_data);
     },
     
     update_server_callback: {

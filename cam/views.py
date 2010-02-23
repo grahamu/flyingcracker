@@ -2,9 +2,9 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
-from fc3.cam.models import Cam, Category
+from cam.models import Cam, Category
 from fc3 import settings
-from fc3.json import JsonResponse
+from fc3.myjson import JsonResponse
 
 CAM_CATEGORY = "cam_category"
 CAM_ID = "cam_id"
@@ -35,10 +35,11 @@ def cam_view(request):
         return render_to_response('cam/cam.html', c)
 
 def cam_list(request):
-    # get a list of webcam images associated with a Category
+    '''
+    Get a list of webcam images associated with a Category.
     
-    xhr = request.GET.has_key('xhr')
-    if xhr:
+    '''
+    if request.is_ajax():
         cat_id = request.POST.get('cat', None)
         if cat_id:
             try:
@@ -68,8 +69,11 @@ def cam_list(request):
         return cam_view(request)
 
 def cam_image(request):
-    xhr = request.GET.has_key('xhr')
-    if xhr:
+    '''
+    Get a specific image URL.
+    
+    '''
+    if request.is_ajax():
         try:
             id = request.POST.get('id')
             image = Cam.objects.get(id=id)

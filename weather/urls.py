@@ -1,9 +1,9 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('fc3.weather.views',
-    (r'^current/$',     'current'),
-    (r'^unitchange/$',  'unit_change'),
-    url(r'^$',          'weather', name='fc-weather'),
+    url(r'^current/$',     'current', name='weather-current'),
+    url(r'^unitchange/$',  'unit_change', name='weather-unit-change'),
+    url(r'^$',          'weather', name='weather-root'),
     url(r'^generate/$', 'generate', name='generate-weather'),
     url(r'^delete/$',   'delete', name='delete-weather'),
     url(r'^data/$',     'output_data', name='output-data'),

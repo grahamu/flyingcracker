@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
-from fc3.home import models     # this import connects a signal handler
+from home import models     # this import connects a signal handler
 
 def home(request):
     agent = request.META.get('HTTP_USER_AGENT')
@@ -12,7 +12,7 @@ def home(request):
         c = RequestContext(request)
         return render_to_response('home/iphone/home.html', c)
     else:
-        return HttpResponseRedirect(reverse('fc-weather'))
+        return HttpResponseRedirect(reverse('weather-root'))
 
 def about(request):
     agent = request.META.get('HTTP_USER_AGENT')
@@ -20,4 +20,4 @@ def about(request):
         c = RequestContext(request)
         return render_to_response('home/iphone/about.html', c)
     else:
-        return HttpResponseRedirect(reverse('fc-weather'))
+        return HttpResponseRedirect(reverse('weather-root'))
