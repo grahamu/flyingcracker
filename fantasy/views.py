@@ -621,7 +621,7 @@ def event_detail(request, id):
     #
     #  Otherwise, solicit guess(es).
     #
-    from fc3.fantasy.forms import GuessForm, GuessAndResultBaseFormset
+    from fantasy.forms import GuessForm, GuessAndResultBaseFormset, TeamGuessForm
     from django.forms.formsets import formset_factory
 
     GuessFormset = formset_factory(GuessForm, GuessAndResultBaseFormset,
@@ -630,11 +630,14 @@ def event_detail(request, id):
 
     competitor_choices = [('', '------')]
     competitor_choices.extend([(a.pk, str(a) + ' - ' + str(a.team())) for a in Competitor.objects.filter(series=series)])
-    
+
+    team_choices = [('', '------')]
+    team_choices.extend([(",".join([str(c.pk) for c in t.competitors.all()]), str(t)) for t in Team.objects.filter(series=series)])
+
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
         competitor_form = CompetitorForm(data=request.POST, instance=competitor)
-        
+        team_form = TeamGuessForm(data=request.POST, teams=team_choices)
         # BUGBUG 7/2/09
         # Replace this method of determining which button was pressed.
         # Use code from eTrack entry_edit(), hidden field, javascript.
@@ -659,6 +662,7 @@ def event_detail(request, id):
     else:
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
         competitor_form = CompetitorForm(instance=competitor)
+        team_form = TeamGuessForm(teams=team_choices)
 
     guessers = event.guesser_list()
 
@@ -668,6 +672,7 @@ def event_detail(request, id):
         'points_list': series_points_list(series)[:10],
         'competitor_form': competitor_form,
         'formset': formset,
+        'team_form': team_form,
         'add_competitor_ok': series.users_enter_competitors,
         'late_entry': late_entry,
         'is_admin': series.is_admin(scup),

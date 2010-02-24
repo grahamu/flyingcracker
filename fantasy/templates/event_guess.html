@@ -13,9 +13,10 @@ Guess Deadline: {{ event.guess_cutoff|date:"D F d" }} {{ event.guess_cutoff|time
 </div>
 {% endif %}
 <div class="fantasy-form-help">
-Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
+Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }},<br />
+or pick a Team to select their {{ series.competitor_label }}s.<br />
 {% if add_competitor_ok %}
-To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button.
+To add a new {{ series.competitor_label }} to {{ series }}, enter a name and click the "Add {{ series.competitor_label }}" button.
 {% endif %}
 </div>
 {% if late_entry %}
@@ -42,6 +43,18 @@ once you submit your picks you will not be able to change them. Pick carefully!
                 {% if form.non_field_errors %}<td> {{ form.non_field_errors }}</td>{% endif %}
             </tr>
             {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if team_form %}
+        <table id="event-team-guess-table" class="fantasy-list-table">
+            <thead>
+                <th>Team</th>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ team_form.team }}</td>
+            </tr>
             </tbody>
         </table>
     {% endif %}
