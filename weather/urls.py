@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('fc3.weather.views',
+urlpatterns = patterns('weather.views',
     url(r'^current/$',     'current', name='weather-current'),
     url(r'^unitchange/$',  'unit_change', name='weather-unit-change'),
     url(r'^$',          'weather', name='weather-root'),

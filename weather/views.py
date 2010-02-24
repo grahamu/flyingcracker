@@ -4,7 +4,7 @@ from decimal import *
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.serializers.json import DjangoJSONEncoder
 from fc3.myjson import JsonResponse
@@ -202,12 +202,24 @@ def current(request):
         response_dict, current = get_current_weather(request)
         response = JsonResponse(response_dict)
         return response
+    else:
+        raise Http404
 
 def get_current_weather(request):
+    '''
+    Returns a dictionary of weather information
+    along with the latest Weather record.
+    If no Weather record is found, returns an empty
+    dictionary.
+    
+    '''
     from django.template.defaultfilters import date as date_filter
     
     # get latest weather reading
-    current = Weather.objects.latest('timestamp')
+    try:
+        current = Weather.objects.latest('timestamp')
+    except Weather.DoesNotExist:
+        return {}, None
     
     timestamp = date_filter(current.timestamp, "H:i \M\T D M j,Y")
 
