@@ -18,7 +18,7 @@ class CBTV(Forecast):
         Format nicely into parts
         '''
         super(CBTV, self).__init__(**kwargs)
-        xml_text = get_URL_data(CBTV.url, CBTV.filename)
+        xml_text = get_URL_data(CBTV.url, CBTV.filename, max_file_age=10)
         if not xml_text:
             return None
         

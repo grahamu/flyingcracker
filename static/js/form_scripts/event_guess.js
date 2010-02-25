@@ -5,7 +5,7 @@ $(function(){
     if (id_list != '') {
       var arr = id_list.split(',');
       $("select[name|='form'][name$='competitor']").each(function(k,v){
-        if (arr) {
+        if (arr.length > 0) {
           $(v).val(arr.pop());
         }
         else {

@@ -18,7 +18,7 @@ class CBAC(Forecast):
         Format nicely into parts
         '''
         super(CBAC, self).__init__(**kwargs)
-        xml_text = get_URL_data(CBAC.url, CBAC.filename)
+        xml_text = get_URL_data(CBAC.url, CBAC.filename, max_file_age=10)
         if not xml_text:
             return None
         
