@@ -27,11 +27,16 @@
 
     <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/reset-fonts-grids/reset-fonts-grids.css"> 
     <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/assets/skins/sam/skin.css">
+<!--	<link href="{{ MEDIA_URL }}/css/ui-lightness/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" media="screen" title="no title" charset="utf-8"> -->
     {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="/static/css/f3.css" title="stylesheet" />
     {% endblock extrastyle %}
     
     {% block javascript %}
+	<!-- jQuery -->
+	<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}/js/jquery.js"></script>
+	<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}/js/jquery-ui.min.js"></script>
+	<!-- YUI -->
     <script type="text/javascript" src="{{ yui_path }}/build/yuiloader/yuiloader-min.js"></script> 
     <script type="text/javascript" src="{{ yui_path }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/element/element-beta-min.js"></script>

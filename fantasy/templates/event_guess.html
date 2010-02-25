@@ -1,6 +1,18 @@
 {% extends "fantasy-series.html" %}
 {% load humanize %}
 
+{% block javascript %}
+{{ block.super }}
+<script src="{{ MEDIA_URL }}/js/form_scripts/event_guess.js" type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+.yui-b .yui-g {width:100%;}
+</style>
+{% endblock %}
+
 {% block fantasy-main %}
 <div class="section-header">
     <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
@@ -13,10 +25,8 @@ Guess Deadline: {{ event.guess_cutoff|date:"D F d" }} {{ event.guess_cutoff|time
 </div>
 {% endif %}
 <div class="fantasy-form-help">
-Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }},<br />
-or pick a Team to select their {{ series.competitor_label }}s.<br />
+Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label|lower }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
 {% if add_competitor_ok %}
-To add a new {{ series.competitor_label }} to {{ series }}, enter a name and click the "Add {{ series.competitor_label }}" button.
 {% endif %}
 </div>
 {% if late_entry %}
@@ -25,14 +35,16 @@ Since you are picking {{ series.competitor_label }}{{ series.num_guesses|plurali
 once you submit your picks you will not be able to change them. Pick carefully!
 </div>
 {% endif %}
-<div id="event-guess-container" class="fantasy-form-container">
-    <form name="guess-form" method="POST" action="">{% csrf_token %}
+<div class="yui-g" id="event-guess-container">
+  <div class="yui-u first">
+    <div class="fantasy-form-container">
     {% if formset %}
+      <form name="guess-form" method="POST" action="">{% csrf_token %}
         {{ formset.management_form }}
         {% for error in formset.non_form_errors %}
         {{ error }}
         {% endfor %}
-        <table id="event-guess-table" class="fantasy-list-table">
+        <table id="event-guess-table" class="fantasy-select-table">
             <thead>
                 <th>{{ series.competitor_label }}</th>
             </thead>
@@ -45,9 +57,16 @@ once you submit your picks you will not be able to change them. Pick carefully!
             {% endfor %}
             </tbody>
         </table>
+        <input type="submit" name="guess" value="Submit Picks" />
+      </form>
     {% endif %}
+    </div>
+  </div>
+  <div class="yui-u">
+    <div class="fantasy-form-container">
     {% if team_form %}
-        <table id="event-team-guess-table" class="fantasy-list-table">
+      <form name="team-form" method="POST" action="">{% csrf_token %}
+        <table id="event-team-guess-table" class="fantasy-select-table">
             <thead>
                 <th>Team</th>
             </thead>
@@ -57,24 +76,32 @@ once you submit your picks you will not be able to change them. Pick carefully!
             </tr>
             </tbody>
         </table>
+      </form>
     {% endif %}
-    
-    <input type="submit" name="guess" value="Submit Picks" />
+    </div>
+  </div>
+</div>
 
 {% if add_competitor_ok %}
-<br /><br />
-or
-<br /><br />
-To add a new {{ series.competitor_label }} enter the name below and click the "Add {{ series.competitor_label }}" button.
-    <table>
-    {{ competitor_form.as_table }}
-    </table>
+<div class="fantasy-form-help">
+Or add a new {{ series.competitor_label }} by entering the name below and clicking on "Add {{ series.competitor_label }}".
+</div>
+<div class="fantasy-form-container">
+  <form name="new-competitor-form" method="POST" action="">{% csrf_token %}
+  <table class="fantasy-select-table">
+    <thead>
+      <th>New Driver</th>
+    </thead>
+    <tbody>
+      <tr><td>{{ competitor_form.name }}</td></tr>
+    </tbody>
+  </table>
     
-    <input type="submit" name="guess" value="Add {{ series.competitor_label }}" />
+  <input type="submit" name="guess" value="Add {{ series.competitor_label }}" />
+  </form>
+</div>
 {% endif %}
     
-    </form>
-</div>
 {% else %}
 <div class="fantasy-form-container">
 Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.event_label }}.
