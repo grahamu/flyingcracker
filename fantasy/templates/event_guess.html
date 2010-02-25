@@ -26,6 +26,7 @@ Guess Deadline: {{ event.guess_cutoff|date:"D F d" }} {{ event.guess_cutoff|time
 {% endif %}
 <div class="fantasy-form-help">
 Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label|lower }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
+You may also select {{ series.competitor_label|lower }}{{ series.num_guesses|pluralize:",s" }} by choosing a team.
 {% if add_competitor_ok %}
 {% endif %}
 </div>
