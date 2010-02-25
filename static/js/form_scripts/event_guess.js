@@ -8,6 +8,9 @@ $(function(){
         if (arr) {
           $(v).val(arr.pop());
         }
+        else {
+          $(v).val('');
+        }
       });
     }
   }
