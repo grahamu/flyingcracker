@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load uni_form_tags %}
+{% block extra_title %}Edit User Profile{% endblock %}
+{% block extrastyle %}
+{{ block.super }}
+<style type="text/css" media="screen">
+  @import "/static/css/uni-form.css";
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="profile-main-container" class="main">
+<h2>Edit User Profile</h2>
+  <form method="POST" action="" class="uniForm">{% csrf_token %}
+    <fieldset class="inlineLabels">
+      {{ form|as_uni_form }}
+    </fieldset>
+    <br />
+    <input type="button" value="Cancel" onClick="history.back()" class="std-button" /><input type="submit" value="Submit" class="std-button" />
+  </form>
+</div>
+{% endblock %}

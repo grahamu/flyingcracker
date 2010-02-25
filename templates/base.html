@@ -25,8 +25,10 @@
  
     <title>flyingcracker{% block section_title %}{% endblock %}</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/reset-fonts-grids/reset-fonts-grids.css"> 
-    <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/assets/skins/sam/skin.css">
+    <link href="{{ yui_path }}/build/reset-fonts-grids/reset-fonts-grids.css" rel="stylesheet" type="text/css" /> 
+    <link href="{{ yui_path }}/build/assets/skins/sam/skin.css" rel="stylesheet" type="text/css" />
+	<link href="{{ MEDIA_URL }}/css/uni-form.css" rel="stylesheet" type="text/css" />
+
 <!--	<link href="{{ MEDIA_URL }}/css/ui-lightness/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" media="screen" title="no title" charset="utf-8"> -->
     {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="/static/css/f3.css" title="stylesheet" />
@@ -89,7 +91,7 @@
         <div id="user-tools">
             {% block user %}
             {% if user.is_authenticated %}
-                Welcome, <strong>{{ user.username }}{% if user.is_staff %} [staff]{% endif %}</strong>.
+                Welcome, <a href="{% url profiles_edit_profile %}">{{ user.username }}</a>{% if user.is_staff %} [staff]{% endif %}</strong>.
             
                 <a href="{% url auth_logout %}">Log out</a>
             {% else %}

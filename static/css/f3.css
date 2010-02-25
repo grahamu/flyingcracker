@@ -925,22 +925,22 @@ th.flowHead{
     font-size: 120%;
     padding-bottom: 1em;
 }
-#fantasy-main-container {
+#fantasy-main-container, #profile-main-container {
 }
-#fantasy-main-container .main {
+#fantasy-main-container .main, #fantasy-main-container .main {
     padding: 1em;
 }
-#fantasy-main-container h1 {
+#fantasy-main-container h1, #profile-main-container h1 {
     font-size: 120%;
     font-weight: bold;
     padding-bottom: 0.25em;
 }
-#fantasy-main-container h2{
+#fantasy-main-container h2, #profile-main-container h2 {
     font-size: 110%;
     font-weight: bold;
     padding-bottom: 0.25em;
 }
-#fantasy-main-container h3{
+#fantasy-main-container h3, #profile-main-container h3 {
     font-size: 100%;
     font-weight: bold;
     padding-bottom: 0.25em;

@@ -122,6 +122,8 @@ YUI_VERSION = "2.7.0"
 
 SYSTEM_NAME = "cracklyfinger.com"
 
+AUTH_PROFILE_MODULE = 'serviceclient.ServiceClientUserProfile'
+
 # import local settings overriding the defaults
 try:
     from settings_local import *

@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     
     # Application URLs
     (r'^accounts/',                         include('registration.urls')),
+    (r'^profiles/',                         include('profiles_urls')),
 #    (r'^client/',                           include('serviceclient.urls')),
     (r'^blog/',                             include('blog.urls')),
     (r'^cam/',                              include('cam.urls')),
