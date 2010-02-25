@@ -98,6 +98,8 @@ INSTALLED_APPS = (
     'uni_form',
     'registration',
 #    'djangodblog',
+    'django_mailer',
+    'profiles',
     'serviceclient',
     'scoresys',
     'home',
