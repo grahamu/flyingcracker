@@ -21,7 +21,7 @@ class CompetitorForm(forms.ModelForm):
     class Meta:
         model = Competitor
         fields = ('name','series')
-        
+
     def clean(self):
         name = self.cleaned_data.get('name')
         series = self.cleaned_data.get('series')
@@ -85,15 +85,6 @@ class GuessForm(forms.Form):
         super(GuessForm, self).__init__(*args, **kwargs)
         self['competitor'].field.choices = competitor_list
         self['competitor'].field.label = 'Choose'
-
-
-class TeamGuessForm(forms.Form):
-    team = forms.ChoiceField(choices=[], required=False)
-
-    def __init__(self, *args, **kwargs):
-        team_list = kwargs.pop('teams', None)
-        super(TeamGuessForm, self).__init__(*args, **kwargs)
-        self['team'].field.choices = team_list
  
 
 class ResultForm(forms.Form):
@@ -128,7 +119,28 @@ class CompetitorImportForm(forms.Form):
         series_qs = kwargs.pop('series_qs', [])
         super(CompetitorImportForm, self).__init__(*args, **kwargs)
         self['series'].field.queryset = series_qs
-        
+
+
+class TeamChoiceForm(forms.Form):
+    team = forms.ModelChoiceField(queryset=[], required=False)
+
+    def __init__(self, *args, **kwargs):
+        team_qs = kwargs.pop('team_qs', None)
+        super(TeamChoiceForm, self).__init__(*args, **kwargs)
+        if team_qs:
+            self['team'].field.queryset = team_qs
+        else:
+            del self.fields['team']
+
+
+class TeamGuessForm(forms.Form):
+    team = forms.ChoiceField(choices=[], required=False)
+
+    def __init__(self, *args, **kwargs):
+        team_list = kwargs.pop('teams', None)
+        super(TeamGuessForm, self).__init__(*args, **kwargs)
+        self['team'].field.choices = team_list
+
 
 class TeamEditForm(forms.ModelForm):
     

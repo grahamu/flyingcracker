@@ -1,4 +1,5 @@
 {% extends "fantasy-admin.html" %}
+{% load uni_form_tags %}
 
 {% block fantasy-main %}
 <div class="section-header">
@@ -9,8 +10,8 @@
 Enter a team name and select {{ series.competitor_label }}s for {{ series }}. Click Submit when you are done.
 </div>
 <div class="fantasy-form-container">
-    <form method="POST" action="">{% csrf_token %}
-        {{ team_form.as_p }}
+    <form method="POST" action="" class="uniForm">{% csrf_token %}
+        {{ team_form|as_uni_form }}
         <input type="submit" value="Submit" />
     </form>
 </div>

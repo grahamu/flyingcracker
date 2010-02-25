@@ -1,4 +1,5 @@
 {% extends "fantasy-admin.html" %}
+{% load uni_form_tags %}
 
 {% block fantasy-main %}
 <div class="section-header">
@@ -11,8 +12,11 @@
     The {{ series.competitor_label }} name must be unique within the series.
 </div>
 <div class="fantasy-form-container">
-    <form method="POST" action="">{% csrf_token %}
-        {{ competitor_form.as_p }}
+    <form method="POST" action="" class="uniForm">{% csrf_token %}
+        {{ competitor_form|as_uni_form }}
+        {% if team_form %}
+        {{ team_form|as_uni_form }}
+        {% endif %}
         <input type="submit" value="Submit" />
     </form>
 </div>

@@ -9,7 +9,6 @@ urlpatterns = patterns('fc3.fantasy.views',
     url(r'^series/(?P<id>[0-9]+)/leaderboard/$',    'leaderboard', name='fantasy-series-leaderboard'),
     
     url(r'^series/(?P<id>[0-9]+)/competitor/list/$',   'competitor_list', name='fantasy-competitor-list'),
-    url(r'^series/(?P<id>[0-9]+)/competitor/add/$',    'competitor_add', name='fantasy-competitor-add'),
     url(r'^series/(?P<id>[0-9]+)/competitor/export/$', 'competitor_export', name='fantasy-competitor-export'),
     url(r'^series/(?P<id>[0-9]+)/competitor/import/$', 'competitor_import', name='fantasy-competitor-import'),
     url(r'^competitor/(?P<id>[0-9]+)/edit/$',          'competitor_edit', name='fantasy-competitor-edit'),

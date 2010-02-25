@@ -257,7 +257,7 @@ def competitor_list(request, id):
     List all competitors associated with this Series.
     
     '''
-    from fc3.fantasy.forms import CompetitorForm
+    from fc3.fantasy.forms import CompetitorForm, TeamChoiceForm
     
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -267,13 +267,20 @@ def competitor_list(request, id):
         # cannot edit Series data if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
     competitor = Competitor(series=series)
-
+    team_qs = Team.objects.filter(series=series)
+        
     if request.method == 'POST':
         competitor_form = CompetitorForm(data=request.POST, instance=competitor)
-        if competitor_form.is_valid():
-            competitor = competitor_form.save(commit=False)
-            competitor.series = series
-            competitor.save()
+        if team_qs:
+            team_form = TeamChoiceForm(data=request.POST, team_qs=team_qs)
+        else:
+            team_form = None
+        if competitor_form.is_valid() and team_form.is_valid():
+            competitor = competitor_form.save()
+            if team_form:
+                team = team_form.cleaned_data.get('team', None)
+                if team:
+                    team.competitors.add(competitor)
             next = request.GET.get('next', None)
             if next:
                 return HttpResponseRedirect(next)
@@ -282,57 +289,22 @@ def competitor_list(request, id):
             
     else:
         competitor_form = CompetitorForm(instance=competitor)
+        if team_qs:
+            team_form = TeamChoiceForm(team_qs=team_qs)
+        else:
+            team_form = None
+
     
     qs = Competitor.objects.filter(series=series)
     c = RequestContext(request, {
         'series': series,
         'competitor_list': qs,
         'competitor_form': competitor_form,
+        'team_form': team_form,
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('competitor_list.html', c)
-
-@login_required
-@set_scup
-def competitor_add(request, id):
-    '''
-    Add a competitor for the specified Series.
-    
-    '''
-    from fc3.fantasy.forms import CompetitorForm
-
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
-    series = get_object_or_404(Series, pk=id)
-    if not series.is_admin(scup) and not series.users_enter_competitors:
-        # cannot edit Series if you're not an admin and users not allowed to enter competitors
-        return HttpResponseRedirect(reverse('fantasy-root'))
-    competitor = Competitor(series=series)
-
-    if request.method == 'POST':
-        competitor_form = CompetitorForm(data=request.POST, instance=competitor)
-        if competitor_form.is_valid():
-            competitor = competitor_form.save(commit=False)
-            competitor.series = series
-            competitor.save()
-            next = request.GET.get('next', None)
-            if next:
-                return HttpResponseRedirect(next)
-            else:
-                return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
-            
-    else:
-        competitor_form = CompetitorForm(instance=competitor)
-
-    c = RequestContext(request, {
-        'competitor_form': competitor_form,
-        'series': series,
-        'competitor': competitor,
-        'is_admin': series.is_admin(scup),
-    })
-    return render_to_response('competitor_edit.html', c)
 
 @login_required
 @set_scup
@@ -341,7 +313,7 @@ def competitor_edit(request, id):
     Edit the specified Competitor.
     
     '''
-    from fc3.fantasy.forms import CompetitorForm
+    from fc3.fantasy.forms import CompetitorForm, TeamChoiceForm
 
     scup = request.session.get('scup')
     service_client = scup.service_client
@@ -351,17 +323,40 @@ def competitor_edit(request, id):
     if not series.is_admin(scup):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
-
+    team_qs = Team.objects.filter(series=series)
+    try:
+        curr_team = Team.objects.get(series=series, competitors=competitor)
+        team_pk = curr_team.pk
+    except Team.DoesNotExist:
+        curr_team = None
+        team_pk = ''
+    
     if request.method == 'POST':
         competitor_form = CompetitorForm(data=request.POST, instance=competitor, initial={'series_pk': series.pk})
-        if competitor_form.is_valid():
-            competitor_form.save()
+        if team_qs:
+            team_form = TeamChoiceForm(data=request.POST, team_qs=team_qs, initial={'team': team_pk})
+        else:
+            team_form = None
+        if competitor_form.is_valid() and team_form.is_valid():
+            competitor = competitor_form.save()
+            if team_form:
+                new_team = team_form.cleaned_data.get('team', None)
+                if new_team != curr_team:
+                    if curr_team:
+                        curr_team.competitors.remove(competitor)
+                    if new_team:
+                        new_team.competitors.add(competitor)
             return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
     else:
         competitor_form = CompetitorForm(instance=competitor, initial={'series_pk': series.pk})
+        if team_qs:
+            team_form = TeamChoiceForm(team_qs=team_qs, initial={'team': team_pk})
+        else:
+            team_form = None
 
     c = RequestContext(request, {
         'competitor_form': competitor_form,
+        'team_form': team_form,
         'series': series,
         'competitor': competitor,
         'is_admin': series.is_admin(scup),
@@ -589,8 +584,6 @@ def event_detail(request, id):
     perform well, or possibly enter a new Competitor.
     
     '''
-    from fc3.fantasy.forms import CompetitorForm
-
     if request.user.is_authenticated():
         scup = get_scup(request)
         service_client = scup.service_client
@@ -632,36 +625,26 @@ def event_detail(request, id):
     competitor_choices.extend([(a.pk, str(a) + ' - ' + str(a.team())) for a in Competitor.objects.filter(series=series)])
 
     team_choices = [('', '------')]
+    # This value for each Team choice consists of a comma-separated list
+    # Competitor pks for Competitors who are members of the Team.
     team_choices.extend([(",".join([str(c.pk) for c in t.competitors.all()]), str(t)) for t in Team.objects.filter(series=series)])
 
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
-        competitor_form = CompetitorForm(data=request.POST, instance=competitor)
         team_form = TeamGuessForm(data=request.POST, teams=team_choices)
-        # BUGBUG 7/2/09
-        # Replace this method of determining which button was pressed.
-        # Use code from eTrack entry_edit(), hidden field, javascript.
-        if request.POST.get('guess', None) != u'Submit Picks':
-            if competitor_form.is_valid():
-                competitor = competitor_form.save(commit=False)
-                competitor.series = series
-                competitor.save()
-                return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
-        else:
-            if formset.is_valid():
-                curr_guesses.delete()   # delete all existing guesses for this event
-                for guess in formset.cleaned_data:
-                    if guess.get('competitor', None):
-                        g = Guess(content_type=ctype,
-                                  object_id=obj_id,
-                                  user=scup,
-                                  competitor=Competitor.objects.get(pk=guess['competitor']),
-                                  late_entry=guess_deadline_elapsed)
-                        g.save()
-                return HttpResponseRedirect(reverse('fantasy-series-detail', args=[event.series.pk]))
+        if formset.is_valid():
+            curr_guesses.delete()   # delete all existing guesses for this event
+            for guess in formset.cleaned_data:
+                if guess.get('competitor', None):
+                    g = Guess(content_type=ctype,
+                              object_id=obj_id,
+                              user=scup,
+                              competitor=Competitor.objects.get(pk=guess['competitor']),
+                              late_entry=guess_deadline_elapsed)
+                    g.save()
+            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[event.series.pk]))
     else:
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
-        competitor_form = CompetitorForm(instance=competitor)
         team_form = TeamGuessForm(teams=team_choices)
 
     guessers = event.guesser_list()
@@ -670,10 +653,9 @@ def event_detail(request, id):
         'series': event.series,
         'event': event,
         'points_list': series_points_list(series)[:10],
-        'competitor_form': competitor_form,
         'formset': formset,
         'team_form': team_form,
-        'add_competitor_ok': series.users_enter_competitors,
+        'add_competitor_ok': False, # series.users_enter_competitors,
         'late_entry': late_entry,
         'is_admin': series.is_admin(scup),
         'guessers': guessers,

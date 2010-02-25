@@ -1,4 +1,5 @@
 {% extends "fantasy-admin.html" %}
+{% load uni_form_tags %}
 
 {% block fantasy-main %}
 <div class="section-header">
@@ -9,10 +10,11 @@
 To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button, or <a href="{% url fantasy-competitor-import series.pk %}">Import {{ series.competitor_label }}s</a> from other Series.</div>
 {% if is_admin %}
 <div class="fantasy-form-container">
-    <form method="POST" action="">{% csrf_token %}
-        <table>
-        {{ competitor_form.as_table }}
-        </table>
+    <form method="POST" action="" class="uniForm">{% csrf_token %}
+        {{ competitor_form|as_uni_form }}
+        {% if team_form %}
+        {{ team_form|as_uni_form }}
+        {% endif %}
         <input type="submit" value="Add {{ series.competitor_label }}" />
     </form>
 </div>
