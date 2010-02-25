@@ -972,10 +972,10 @@ th.flowHead{
     padding-top: 1em;
     padding-bottom: 1em;
 }
-.fantasy-list-table {
+.fantasy-list-table, .fantasy-select-table {
     margin-bottom: 1em;
 }
-.fantasy-list-table th {
+.fantasy-list-table th, .fantasy-select-table th {
 	font: bold 11px Arial, Helvetica, Verdana;
 	background: #1F3543;
 	letter-spacing: 2px;
@@ -984,7 +984,7 @@ th.flowHead{
 	color : #FFFFFF;
 	padding: 6px 6px 6px 12px;
 }
-.fantasy-list-table th.nobg {
+.fantasy-list-table th.nobg, .fantasy-select-table th.nobg {
 	border-top: 0;
 	border-left: 0;
 	background: none;
@@ -1013,6 +1013,12 @@ th.flowHead{
 }
 .fantasy-list-table td.center {
     text-align: center;
+}
+.fantasy-select-table td {
+	font-family : Arial, Helvetica, Verdana;
+	font-size : 10pt;
+	vertical-align : top;
+	padding: 6px 6px 6px 12px;
 }
 #fantasy-nav-container {
     background-color: pink;

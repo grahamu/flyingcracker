@@ -87,6 +87,15 @@ class GuessForm(forms.Form):
         self['competitor'].field.label = 'Choose'
 
 
+class TeamGuessForm(forms.Form):
+    team = forms.ChoiceField(choices=[], required=False)
+
+    def __init__(self, *args, **kwargs):
+        team_list = kwargs.pop('teams', None)
+        super(TeamGuessForm, self).__init__(*args, **kwargs)
+        self['team'].field.choices = team_list
+ 
+
 class ResultForm(forms.Form):
     result = forms.CharField(required=False)
     competitor = forms.ChoiceField(choices=[], required=False)
