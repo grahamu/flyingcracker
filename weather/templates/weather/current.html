@@ -21,24 +21,24 @@
 
 			<div class="body">
                 <div id="curr_weather">
-                    <div id="curr-temp-block" style="background: url({{ temp_chart_val|safe }}) no-repeat top">
-                        <div id="curr_temp" class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
-                            <span class="temp_value">{{ temp_val }}&#186;</span>
-                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
+                    <div id="curr-temp-block" style="background: url({{ weather.temp_chart_val|safe }}) no-repeat top">
+                        <div id="curr_temp" class="{% if weather.morning %}chart_am{% else %}chart_pm{% endif %}">
+                            <span class="temp_value">{{ weather.temp_val }}&#186;</span>
+                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ weather.temp_unit }}</span>
                         </div>
                     </div>
-                    <div id="curr-barometer-block" style="background: url({{ baro_chart_val|safe }}) no-repeat top">
-                        <div class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
+                    <div id="curr-barometer-block" style="background: url({{ weather.baro_chart_val|safe }}) no-repeat top">
+                        <div class="{% if weather.morning %}chart_am{% else %}chart_pm{% endif %}">
                             <div id="curr_baro">
-                                <span class="baro_value">{{ baro_val }}</span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ baro_unit }}</span>
+                                <span class="baro_value">{{ weather.baro_val }}</span>
+                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ weather.baro_unit }}</span>
                             </div>
                             <div class="weather_title">
                                     <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
                             </div>
                             <div id="curr_trend">
-                                <span class="baro_value">{{ trend_val|safe }}</span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ baro_unit }}</span>
+                                <span class="baro_value">{{ weather.trend_val|safe }}</span>
+                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ weather.baro_unit }}</span>
                             </div>
                             <div class="weather_title">
                                     <span class="curr_title" style="visibility: {{ show_titles }}">3-hour &#916;</span>
@@ -46,21 +46,21 @@
                         </div>
                     </div>
                     <div class="yui-gb">
-                        <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
-                            <span class="speed_value">{{ wind_val }}</span>
-                            <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}">{{ speed_unit }}</span></div>
+                        <div id="curr_wind" class="yui-u first"{% if weather.wind_dir %} style="background: url({{ MEDIA_URL }}img/{{ weather.wind_dir }}) no-repeat top"{% endif %}>
+                            <span class="speed_value">{{ weather.wind_val }}</span>
+                            <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}">{{ weather.speed_unit }}</span></div>
                         </div>
                         <div id="curr_windchill" class="yui-u">
                             {% ifnotequal current.temp current.windchill %}
-                            <span class="temp_value">{{ windchill_val }}&#186;</span>
-                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
+                            <span class="temp_value">{{ weather.windchill_val }}&#186;</span>
+                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ weather.temp_unit }}</span>
                             <div>
                                 <span style="font-size: 50%">windchill</span>
                             </div>
                             {% endifnotequal %}
                         </div>
                         <div id="curr_humidity" class="yui-u">
-                            <span id="humidity_value" class="humidity_value">{{ humidity }}%</span>
+                            <span id="humidity_value" class="humidity_value">{{ weather.humidity }}%</span>
                             <div>
                                 <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">humidity</span>
                             </div>

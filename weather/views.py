@@ -19,6 +19,9 @@ from weatherstation.tz import USTimeZone
 from dateutil.tz import tzlocal
 
 def weather(request):
+    from django.utils import simplejson
+    from django.core.serializers.json import DjangoJSONEncoder
+    
     et = ElapsedTime()
 
     show_titles = request.COOKIES.get("curr_weather_show_titles")
@@ -58,18 +61,20 @@ def weather(request):
     et.mark_time('forecasts')
 
     current_dict, current = get_current_weather(request)
-    current_dict.update({
-                'current': current,
-                'show_titles': show_titles,
-                'title_state': title_state,
-                'show_units': show_units,
-                'unit_state': unit_state,
-                'cbac': cbac,
-                'noaa': noaa,
-                'cbtv': cbtv,
-                'elapsed': et.list(),
-                })
-    c = RequestContext(request, current_dict)
+    c = RequestContext(request, {
+        'weather': current_dict,
+        'json_weather': simplejson.dumps(current_dict, cls=DjangoJSONEncoder),
+        'current': current,
+        'show_titles': show_titles,
+        'title_state': title_state,
+        'show_units': show_units,
+        'unit_state': unit_state,
+        'cbac': cbac,
+        'noaa': noaa,
+        'cbtv': cbtv,
+        'elapsed': et.list(),
+    })
+
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         if request.GET.has_key('iui'):
@@ -78,124 +83,6 @@ def weather(request):
             return render_to_response('weather/iphone/weather.html', c)
     else:
         return render_to_response('weather/current.html', c)
-
-def weather_old(request):
-    et = ElapsedTime()
-
-    show_titles = request.COOKIES.get("curr_weather_show_titles")
-    if show_titles == None:
-        show_titles = "hidden"
-    if show_titles == "hidden":
-        title_state = "false"
-    else:
-        title_state = "true"
-    show_units = request.COOKIES.get("curr_weather_show_units")
-    if show_units == None:
-        show_units = "none"
-    if show_units == "none":
-        unit_state = "false"
-    else:
-        unit_state = "true"
-
-    # get latest weather reading
-    current = Weather.objects.latest('timestamp')
-
-    # set wind background compass and wind speed
-    if int(float(current.wind_speed)) < 1:
-        wind = 0
-        wind_dir = None
-    else:
-        wind = current.wind_speed
-        wind_dir = "wind-%s.png" % utils.wind_dir_to_english(wind)
-        wind_dir = wind_dir.lower()
-    wind_list = utils.calc_speeds(wind)
-
-    today = utils.get_today_timestamp(request)
-    if today.hour < 12:
-        morning = True
-    else:
-        morning = False
-
-    et.mark_time('initial')
-
-    mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
-    now = datetime.now(tzlocal()).astimezone(mountain_tz)
-    
-    cbac = None # = CBAC() # comment out for summer.
-    # Don't display CBAC stuff if older than 36 hours.
-    # In this case they are probably closed for the season.
-    if cbac:
-        if not cbac.timestamp or (now - cbac.timestamp) > timedelta(hours=36):
-            cbac = None
-
-    noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
-    cbtv = CBTV()
-    # Don't display CBTV stuff if older than 36 hours.
-    # In this case they are probably down.
-    if cbtv:
-        if not cbtv.timestamp or (now - cbtv.timestamp) > timedelta(hours=36):
-            cbtv = None
-
-    et.mark_time('forecasts')
-    
-    t_chart = []
-    b_chart = []
-    agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-        for unit in utils.temp_units:
-            t_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-        for unit in utils.baro_units:
-            b_chart.append(get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_IPHONE, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, unit))
-        
-        et.mark_time('charts')
-        
-        c = RequestContext(request, {
-                'current': current,
-                'wind_dir': wind_dir,
-                'morning': morning,
-                'show_titles': show_titles,
-                'show_units': show_units,
-                'temp_chart': t_chart,
-                'baro_chart': b_chart,
-                'cbac': cbac,
-                'noaa': noaa,
-                'cbtv': cbtv,
-                'unit_state': unit_state,
-                'title_state': title_state,
-                'elapsed': et.list(),
-                })
-
-        if request.GET.has_key('iui'):
-            return render_to_response('weather/iphone/weather-iui.html', c)
-        else:
-            return render_to_response('weather/iphone/weather.html', c)
-    else:
-        t_chart = get_chart(utils.get_today(request), ChartUrl.DATA_TEMP, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.TEMP_F)
-        b_chart = get_chart(utils.get_today(request), ChartUrl.DATA_PRESS, ChartUrl.SIZE_NORMAL, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, utils.PRESS_IN)
-        
-        et.mark_time('charts')
-
-        trend_list = utils.calc_trend_strings(current.baro_trend)
-    
-        c = RequestContext(request, {
-                'current': current,
-                'trend': trend_list[0],
-                'wind_dir': wind_dir,
-                'wind_speed': wind_list[0],
-                'morning': morning,
-                'show_titles': show_titles,
-                'show_units': show_units,
-                'temp_chart': t_chart,
-                'baro_chart': b_chart,
-                'cbac': cbac,
-                'noaa': noaa,
-                'cbtv': cbtv,
-                'unit_state': unit_state,
-                'title_state': title_state,
-                'elapsed': et.list(),
-                })
-        return render_to_response('weather/current.html', c)
-
 
 def current(request):
     if request.is_ajax():
