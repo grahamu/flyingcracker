@@ -84,8 +84,11 @@ var current_weather = {
     
     init: function() {
         weather_loading_init();
-        
-        current_weather.current = null;     // this holds all current weather data
+        False = false;
+        True = true;
+        current_weather.current = {{ json_weather|safe }};
+
+        //current_weather.current = null;     // this holds all current weather data
         // current_weather.retrieve_current(); // ask for the latest data
         
         // Grab an elements we'll need so we can fade it later.
