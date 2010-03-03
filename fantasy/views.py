@@ -593,7 +593,7 @@ def event_detail(request, id):
     team_choices = [('', '------')]
     # This value for each Team choice consists of a comma-separated list
     # Competitor pks for Competitors who are members of the Team.
-    team_choices.extend([(",".join([str(c.pk) for c in t.competitor_set.all()]), smart_str(t.short())) for t in Team.objects.filter(series=series).order_by('name')])
+    team_choices.extend([(",".join([str(c.pk) for c in t.competitor_set.all()]), smart_str(t.short())) for t in Team.objects.filter(series=series).order_by('short_name', 'name')])
 
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
