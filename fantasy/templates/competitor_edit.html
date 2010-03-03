@@ -3,7 +3,7 @@
 
 {% block fantasy-main %}
 <div class="section-header">
-    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a><span class="action-title">&nbsp;&nbsp;~&nbsp;&nbsp;{% if competitor.pk %}Edit{% else %}Add{% endif %} {{ series.competitor_label }}</span></div>
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 <div class="fantasy-form-help">
@@ -14,9 +14,6 @@
 <div class="fantasy-form-container">
     <form method="POST" action="" class="uniForm">{% csrf_token %}
         {{ competitor_form|as_uni_form }}
-        {% if team_form %}
-        {{ team_form|as_uni_form }}
-        {% endif %}
         <input type="submit" value="Submit" />
     </form>
 </div>

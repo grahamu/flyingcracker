@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block extra_title %}Weather{% endblock %}
+
 {% block context_links %}
    <h3 class="select"><span>Links</span></h3>
    <ul class="fcContext">
@@ -8,10 +9,12 @@
       {% endfor %}
    </ul>
 {% endblock %}
+
 {% block extrastyle %}
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="/static/css/weather.css" title="stylesheet" />
 {% endblock %}
+
 {% block footer_mission %}
 The flyingcracker staff is dedicated to providing you with accurate current weather, quality local forecasts, and skiing and other weather-related links of interest. If you have a suggestion for our weather section please email us: graham at flyingcracker dot com. Enjoy the weather!
 {% endblock %}

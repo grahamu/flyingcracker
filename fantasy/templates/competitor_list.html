@@ -12,9 +12,6 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
 <div class="fantasy-form-container">
     <form method="POST" action="" class="uniForm">{% csrf_token %}
         {{ competitor_form|as_uni_form }}
-        {% if team_form %}
-        {{ team_form|as_uni_form }}
-        {% endif %}
         <input type="submit" value="Add {{ series.competitor_label }}" />
     </form>
 </div>
@@ -34,7 +31,7 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ competitor }}</td>
-                <td>{{ competitor.team_set.all|join:"<br />" }}</td>
+                <td>{{ competitor.team.short }}</td>
                 <td class="nobg">{% if is_admin %}<a href="{% url fantasy-competitor-edit competitor.pk %}">Edit</a>{% else %}&nbsp;{% endif %}</td>
             </tr>
 {% empty %}

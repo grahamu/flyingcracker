@@ -63,17 +63,17 @@ def weather(request):
     current_dict, current = get_current_weather(request)
     weather_dict = dict(current_dict)
     weather_dict.update({
-        'current': current,
-        'show_titles': show_titles,
-        'title_state': title_state,
-        'show_units': show_units,
-        'unit_state': unit_state,
-        'cbac': cbac,
-        'noaa': noaa,
-        'cbtv': cbtv,
-        'elapsed': et.list(),
-        'json_weather': simplejson.dumps(current_dict, cls=DjangoJSONEncoder),
-    })        
+                'current': current,
+                'show_titles': show_titles,
+                'title_state': title_state,
+                'show_units': show_units,
+                'unit_state': unit_state,
+                'cbac': cbac,
+                'noaa': noaa,
+                'cbtv': cbtv,
+                'elapsed': et.list(),
+                'json_weather': simplejson.dumps(current_dict, cls=DjangoJSONEncoder),
+                })
     c = RequestContext(request, weather_dict)
 
     agent = request.META.get('HTTP_USER_AGENT')

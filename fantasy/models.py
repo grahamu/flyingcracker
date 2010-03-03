@@ -151,6 +151,7 @@ class Event(models.Model):
 class Competitor(models.Model):
     name        = models.CharField(max_length=100)
     series      = models.ForeignKey(Series)
+    team        = models.ForeignKey('Team', blank=True, null=True)
     
     class Meta:
         unique_together = ('name', 'series')
@@ -159,12 +160,30 @@ class Competitor(models.Model):
     def __unicode__(self):
         return u'%s' % self.name
 
-    def team(self):
-        teams = self.team_set.all()
-        if teams:
-            return teams[0]
+    def name_and_team(self):
+        if self.team:
+            return u'%s - %s' % (self.name, self.team.short())
         else:
-            return ''
+            return u'%s' % self.name
+
+
+class Team(models.Model):
+    series          = models.ForeignKey(Series)
+    name            = models.CharField(max_length=100)
+    short_name      = models.CharField(max_length=50, blank=True)
+    
+    class Meta:
+        ordering = ['name']
+        
+    def __unicode__(self):
+        return u'%s' % self.name
+    
+    def short(self):
+        if self.short_name:
+            return u'%s' % self.short_name
+        else:
+            return self.__unicode__()
+
 
 class Result(models.Model):
     competitor  = models.ForeignKey(Competitor)
@@ -202,15 +221,3 @@ class Guess(models.Model):
     
     def __unicode__(self):
         return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user.user.username)
-
-
-class Team(models.Model):
-    series          = models.ForeignKey(Series)
-    name            = models.CharField(max_length=100)
-    competitors     = models.ManyToManyField(Competitor, blank=True, null=True)
-    
-    class Meta:
-        ordering = ['name']
-        
-    def __unicode__(self):
-        return u'%s' % self.name

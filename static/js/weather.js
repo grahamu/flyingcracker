@@ -53,12 +53,41 @@ function toggleLabels(element) {
     element.setAttribute("toggled", element.getAttribute("toggled") != "true");
 }
 
+YAHOO.namespace("weather.current");
+
+function weather_loading_init() {
+
+    if (!YAHOO.weather.current.wait) {
+
+        // Initialize the temporary Panel to display while waiting for external content to load
+
+        YAHOO.weather.current.wait = 
+                new YAHOO.widget.Panel("wait",  
+                                                { context: ["curr_weather", "tl", "tl"],
+                                                  xy: [50,50],
+                                                  width: "240px", 
+                                                  close: false, 
+                                                  draggable: false, 
+                                                  zindex:4,
+                                                  modal: true,
+                                                  visible: false
+                                                } 
+                                            );
+
+        YAHOO.weather.current.wait.setHeader("Loading, please wait...");
+        YAHOO.weather.current.wait.setBody("<img src=\"/static/img/rel_interstitial_loading.gif\"/>");
+        YAHOO.weather.current.wait.render(document.body);
+    }
+}
+
 var current_weather = {
     
     init: function() {
-        current_weather.current = null;     // this holds all current weather data
-        current_weather.retrieve_current(); // ask for the latest data
-        
+        weather_loading_init();
+        False = false;
+        True = true;
+        current_weather.current = {{ json_weather|safe }};
+
         // Grab an elements we'll need so we can fade it later.
         current_weather.weather_div = document.getElementById('curr_weather');
         YAHOO.util.Dom.setStyle(current_weather.weather_div, 'opacity', 1);
@@ -72,6 +101,8 @@ var current_weather = {
     },
     
     retrieve_current: function() {
+        // Show the "Loading" panel
+        YAHOO.weather.current.wait.show();
         var post_url = '{% url weather-current %}';
         var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, current_weather.retrieve_current_callback);
     },
@@ -86,6 +117,7 @@ var current_weather = {
                 alert("Invalid server response in retrieve_current_callback "+o.responseText+", please contact flyingcracker.com")
                 alert(e);
             }
+            
             if (response_obj) {
                 current_weather.current = response_obj;
                 
@@ -101,11 +133,19 @@ var current_weather = {
                     weather_fade_in.animate();
                     });
                 
+                weather_fade_in.onComplete.subscribe(function() {
+                    YAHOO.weather.current.wait.hide();
+                    });
+                
                 weather_fade_out.animate();
+            }
+            else {
+                YAHOO.weather.current.wait.hide();
             }
         },
     
         failure: function(o) {
+            YAHOO.weather.current.wait.hide();
             var a = 1; // alert('An error has occurred');
         },
         
@@ -255,7 +295,7 @@ var current_weather = {
         current_weather.update_baros();
         current_weather.update_speeds();
         
-        el = document.getElementById('curr_humidity');
+        el = document.getElementById('humidity_value');
         if (el) {
             el.innerHTML = current_weather.current.humidity+"%";
         }
@@ -291,6 +331,3 @@ var current_weather = {
         }
     }
 };
-
-YAHOO.util.Event.addListener(window, 'load', current_weather.init);
-
