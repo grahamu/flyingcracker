@@ -122,6 +122,10 @@ class CompetitorImportForm(forms.Form):
 
 
 class TeamChoiceForm(forms.Form):
+    '''
+    Form used to select a team to associate with a Competitor.
+    
+    '''
     team = forms.ModelChoiceField(queryset=[], required=False)
 
     def __init__(self, *args, **kwargs):
@@ -134,6 +138,13 @@ class TeamChoiceForm(forms.Form):
 
 
 class TeamGuessForm(forms.Form):
+    '''
+    Form used to select a team.
+    Choices for this form are specified at creation,
+    and typically have values different than the standard
+    `team.pk`.
+    
+    '''
     team = forms.ChoiceField(choices=[], required=False)
 
     def __init__(self, *args, **kwargs):
@@ -146,7 +157,7 @@ class TeamEditForm(forms.ModelForm):
     
     class Meta:
         model = Team
-        fields = ('name', 'competitors')
+        fields = ('name', 'short_name', 'competitors')
 
     def __init__(self, *args, **kwargs):
         competitor_qs = kwargs.pop('competitor_qs', None)

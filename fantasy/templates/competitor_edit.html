@@ -3,7 +3,7 @@
 
 {% block fantasy-main %}
 <div class="section-header">
-    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
+    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a><span class="action-title">&nbsp;&nbsp;~&nbsp;&nbsp;{% if competitor.pk %}Edit{% else %}Add{% endif %} {{ series.competitor_label }}</span></div>
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 <div class="fantasy-form-help">

@@ -616,18 +616,19 @@ def event_detail(request, id):
     #
     from fantasy.forms import GuessForm, GuessAndResultBaseFormset, TeamGuessForm
     from django.forms.formsets import formset_factory
+    from django.utils.encoding import smart_str
 
     GuessFormset = formset_factory(GuessForm, GuessAndResultBaseFormset,
                                     max_num=series.num_guesses,
                                     extra=series.num_guesses)
 
     competitor_choices = [('', '------')]
-    competitor_choices.extend([(a.pk, str(a) + ' - ' + str(a.team())) for a in Competitor.objects.filter(series=series)])
+    competitor_choices.extend([(c.pk, smart_str(c.name_and_team())) for c in Competitor.objects.filter(series=series)])
 
     team_choices = [('', '------')]
     # This value for each Team choice consists of a comma-separated list
     # Competitor pks for Competitors who are members of the Team.
-    team_choices.extend([(",".join([str(c.pk) for c in t.competitors.all()]), str(t)) for t in Team.objects.filter(series=series)])
+    team_choices.extend([(",".join([str(c.pk) for c in t.competitors.all()]), smart_str(t.short())) for t in Team.objects.filter(series=series)])
 
     if request.method == 'POST':
         formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
