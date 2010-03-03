@@ -23,7 +23,7 @@
             <tr class="{{ r.row_class }}">
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ t }}</td>
-                <td>{{ t.competitors.all|join:"<br />" }}</td>
+                <td>{{ t.competitor_set.all|join:"<br />" }}</td>
                 <td class="nobg">{% if is_admin %}<a href="{% url fantasy-team-edit t.pk %}">Edit team</a>{% endif %}</td>
             </tr>
 {% empty %}
