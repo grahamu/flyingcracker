@@ -151,6 +151,7 @@ class Event(models.Model):
 class Competitor(models.Model):
     name        = models.CharField(max_length=100)
     series      = models.ForeignKey(Series)
+    team        = models.ForeignKey('Team', blank=True, null=True)
     
     class Meta:
         unique_together = ('name', 'series')
@@ -160,18 +161,16 @@ class Competitor(models.Model):
         return u'%s' % self.name
 
     def name_and_team(self):
-        teams = self.team_set.all()
-        if teams:
-            return self.__unicode__() + u' - ' + teams[0].short()
+        if self.team:
+            return u'%s - %s' % (self.name, self.team.short())
         else:
-            return self.__unicode__()
+            return u'%s' % self.name
 
 
 class Team(models.Model):
     series          = models.ForeignKey(Series)
     name            = models.CharField(max_length=100)
     short_name      = models.CharField(max_length=50, blank=True)
-    competitors     = models.ManyToManyField(Competitor, blank=True, null=True)
     
     class Meta:
         ordering = ['name']

@@ -2,6 +2,7 @@
 import datetime
 from django import forms
 from django.forms import formsets
+from django.forms.models import ModelMultipleChoiceField
 from django.utils.translation import ugettext_lazy as _
 from fc3.fantasy.models import Series, Event, Competitor, Guess, Result, Team
 
@@ -20,7 +21,15 @@ class CompetitorForm(forms.ModelForm):
     
     class Meta:
         model = Competitor
-        fields = ('name','series')
+        fields = ('name','series', 'team')
+
+    def __init__(self, *args, **kwargs):
+        team_qs = kwargs.pop('team_qs', [])
+        super(CompetitorForm, self).__init__(*args, **kwargs)
+        if team_qs:
+            self['team'].field.queryset = team_qs
+        else:
+            del self.fields['team']
 
     def clean(self):
         name = self.cleaned_data.get('name')
@@ -40,6 +49,78 @@ class CompetitorForm(forms.ModelForm):
                 return self.cleaned_data
             else:
                 raise forms.ValidationError, u'Competitor "%s" already exists for this series, try another name' % name
+
+
+class CompetitorImportForm(forms.Form):
+    series = forms.ModelChoiceField(queryset=Series.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        series_qs = kwargs.pop('series_qs', [])
+        super(CompetitorImportForm, self).__init__(*args, **kwargs)
+        self['series'].field.queryset = series_qs
+
+
+class TeamChoiceForm(forms.Form):
+    '''
+    Form used to select a team to associate with a Competitor.
+    
+    '''
+    team = forms.ModelChoiceField(queryset=[], required=False)
+
+    def __init__(self, *args, **kwargs):
+        team_qs = kwargs.pop('team_qs', None)
+        super(TeamChoiceForm, self).__init__(*args, **kwargs)
+        if team_qs:
+            self['team'].field.queryset = team_qs
+        else:
+            del self.fields['team']
+
+
+class TeamGuessForm(forms.Form):
+    '''
+    Form used to select a team.
+    Choices for this form are specified at creation,
+    and typically have values different than the standard
+    `team.pk`.
+    
+    '''
+    team = forms.ChoiceField(choices=[], required=False)
+
+    def __init__(self, *args, **kwargs):
+        team_list = kwargs.pop('teams', None)
+        super(TeamGuessForm, self).__init__(*args, **kwargs)
+        self['team'].field.choices = team_list
+
+
+class TeamEditForm(forms.ModelForm):
+
+    members = ModelMultipleChoiceField(queryset=None, required=False)
+
+    class Meta:
+        model = Team
+        fields = ('name', 'short_name')
+
+    def __init__(self, *args, **kwargs):
+        competitor_qs = kwargs.pop('competitor_qs', None)
+        super(TeamEditForm, self).__init__(*args, **kwargs)
+        if competitor_qs:
+            self['members'].field.queryset = competitor_qs
+        else:
+            del self.fields['members']
+            
+    def save(self, commit=True):
+        team = forms.ModelForm.save(self, commit)
+        members = self.cleaned_data['members']
+        # Remove competitors currently associated with the Team
+        # which are not selected.
+        for competitor in team.competitor_set.all():
+            if not competitor in members:
+                competitor.team = None
+                competitor.save()
+        # Add selected competitors to the Team
+        for competitor in members:
+            competitor.team = team
+            competitor.save()
 
 
 class EventForm(forms.ModelForm):
@@ -110,57 +191,3 @@ class EventOptionsForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ('result_locked',)
-
-
-class CompetitorImportForm(forms.Form):
-    series = forms.ModelChoiceField(queryset=Series.objects.all())
-
-    def __init__(self, *args, **kwargs):
-        series_qs = kwargs.pop('series_qs', [])
-        super(CompetitorImportForm, self).__init__(*args, **kwargs)
-        self['series'].field.queryset = series_qs
-
-
-class TeamChoiceForm(forms.Form):
-    '''
-    Form used to select a team to associate with a Competitor.
-    
-    '''
-    team = forms.ModelChoiceField(queryset=[], required=False)
-
-    def __init__(self, *args, **kwargs):
-        team_qs = kwargs.pop('team_qs', None)
-        super(TeamChoiceForm, self).__init__(*args, **kwargs)
-        if team_qs:
-            self['team'].field.queryset = team_qs
-        else:
-            del self.fields['team']
-
-
-class TeamGuessForm(forms.Form):
-    '''
-    Form used to select a team.
-    Choices for this form are specified at creation,
-    and typically have values different than the standard
-    `team.pk`.
-    
-    '''
-    team = forms.ChoiceField(choices=[], required=False)
-
-    def __init__(self, *args, **kwargs):
-        team_list = kwargs.pop('teams', None)
-        super(TeamGuessForm, self).__init__(*args, **kwargs)
-        self['team'].field.choices = team_list
-
-
-class TeamEditForm(forms.ModelForm):
-    
-    class Meta:
-        model = Team
-        fields = ('name', 'short_name', 'competitors')
-
-    def __init__(self, *args, **kwargs):
-        competitor_qs = kwargs.pop('competitor_qs', None)
-        super(TeamEditForm, self).__init__(*args, **kwargs)
-        if competitor_qs:
-            self['competitors'].field.queryset = competitor_qs

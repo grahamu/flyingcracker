@@ -14,9 +14,6 @@
 <div class="fantasy-form-container">
     <form method="POST" action="" class="uniForm">{% csrf_token %}
         {{ competitor_form|as_uni_form }}
-        {% if team_form %}
-        {{ team_form|as_uni_form }}
-        {% endif %}
         <input type="submit" value="Submit" />
     </form>
 </div>
