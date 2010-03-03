@@ -92,9 +92,25 @@ class TeamGuessForm(forms.Form):
         self['team'].field.choices = team_list
 
 
+class CompetitorModelMultipleChoiceField(ModelMultipleChoiceField):
+
+    def label_from_instance(self, obj):
+        from django.utils.encoding import smart_unicode
+        
+        """
+        This method is used to convert objects into strings; it's used to
+        generate the labels for the choices presented by this object. Subclasses
+        can override this method to customize the display of the choices.
+        """
+        if obj.team:
+            return u'%s - %s' % (obj, obj.team.short())
+        else:
+            return u'%s' % obj
+
+
 class TeamEditForm(forms.ModelForm):
 
-    members = ModelMultipleChoiceField(queryset=None, required=False)
+    members = CompetitorModelMultipleChoiceField(queryset=None, required=False)
 
     class Meta:
         model = Team
