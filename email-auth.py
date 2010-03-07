@@ -4,7 +4,7 @@ try:
     from django.forms.fields import email_re
 except ImportError:
     # Django version >= 1.2
-    from django.core.validatore import email_re
+    from django.core.validators import email_re
 from django.contrib.auth.models import User
 
 class EmailBackend(ModelBackend):
