@@ -1,5 +1,10 @@
 from django.contrib.auth.backends import ModelBackend
-from django.forms.fields import email_re
+try:
+    # Django version <= 1.1
+    from django.forms.fields import email_re
+except ImportError:
+    # Django version >= 1.2
+    from django.core.validatore import email_re
 from django.contrib.auth.models import User
 
 class EmailBackend(ModelBackend):
