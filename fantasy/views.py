@@ -7,7 +7,8 @@ from django.contrib.auth.models import User
 from django.db.models import Q, F
 from django.contrib.contenttypes.models import ContentType
 from fc3.fantasy.models import Series, Event, Competitor, Guess, Result, Team
-from serviceclient.models import ServiceClient, ServiceClientUserProfile as SCUP
+from serviceclient.models import ServiceClient, \
+     ServiceClientUserProfile as SCUP
 from serviceclient.decorators import set_scup, get_scup
 
 def root(request):
@@ -21,9 +22,9 @@ def root(request):
         scup = None
         service_client = None
         active_queryset = active_queryset.filter(~Q(status=Series.HIDDEN_STATUS)).distinct()
-        
+
     completed_queryset = Series.objects.filter(status=Series.COMPLETE_STATUS)
-    
+
     # BUGBUG
     # filter to:
     #   series for which I am admin
@@ -36,12 +37,13 @@ def root(request):
     })
     return render_to_response('series_list.html', c)
 
+
 @login_required
 @set_scup
 def series_edit(request, id=None):
     '''
     Create a new Series or edit an existing Series.
-    
+
     '''
     from fc3.fantasy.forms import SeriesForm
 
@@ -71,10 +73,12 @@ def series_edit(request, id=None):
     })
     return render_to_response('series_edit.html', c)
 
+
+
 def series_detail(request, id):
     '''
     A list of events for the series, with winner if applicable, and user's current guess if applicable.
-    
+
     '''
     if request.user.is_authenticated():
         scup = get_scup(request)
@@ -82,7 +86,7 @@ def series_detail(request, id):
     else:
         scup = None
         service_client = None
-    
+
     series = get_object_or_404(Series, pk=id)
     qs = Event.objects.filter(series=series)
     events = []
@@ -122,7 +126,8 @@ def series_detail(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('event_list.html', c)
-    
+
+
 def series_points_list(series, include_late_entries=False, include_timely_entries=True):
     '''
     Returns a list of usernames and their accumulated points in a Series.
@@ -221,7 +226,8 @@ def series_points_list(series, include_late_entries=False, include_timely_entrie
     if points_list and points_list[0]['points'] == 0:
         points_list = []
     return points_list
-    
+
+
 def leaderboard(request, id):
     '''
     A list of user scores for events in the series.
@@ -249,6 +255,7 @@ def leaderboard(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('leaderboard.html', c)
+
 
 @login_required
 @set_scup
@@ -293,6 +300,7 @@ def competitor_list(request, id):
     })
     return render_to_response('competitor_list.html', c)
 
+
 @login_required
 @set_scup
 def competitor_edit(request, id):
@@ -328,6 +336,7 @@ def competitor_edit(request, id):
     })
     return render_to_response('competitor_edit.html', c)
 
+
 @login_required
 @set_scup
 def competitor_delete(request, id):
@@ -357,6 +366,7 @@ def competitor_delete(request, id):
         competitor.delete()
         return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
 
+    
 @login_required
 @set_scup
 def competitor_export(request, id):
@@ -385,6 +395,7 @@ def competitor_export(request, id):
     for competitor in qs:
         writer.writerow([smart_str(competitor.name)])
     return response
+
 
 @login_required
 @set_scup
@@ -437,6 +448,7 @@ def competitor_import(request, id):
     })
     return render_to_response('competitor_import.html', c)
 
+
 @login_required
 @set_scup
 def event_add(request, series_id):
@@ -475,6 +487,8 @@ def event_add(request, series_id):
     })
     return render_to_response('event_edit.html', c)
 
+
+
 @login_required
 @set_scup
 def event_edit(request, id):
@@ -511,6 +525,7 @@ def event_edit(request, id):
     })
     return render_to_response('event_edit.html', c)
 
+
 @login_required
 @set_scup
 def event_delete(request, id):
@@ -541,6 +556,7 @@ def event_delete(request, id):
         event.delete()
         return HttpResponseRedirect(series.get_absolute_url)
 
+    
 def event_detail(request, id):
     '''
     Shows either the results of a event
@@ -628,6 +644,7 @@ def event_detail(request, id):
     })
     return render_to_response('event_guess.html', c)
 
+
 def event_result(request, id):
     '''
     Shows the results of a event.
@@ -658,14 +675,14 @@ def event_result(request, id):
     no_points_list = Result.objects.filter(~Q(result__in=series.scoring_system.results()), event=event).order_by('result')
     for result in no_points_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=result.competitor)
-        bad_guess_list.append({'competitor': result.competitor, 'result': result.result, 'guessers': [g.user for g in guessers ]})
+        bad_guess_list.append({'competitor': result.competitor, 'result': result.result, 'guessers': [g.user for g in guessers]})
 
     # list of competitors guessed for this event who have no result FOR THE EVENT
     all_guesses_qs = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id).distinct()
     no_result_list = all_guesses_qs.exclude(result__event=event)
     for bad_guess in no_result_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=bad_guess)
-        bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user for g in guessers ]})
+        bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user for g in guessers]})
 
     late_guesses = False
     event_points_list = []
@@ -711,6 +728,7 @@ def event_result(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('event_result.html', c)
+
 
 @login_required
 @set_scup
@@ -790,6 +808,7 @@ def result_edit(request, id):
     })
     return render_to_response('result_edit.html', c)
 
+
 @login_required
 @set_scup
 def team_add(request, series_id):
@@ -867,8 +886,7 @@ def team_edit(request, id):
     else:
         team_form = TeamEditForm(instance=team,
                                  competitor_qs=competitor_qs,
-                                 initial={'members': members}
-                                )
+                                 initial={'members': members})
 
     c = RequestContext(request, {
         'team_form': team_form,
@@ -878,6 +896,7 @@ def team_edit(request, id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('team_edit.html', c)
+
 
 @login_required
 @set_scup
@@ -899,6 +918,7 @@ def team_list(request, series_id):
         'is_admin': series.is_admin(scup),
     })
     return render_to_response('team_list.html', c)
+
 
 @login_required
 @set_scup
@@ -923,6 +943,7 @@ def team_detail(request, id):
     })
     return render_to_response('team_detail.html', c)
 
+
 @login_required
 @set_scup
 def team_delete(request, id):
@@ -944,3 +965,53 @@ def team_delete(request, id):
         competitor.save()
     team.delete()
     return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
+
+
+@login_required
+@set_scup
+def series_email(request, id):
+    '''
+    Email all users associated with a Series.
+    
+    '''
+    from fc3.fantasy.forms import EmailSeriesForm
+    from django.conf import settings
+    from django.core.mail import EmailMessage
+
+    scup = request.session.get('scup')
+    service_client = scup.service_client
+
+    series = get_object_or_404(Series, pk=id)
+    if not series.is_admin(scup):
+        return HttpResponseRedirect(reverse('fantasy-root'))
+
+    if request.method == 'POST':
+        email_form = EmailSeriesForm(data=request.POST)
+        if email_form.is_valid():
+            cd = email_form.cleaned_data
+            # remove newlines from subject
+            subject = ''.join(cd['subject'].splitlines())
+            body = cd['body']
+            guessers = series.guesser_list()
+            # Email messages
+            mail_from = scup.user.email or settings.DEFAULT_FROM_EMAIL
+            recipients = [u.user.email for u in guessers if u.user.email]
+            recipients.remove(mail_from)
+            msg = EmailMessage(subject=subject, body=body,
+                               from_email=mail_from, to=[mail_from],
+                               bcc=recipients)
+            msg.send()
+            
+#            send_mail(subject, body, mail_from, recipients)
+
+            #request.flash['notice'] = 'Your email has been sent'
+            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
+    else:
+        email_form = EmailSeriesForm()
+
+    c = RequestContext(request, {
+        'email_form': email_form,
+        'series': series,
+        'is_admin': series.is_admin(scup),
+    })
+    return render_to_response('series_email.html', c)

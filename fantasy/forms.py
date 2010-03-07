@@ -207,3 +207,8 @@ class EventOptionsForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ('result_locked',)
+ 
+
+class EmailSeriesForm(forms.Form):
+    subject = forms.CharField()
+    body = forms.CharField(widget=forms.Textarea)

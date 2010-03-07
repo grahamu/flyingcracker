@@ -7,6 +7,8 @@ urlpatterns = patterns('fc3.fantasy.views',
     url(r'^series/(?P<id>[0-9]+)/$',                'series_detail', name='fantasy-series-detail'),
     url(r'^series/(?P<id>[0-9]+)/edit/$',           'series_edit', name='fantasy-series-edit'),
     url(r'^series/(?P<id>[0-9]+)/leaderboard/$',    'leaderboard', name='fantasy-series-leaderboard'),
+    url(r'^series/(?P<id>[0-9]+)/email/$',          'series_email', name='fantasy-series-email'),
+    
     
     url(r'^series/(?P<id>[0-9]+)/competitor/list/$',   'competitor_list', name='fantasy-competitor-list'),
     url(r'^series/(?P<id>[0-9]+)/competitor/export/$', 'competitor_export', name='fantasy-competitor-export'),

@@ -48,6 +48,10 @@ class Series(models.Model):
         ordering = ('name',)
 
     def guesser_list(self):
+        '''
+        Returns a list of Users who have guesses in this Series.
+        
+        '''
         if self.guess_once_per_series:
             guessers = [g.user for g in self.guesses.all()]
         else:

@@ -1,0 +1,15 @@
+{% extends "fantasy-admin.html" %}
+{% load uni_form_tags %}
+
+{% block fantasy-main %}
+<div class="section-header">
+    <div class="section-title"><span class="action-title">Email All Users ~ {{ series }}</span></div>
+</div>
+
+<div class="fantasy-form-container">
+    <form method="POST" action="">{% csrf_token %}
+        {{ email_form|as_uni_form }}
+        <input type="submit" value="Send" />
+    </form>
+</div>
+{% endblock %}
