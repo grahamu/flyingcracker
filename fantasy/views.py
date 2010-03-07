@@ -995,11 +995,12 @@ def series_email(request, id):
             guessers = series.guesser_list()
             # Email messages
             mail_from = scup.user.email or settings.DEFAULT_FROM_EMAIL
-            recipients = [u.user.email for u in guessers if u.user.email]
-            recipients.remove(mail_from)
+            bcc_recipients = [u.user.email for u in guessers if u.user.email]
+            if mail_from in bcc_recipients:
+                bcc_recipients.remove(mail_from)
             msg = EmailMessage(subject=subject, body=body,
                                from_email=mail_from, to=[mail_from],
-                               bcc=recipients)
+                               bcc=bcc_recipients)
             msg.send()
             
 #            send_mail(subject, body, mail_from, recipients)
