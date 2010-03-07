@@ -21,7 +21,7 @@ def upload_data(request):
         dateutc = dateutc.replace(':',' ').replace('-',' ').replace('+',' ')
         year,month,day,hour,minute,second = dateutc.split()
         mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
-        timestamp = datetime(int(year),int(month),int(day),int(hour),int(minute),int(second),0,mountain_tz)
+        timestamp = datetime(int(year),int(month),int(day),int(hour),int(minute),int(second))
         
         wind_dir    = request.GET.get('winddir', None)
         wind_speed  = request.GET.get('windspeedmph', None)
