@@ -73,9 +73,11 @@ def cam_image(request):
     Get a specific image URL.
     
     '''
-    if request.is_ajax():
+    if request.is_ajax() or request.GET.get('xhr'):
         try:
             id = request.POST.get('id')
+            if not id:
+                id = request.GET.get('id')
             image = Cam.objects.get(id=id)
         except Cam.DoesNotExist:
             image = None

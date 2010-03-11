@@ -55,7 +55,8 @@ def json_encode2(data):
         fields = dir(data.__class__) + ret.keys()
         add_ons = [k for k in dir(data) if k not in fields]
         for k in add_ons:
-            ret[k] = _any(getattr(data, k))
+            if k[0] != '_':
+                ret[k] = _any(getattr(data, k))
         return ret
     
     def _list(data):
