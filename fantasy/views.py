@@ -675,7 +675,7 @@ def event_result(request, id):
     no_points_list = Result.objects.filter(~Q(result__in=series.scoring_system.results()), event=event).order_by('result')
     for result in no_points_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=result.competitor)
-        bad_guess_list.append({'competitor': result.competitor, 'result': result.result, 'guessers': [g.user for g in guessers]})
+        bad_guess_list.append({'competitor': result.competitor, 'result': result.result, 'guessers': [g.user.user.username for g in guessers]})
 
     # list of competitors guessed for this event who have no result FOR THE EVENT
     all_guesses_qs = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id).distinct()
