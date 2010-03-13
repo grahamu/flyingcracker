@@ -682,7 +682,7 @@ def event_result(request, id):
     no_result_list = all_guesses_qs.exclude(result__event=event)
     for bad_guess in no_result_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=bad_guess)
-        bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user for g in guessers]})
+        bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user.user for g in guessers]})
 
     late_guesses = False
     event_points_list = []
