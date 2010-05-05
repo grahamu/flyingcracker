@@ -1,4 +1,5 @@
 {% extends "fantasy-series.html" %}
+{% load user_time %}
 
 {% block fantasy-main %}
 <div class="section-header">
@@ -28,7 +29,10 @@ Click on a {{ series.event_label|lower }} to enter your picks or see results.<br
                 <td><a href="{{ r.event.get_absolute_url }}">{{ r.event }}</a><br />{{ r.event.description }}</td>
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
                 <td>{{ r.event.start_date|date:"D F d" }}<br />{{ r.event.start_time|time:"f a" }} UTC</td>
-                <td>{{ r.event.guess_cutoff|date:"D F d" }}<br />{{ r.event.guess_cutoff|time:"f a" }} UTC</td>
+                {% with user|user_time:r.event.guess_deadline as cutoff %}
+                <td>{{ cutoff|date:"D F d" }}<br />{{ cutoff|time:"f a" }}<br />
+                {% firstof user.get_profile.timezone r.event.timezone %}</td>
+                {% endwith %}
                 <td class="nobg">{% if is_admin %}<a href="{% url fantasy-event-edit r.event.pk %}">Edit {{ series.event_label|lower }}</a>{% endif %}</td>
             </tr>
 {% endfor %}
