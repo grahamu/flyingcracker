@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from datetime import *
 from decimal import *
+from dateutil.tz import tzlocal
+from pytz import timezone
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -15,8 +17,6 @@ from cbac import CBAC
 from cbtv import CBTV
 import weather.utils as utils
 from weather.models import ChartUrl
-from weatherstation.tz import USTimeZone
-from dateutil.tz import tzlocal
 
 def weather(request):
     from django.utils import simplejson
@@ -40,7 +40,7 @@ def weather(request):
         unit_state = "true"
 
     # Get time in MT for forecast timestamp comparison
-    mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
+    mountain_tz = timezone('US/Mountain')
     now = datetime.now(tzlocal()).astimezone(mountain_tz)
     
     cbac = CBAC()
