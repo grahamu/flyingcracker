@@ -3,8 +3,20 @@ from fc3.food.models import Recipe, Foodstuff, Category
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.defaultfilters import random
 
-def category_list(request, slug):
-    pass
+def category_list(request, recipe_type, slug):
+    try:
+        category = Category.objects.get(slug=slug)
+    except Category.DoesNotExist:
+        return HttpResponseRedirect(
+            reverse('food-recipe-list', kwargs={'recipe_type': recipe_type}))
+    category_recipes = Recipe.objects.filter(
+        rclass=db_recipe_type(recipe_type),
+        categories=category).order_by('title')
+    c = RequestContext(request, {'all_recipes' : category_recipes,
+                                 'recipe_type': recipe_type,
+                                 'category': category,
+                                })
+    return render_to_response('food/recipe_list.html', c)
 
 def recipe_list(request, recipe_type=""):
     all_recipes, all_foodstuff = get_all_lists(recipe_type)

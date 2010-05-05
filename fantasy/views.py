@@ -7,21 +7,18 @@ from django.contrib.auth.models import User
 from django.db.models import Q, F
 from django.contrib.contenttypes.models import ContentType
 from fc3.fantasy.models import Series, Event, Competitor, Guess, Result, Team
-from serviceclient.models import ServiceClient, \
-     ServiceClientUserProfile as SCUP
-from serviceclient.decorators import set_scup, get_scup
 
 def root(request):
-    active_queryset = Series.objects.filter(~Q(status=Series.COMPLETE_STATUS)).distinct()
+    active_queryset = Series.objects.filter(
+        ~Q(status=Series.COMPLETE_STATUS)).distinct()
     if request.user.is_authenticated():
-        scup = get_scup(request)
-        service_client = scup.service_client
-        if not scup or not scup.user.is_staff:
-            active_queryset = active_queryset.filter(~Q(status=Series.HIDDEN_STATUS) | Q(owner=scup)).distinct()
+        if not request.user.is_staff:
+            active_queryset = active_queryset.filter(
+                ~Q(status=Series.HIDDEN_STATUS) | \
+                Q(owner=request.user)).distinct()
     else:
-        scup = None
-        service_client = None
-        active_queryset = active_queryset.filter(~Q(status=Series.HIDDEN_STATUS)).distinct()
+        active_queryset = active_queryset.filter(
+            ~Q(status=Series.HIDDEN_STATUS)).distinct()
 
     completed_queryset = Series.objects.filter(status=Series.COMPLETE_STATUS)
 
@@ -33,13 +30,11 @@ def root(request):
     c = RequestContext(request, {
         'active_series': active_queryset,
         'completed_series': completed_queryset,
-        'scup': scup,
     })
     return render_to_response('series_list.html', c)
 
 
 @login_required
-@set_scup
 def series_edit(request, id=None):
     '''
     Create a new Series or edit an existing Series.
@@ -47,16 +42,13 @@ def series_edit(request, id=None):
     '''
     from fc3.fantasy.forms import SeriesForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     if id:
         series = get_object_or_404(Series, pk=id)
-        if not series.is_admin(scup):
+        if not series.is_admin(request.user):
             # cannot edit Series if you're not an admin
             return HttpResponseRedirect(reverse('fantasy-root'))
     else:
-        series = Series(owner=scup)
+        series = Series(owner=request.user)
 
     if request.method == 'POST':
         series_form = SeriesForm(data=request.POST, instance=series)
@@ -67,7 +59,6 @@ def series_edit(request, id=None):
         series_form = SeriesForm(instance=series)
 
     c = RequestContext(request, {
-        #'service_client': service_client,
         'series_form': series_form,
         'series': series,
     })
@@ -81,12 +72,10 @@ def series_detail(request, id):
 
     '''
     if request.user.is_authenticated():
-        scup = get_scup(request)
-        service_client = scup.service_client
+        user = request.user
     else:
-        scup = None
-        service_client = None
-
+        user = None
+        
     series = get_object_or_404(Series, pk=id)
     qs = Event.objects.filter(series=series)
     events = []
@@ -101,9 +90,9 @@ def series_detail(request, id):
             else:
                 row_class = 'race-future'
             
-        if scup:
+        if user:
             ctype, obj_id = event.guess_generics()
-            picks = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id, guess__user=scup)
+            picks = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id, guess__user=user)
             if not picks:
                 guesses = None
             else:
@@ -123,7 +112,7 @@ def series_detail(request, id):
         'series': series,
         'event_list': events,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('event_list.html', c)
 
@@ -211,7 +200,7 @@ def series_points_list(series, include_late_entries=False, include_timely_entrie
             cumulative_points.append(total)
             last = total
             
-        points_list.append({'name': str(u.user.username),
+        points_list.append({'name': str(u.username),
                             'points': points,
                             'late': late_guess_events or late_guess_series,
                             'place_totals': [{'key':key, 'val':result_totals[key]} for key in result_keys],
@@ -233,13 +222,6 @@ def leaderboard(request, id):
     A list of user scores for events in the series.
     
     '''
-    if request.user.is_authenticated():
-        scup = get_scup(request)
-        service_client = scup.service_client
-    else:
-        scup = None
-        service_client = None
-
     series = get_object_or_404(Series, pk=id)
     user_list = series.guesser_list()
     points_list = series_points_list(series, include_late_entries=False)
@@ -252,13 +234,12 @@ def leaderboard(request, id):
         'late_points_list': late_points_list,
         'scoresys_results': scoresys_results,
         'user_list': user_list,
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('leaderboard.html', c)
 
 
 @login_required
-@set_scup
 def competitor_list(request, id):
     '''
     List all competitors associated with this Series.
@@ -266,11 +247,8 @@ def competitor_list(request, id):
     '''
     from fc3.fantasy.forms import CompetitorForm
     
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
     series = get_object_or_404(Series, pk=id)
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series data if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
     competitor = Competitor(series=series)
@@ -296,13 +274,12 @@ def competitor_list(request, id):
         'competitor_list': competitor_qs,
         'competitor_form': competitor_form,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('competitor_list.html', c)
 
 
 @login_required
-@set_scup
 def competitor_edit(request, id):
     '''
     Edit the specified Competitor.
@@ -310,12 +287,9 @@ def competitor_edit(request, id):
     '''
     from fc3.fantasy.forms import CompetitorForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     competitor = get_object_or_404(Competitor, pk=id)
     series = competitor.series
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
     team_qs = Team.objects.filter(series=series)
@@ -332,24 +306,20 @@ def competitor_edit(request, id):
         'competitor_form': competitor_form,
         'series': series,
         'competitor': competitor,
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('competitor_edit.html', c)
 
 
 @login_required
-@set_scup
 def competitor_delete(request, id):
     '''
     Delete the specified Competitor from its Series.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     competitor = get_object_or_404(Competitor, pk=id)
     series = competitor.series
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
 
@@ -359,7 +329,7 @@ def competitor_delete(request, id):
             'series': series,
             'competitor': competitor,
             'result_list': results,
-            'is_admin': series.is_admin(scup),
+            'is_admin': series.is_admin(request.user),
         })
         return render_to_response('competitor_delete.html', c)
     else:
@@ -368,7 +338,6 @@ def competitor_delete(request, id):
 
     
 @login_required
-@set_scup
 def competitor_export(request, id):
     '''
     Export all competitors associated with this Series.
@@ -377,11 +346,8 @@ def competitor_export(request, id):
     import csv
     from django.utils.encoding import smart_str, smart_unicode
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
     series = get_object_or_404(Series, pk=id)
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
     
@@ -398,7 +364,6 @@ def competitor_export(request, id):
 
 
 @login_required
-@set_scup
 def competitor_import(request, id):
     '''
     Import Competitors from other Series into the specified Series.
@@ -406,11 +371,8 @@ def competitor_import(request, id):
     '''
     from fc3.fantasy.forms import CompetitorImportForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     series = get_object_or_404(Series, pk=id)
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
 
@@ -433,7 +395,7 @@ def competitor_import(request, id):
                 c = RequestContext(request, {
                     'series': series,
                     'competitor_list': Competitor.objects.filter(name__in=new_names, series=series),
-                    'is_admin': series.is_admin(scup),
+                    'is_admin': series.is_admin(request.user),
                 })
                 return render_to_response('competitors_imported.html', c)
             else:
@@ -444,13 +406,12 @@ def competitor_import(request, id):
     c = RequestContext(request, {
         'import_form': import_form,
         'series': series,
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('competitor_import.html', c)
 
 
 @login_required
-@set_scup
 def event_add(request, series_id):
     '''
     Add a new event to the specified Series.
@@ -458,11 +419,8 @@ def event_add(request, series_id):
     '''
     from fc3.fantasy.forms import EventForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     series = get_object_or_404(Series, pk=series_id)
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
     event = Event(series=series)
@@ -478,19 +436,17 @@ def event_add(request, series_id):
         event_form = EventForm(instance=event)
 
     c = RequestContext(request, {
-        #'service_client': service_client,
         'event_form': event_form,
         'series': series,
         'event': event,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('event_edit.html', c)
 
 
 
 @login_required
-@set_scup
 def event_edit(request, id):
     '''
     Edit the specified Event.
@@ -498,12 +454,9 @@ def event_edit(request, id):
     '''
     from fc3.fantasy.forms import EventForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     event = get_object_or_404(Event, pk=id)
     series = event.series
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
 
@@ -516,29 +469,24 @@ def event_edit(request, id):
         event_form = EventForm(instance=event)
 
     c = RequestContext(request, {
-        #'service_client': service_client,
         'event_form': event_form,
         'series': series,
         'event': event,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('event_edit.html', c)
 
 
 @login_required
-@set_scup
 def event_delete(request, id):
     '''
     Delete the specified Event from the Series.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     event = get_object_or_404(Event, pk=id)
     series = event.series
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
 
@@ -549,7 +497,7 @@ def event_delete(request, id):
             'event': event,
             'result_list': results,
             'points_list': series_points_list(series)[:10],
-            'is_admin': series.is_admin(scup),
+            'is_admin': series.is_admin(request.user),
         })
         return render_to_response('event_delete.html', c)
     else:
@@ -566,19 +514,17 @@ def event_detail(request, id):
     
     '''
     if request.user.is_authenticated():
-        scup = get_scup(request)
-        service_client = scup.service_client
+        user = request.user
     else:
-        scup = None
-        service_client = None
-
+        user = None
+        
     event = get_object_or_404(Event, pk=id)
     series = event.series
     # Create un-saved instance for adding a new Competitor
     competitor = Competitor(series=series)
     
     ctype, obj_id = event.guess_generics()
-    curr_guesses = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=scup)
+    curr_guesses = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=user)
     guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
     
     guess_deadline_elapsed = event.guess_deadline_elapsed()
@@ -620,7 +566,7 @@ def event_detail(request, id):
                 if guess.get('competitor', None):
                     g = Guess(content_type=ctype,
                               object_id=obj_id,
-                              user=scup,
+                              user=user,
                               competitor=Competitor.objects.get(pk=guess['competitor']),
                               late_entry=guess_deadline_elapsed)
                     g.save()
@@ -631,6 +577,11 @@ def event_detail(request, id):
 
     guessers = event.guesser_list()
 
+    if curr_guesses:
+        guess_timestamp = curr_guesses[0].timestamp
+    else:
+        guess_timestamp = None
+        
     c = RequestContext(request, {
         'series': event.series,
         'event': event,
@@ -639,8 +590,9 @@ def event_detail(request, id):
         'team_form': team_form,
         'add_competitor_ok': False, # series.users_enter_competitors,
         'late_entry': late_entry,
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
         'guessers': guessers,
+        'guess_timestamp': guess_timestamp,
     })
     return render_to_response('event_guess.html', c)
 
@@ -651,11 +603,9 @@ def event_result(request, id):
     
     '''
     if request.user.is_authenticated():
-        scup = get_scup(request)
-        service_client = scup.service_client
+        user = request.user
     else:
-        scup = None
-        service_client = None
+        user = None
     
     event = get_object_or_404(Event, pk=id)
     series = event.series
@@ -675,14 +625,14 @@ def event_result(request, id):
     no_points_list = Result.objects.filter(~Q(result__in=series.scoring_system.results()), event=event).order_by('result')
     for result in no_points_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=result.competitor)
-        bad_guess_list.append({'competitor': result.competitor, 'result': result.result, 'guessers': [g.user.user for g in guessers]})
+        bad_guess_list.append({'competitor': result.competitor, 'result': result.result, 'guessers': [g.user for g in guessers]})
 
     # list of competitors guessed for this event who have no result FOR THE EVENT
     all_guesses_qs = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id).distinct()
     no_result_list = all_guesses_qs.exclude(result__event=event)
     for bad_guess in no_result_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=bad_guess)
-        bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user.user for g in guessers]})
+        bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user for g in guessers]})
 
     late_guesses = False
     event_points_list = []
@@ -709,7 +659,7 @@ def event_result(request, id):
             result_points = series.scoring_system.points(r.result)
             points += result_points
             
-        event_points_list.append({'name': str(u.user.username),
+        event_points_list.append({'name': str(u.username),
                                   'points': points,
                                   'late': late_entry,
                                  })
@@ -725,13 +675,12 @@ def event_result(request, id):
         'event_points_list': event_points_list,
         'late_guesses': late_guesses,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('event_result.html', c)
 
 
 @login_required
-@set_scup
 def result_edit(request, id):
     '''
     Edit the results for a event.
@@ -740,12 +689,9 @@ def result_edit(request, id):
     from fc3.fantasy.forms import ResultForm, GuessAndResultBaseFormset, EventOptionsForm
     from django.forms.formsets import formset_factory
     
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
     event = get_object_or_404(Event, pk=id)
     series = event.series
-    if (not series.is_admin(scup) and event.result_locked) or \
+    if (not series.is_admin(request.user) and event.result_locked) or \
         not event.guess_deadline_elapsed():
         return HttpResponseRedirect(reverse('fantasy-root'))
     
@@ -790,7 +736,7 @@ def result_edit(request, id):
                     r = Result(event=event,
                                result=result['result'],
                                competitor=Competitor.objects.get(pk=result['competitor']),
-                               entered_by=scup)
+                               entered_by=request.user)
                     r.save()
             return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
     else:
@@ -804,13 +750,12 @@ def result_edit(request, id):
         'options_form': options_form,
         'entered_by': entered_by,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('result_edit.html', c)
 
 
 @login_required
-@set_scup
 def team_add(request, series_id):
     '''
     Enter a new Team.
@@ -818,11 +763,8 @@ def team_add(request, series_id):
     '''
     from fc3.fantasy.forms import TeamEditForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
     series = get_object_or_404(Series, pk=series_id)
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
 
@@ -846,13 +788,12 @@ def team_add(request, series_id):
         'series': series,
         'team': team,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('team_edit.html', c)
 
 
 @login_required
-@set_scup
 def team_edit(request, id):
     '''
     Edit a Team.
@@ -860,13 +801,10 @@ def team_edit(request, id):
     '''
     from fc3.fantasy.forms import TeamEditForm
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     team = get_object_or_404(Team, pk=id)
     series = team.series
     
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
     
@@ -893,21 +831,17 @@ def team_edit(request, id):
         'series': series,
         'team': team,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('team_edit.html', c)
 
 
 @login_required
-@set_scup
 def team_list(request, series_id):
     '''
     List all Teams for a Series.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-    
     series = get_object_or_404(Series, pk=series_id)
     team_qs = Team.objects.filter(series=series)
 
@@ -915,48 +849,40 @@ def team_list(request, series_id):
         'series': series,
         'team_list': team_qs,
         'points_list': series_points_list(series)[:10],
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('team_list.html', c)
 
 
 @login_required
-@set_scup
 def team_detail(request, id):
     '''
     Show detail on the specified Team.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     team = get_object_or_404(Team, pk=id)
     series = team.series
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
 
     c = RequestContext(request, {
         'series': series,
         'team': team,
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('team_detail.html', c)
 
 
 @login_required
-@set_scup
 def team_delete(request, id):
     '''
     Delete the specified Team from the Series.
     
     '''
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     team = get_object_or_404(Team, pk=id)
     series = team.series
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
         return HttpResponseRedirect(reverse('fantasy-root'))
 
@@ -968,7 +894,6 @@ def team_delete(request, id):
 
 
 @login_required
-@set_scup
 def series_email(request, id):
     '''
     Email all users associated with a Series.
@@ -978,11 +903,8 @@ def series_email(request, id):
     from django.conf import settings
     from django.core.mail import EmailMessage
 
-    scup = request.session.get('scup')
-    service_client = scup.service_client
-
     series = get_object_or_404(Series, pk=id)
-    if not series.is_admin(scup):
+    if not series.is_admin(request.user):
         return HttpResponseRedirect(reverse('fantasy-root'))
 
     if request.method == 'POST':
@@ -994,8 +916,8 @@ def series_email(request, id):
             body = cd['body']
             guessers = series.guesser_list()
             # Email messages
-            mail_from = scup.user.email or settings.DEFAULT_FROM_EMAIL
-            bcc_recipients = [u.user.email for u in guessers if u.user.email]
+            mail_from = request.user.email or settings.DEFAULT_FROM_EMAIL
+            bcc_recipients = [user.email for user in guessers if user.email]
             if mail_from in bcc_recipients:
                 bcc_recipients.remove(mail_from)
             msg = EmailMessage(subject=subject, body=body,
@@ -1013,6 +935,6 @@ def series_email(request, id):
     c = RequestContext(request, {
         'email_form': email_form,
         'series': series,
-        'is_admin': series.is_admin(scup),
+        'is_admin': series.is_admin(request.user),
     })
     return render_to_response('series_email.html', c)

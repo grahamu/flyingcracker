@@ -6,7 +6,6 @@ from django.db.models import permalink
 from datetime import date, datetime
 from django.utils.translation import ugettext_lazy as _
 from scoresys.models import ScoringSystem
-from serviceclient.models import ServiceClientUserProfile as SCUP
 
 
 class Series(models.Model):
@@ -37,10 +36,7 @@ class Series(models.Model):
         (COMPLETE_STATUS, 'COMPLETE - series is finished'),
     )
     status                  = models.CharField(max_length=1, choices=STATUS_TYPES, default=HIDDEN_STATUS, blank=False)
-    # BUGBUG - this will eventually be:
-    # user_group = models.ForeignKey(UserGroup)
-    # and the creator should be an ADMIN_TYPE in that group.
-    owner                   = models.ForeignKey(SCUP)
+    owner                   = models.ForeignKey(User)
     guesses                 = generic.GenericRelation('Guess')
 
     class Meta:
@@ -69,11 +65,8 @@ class Series(models.Model):
         qs = Event.objects.filter(series=self).order_by('guess_deadline')
         return qs[0].guess_deadline
         
-    def is_admin(self, scup):
-        if not scup:
-            return False
-        else:
-            return scup == self.owner or scup.user.is_staff
+    def is_admin(self, user):
+        return user == self.owner or user.is_staff
     
     def is_hidden(self):
         return self.status == self.HIDDEN_STATUS
@@ -193,7 +186,7 @@ class Result(models.Model):
     competitor  = models.ForeignKey(Competitor)
     event       = models.ForeignKey(Event)
     result      = models.CharField(max_length=50)
-    entered_by  = models.ForeignKey(SCUP, blank=True, null=True)
+    entered_by  = models.ForeignKey(User, blank=True, null=True)
     
     class Meta:
         ordering = ['result']
@@ -205,14 +198,14 @@ class Result(models.Model):
     def guessers(self):
         ctype, obj_id = self.event.guess_generics()
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=self.competitor)
-        return [g.user.user.username for g in guessers]
+        return [g.user for g in guessers]
 
     def points_for_result(self):
         return self.event.series.scoring_system.points(self.result)
     
     
 class Guess(models.Model):
-    user            = models.ForeignKey(SCUP)
+    user            = models.ForeignKey(User)
     competitor      = models.ForeignKey(Competitor)
     content_type    = models.ForeignKey(ContentType)
     object_id       = models.PositiveIntegerField()
@@ -224,4 +217,4 @@ class Guess(models.Model):
         verbose_name_plural = 'guesses'
     
     def __unicode__(self):
-        return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user.user.username)
+        return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user)

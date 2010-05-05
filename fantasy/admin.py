@@ -23,10 +23,14 @@ class GuessAdmin(admin.ModelAdmin):
     def competitor(self, obj):
         return "%s" % obj.competitor
     competitor.short_description = 'Guess'
+admin.site.register(fantasy.Guess, GuessAdmin)
+
+class EventAdmin(admin.ModelAdmin):
+#    list_display = ('series', )
+    list_filter = ('series', )
+admin.site.register(fantasy.Event, EventAdmin)
 
 admin.site.register(fantasy.Series)
-admin.site.register(fantasy.Event)
 admin.site.register(fantasy.Competitor)
 admin.site.register(fantasy.Result)
-admin.site.register(fantasy.Guess, GuessAdmin)
 

@@ -1,5 +1,6 @@
 {% extends "fantasy-series.html" %}
 {% load humanize %}
+{% load user_time %}
 
 {% block javascript %}
 {{ block.super }}
@@ -62,6 +63,12 @@ once you submit your picks you will not be able to change them. Pick carefully!
       </form>
     {% endif %}
     </div>
+    {% if guess_timestamp %}
+    {% with user|user_time:guess_timestamp as timestamp %}
+    pick submitted {{ timestamp|date:"D F d, Y" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+    {% endwith %}
+    {% endif %}
+    <hr />
   </div>
   <div class="yui-u">
     <div class="fantasy-form-container">
@@ -112,8 +119,8 @@ Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.
     {% if guessers %}
     <h2>Players with picks in this {{ series.event_label }}</h2>
     <ul>
-    {% for scup in guessers %}
-    <li>{{ scup.user.username }}</li>
+    {% for user in guessers %}
+    <li>{{ user.username }}</li>
     {% endfor %}
     </ul>
     {% endif %}

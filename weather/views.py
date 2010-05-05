@@ -43,18 +43,19 @@ def weather(request):
     mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
     now = datetime.now(tzlocal()).astimezone(mountain_tz)
     
-    cbac = CBAC() # comment out for summer.
-    # Don't display CBAC stuff if older than 36 hours.
-    # In this case they are probably closed for the season.
+    cbac = CBAC()
     if cbac:
+        # Don't display CBAC stuff if older than 36 hours.
+        # In this case they are probably closed for the season.
         if not cbac.timestamp or (now - cbac.timestamp) > timedelta(hours=36):
             cbac = None
 
     noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
+    
     cbtv = CBTV()
-    # Don't display CBTV stuff if older than 36 hours.
-    # In this case they are probably down.
     if cbtv:
+        # Don't display CBTV stuff if older than 36 hours.
+        # In this case they are probably down.
         if not cbtv.timestamp or (now - cbtv.timestamp) > timedelta(hours=36):
             cbtv = None
 
@@ -101,6 +102,7 @@ def get_current_weather(request):
     dictionary.
     
     '''
+    from fc3.templatetags.as_timezone import as_timezone
     from django.template.defaultfilters import date as date_filter
     
     # get latest weather reading
@@ -109,7 +111,9 @@ def get_current_weather(request):
     except Weather.DoesNotExist:
         return {}, None
     
-    timestamp = date_filter(current.timestamp, "H:i \M\T D M j,Y")
+    # Force this timestamp to be Mountain Time
+    timestamp = as_timezone(current.timestamp, "US/Mountain")
+    timestamp = date_filter(timestamp, "H:i \M\T D M j,Y")
 
     temp_unit = request.COOKIES.get("temp_unit")
     if temp_unit is None:

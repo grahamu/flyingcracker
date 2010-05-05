@@ -1,11 +1,12 @@
+from datetime import datetime
+from decimal import Decimal
+import traceback
+from pytz import timezone, utc
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
+
 from fc3.weatherstation.models import Weather
-import traceback
-from datetime import datetime
-from fc3.weatherstation.tz import USTimeZone
-from decimal import Decimal
 
 def upload_data(request):
     """
@@ -16,13 +17,21 @@ def upload_data(request):
         none
     """
 
+    dbtimestamp = None
+    urltimestamp = request.GET.get('timestamp', None)
     dateutc = request.GET.get('datemtn', None)
-    if dateutc is not None:
+
+    mountain_tz = timezone('US/Mountain')
+    
+    if urltimestamp is not None:
+        dbtimestamp = datetime.fromtimestamp(int(urltimestamp), mountain_tz)
+    elif dateutc is not None:
         dateutc = dateutc.replace(':',' ').replace('-',' ').replace('+',' ')
         year,month,day,hour,minute,second = dateutc.split()
-        mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
-        timestamp = datetime(int(year),int(month),int(day),int(hour),int(minute),int(second))
-        
+        dbtimestamp = datetime(int(year),int(month),int(day),int(hour),int(minute),int(second))
+        dbtimestamp = mountain_tz.localize(dbtimestamp)
+    
+    if dbtimestamp:
         wind_dir    = request.GET.get('winddir', None)
         wind_speed  = request.GET.get('windspeedmph', None)
         wind_peak   = request.GET.get('windgustmph', None)
@@ -63,7 +72,7 @@ def upload_data(request):
             defaults['station_id'] = station_id
         try:
             rec,created = Weather.objects.get_or_create(
-                             timestamp = timestamp,
+                             timestamp = dbtimestamp,
                              defaults = defaults,
                             )
             if created is not True:
@@ -101,7 +110,7 @@ def upload_data(request):
         else:
             response = HttpResponse(success_str)
     else:
-        response = HttpResponse("failed: missing dateutc field in URL")
+        response = HttpResponse('failed: missing "datemtn" or "timestamp" field in URL')
     return response
     
 def download_data(request):

@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import *
-from client.forms import ProfileForm
-#from profiles.urls import urlpatterns as profiles_patterns
+from fcprofile.forms import ProfileForm
 
 
 # Put these URL patterns first so they match first.

@@ -32,8 +32,8 @@
 {% endfor %}
         </tbody>
     </table>
-    {% with result_list.0.entered_by.user.username as entered_by %}
-    {% if entered_by %}<div class="cbnewspubdate">[results entered by {{ entered_by }}]</div>{% endif %}
+    {% with result_list.0.entered_by.username as entered_by %}
+    {% if entered_by %}<div class="cbnewspubdate">[results kindly entered by {{ entered_by }}]</div>{% endif %}
     {% endwith %}
 {% else %}
     No results found.

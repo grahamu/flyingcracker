@@ -2,7 +2,7 @@ import datetime
 from django.utils.encoding import smart_str
 from dateutil import parser as dateutilparser
 from dateutil.tz import tzlocal
-from fc3.weatherstation.tz import USTimeZone
+from pytz import timezone
 
 class Forecast(object):
     
@@ -23,12 +23,12 @@ class Forecast(object):
             pubdate = self.pubdate
         if pubdate:
             self.timestamp = dateutilparser.parse(pubdate)
-            mountain_tz = USTimeZone(-7, "Mountain", "MST", "MDT")
+            mountain_tz = timezone('US/Mountain')
             self.timestamp = self.timestamp.astimezone(mountain_tz)
             
-            # figure out if the publication time is old
+            # figure out if the publication time is not today
             now = datetime.datetime.now(tzlocal()).astimezone(mountain_tz)
-            if (now - self.timestamp) > datetime.timedelta(hours=24):
+            if now.day != self.timestamp.day:
                 self.stale = True
         
     def __repr__(self):

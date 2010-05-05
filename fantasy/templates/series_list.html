@@ -23,8 +23,8 @@
                 <td><a href="{{ series.get_absolute_url }}">{{ series }}</a></td>
                 <td>{{ series.description|truncatewords:10 }}</td>
                 <td>
-                {% ifequal series.owner scup %}{% if series.is_hidden %}HIDDEN {% endif %}<a href="{% url fantasy-series-edit series.pk %}">Edit</a>
-                {% else %}[Admin: {{ series.owner.user.get_full_name }}</a>]
+                {% ifequal series.owner user %}{% if series.is_hidden %}HIDDEN {% endif %}<a href="{% url fantasy-series-edit series.pk %}">Edit</a>
+                {% else %}[Admin: {{ series.owner }}</a>]
                 {% endifequal %}
                 </td>
             </tr>
@@ -54,8 +54,8 @@
                 <td><a href="{{ series.get_absolute_url }}">{{ series }}</a></td>
                 <td>{{ series.description|truncatewords:10 }}</td>
                 <td>
-                {% ifequal series.owner scup %}<a href="{% url fantasy-series-edit series.pk %}">Edit</a>
-                {% else %}[Admin: {{ series.owner.user.get_full_name }}</a>]
+                {% ifequal series.owner user %}<a href="{% url fantasy-series-edit series.pk %}">Edit</a>
+                {% else %}[Admin: {{ series.owner }}</a>]
                 {% endifequal %}
                 </td>
             </tr>

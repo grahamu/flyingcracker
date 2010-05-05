@@ -13,7 +13,7 @@
     <ul>
     {% for result in result_list %}
         <li>
-            #{{ result.result }} in <a href="{{ result.event.get_absolute_url }}">{{ result.event }}</a>{% with result.guessers as guessers %}{% if guessers %}, picked by {{ result.guessers|join:", " }}{% endif %}{% endwith %}
+            #{{ result.result }} in <a href="{{ result.event.get_absolute_url }}">{{ result.event }}</a>{% with result.guessers as guessers %}{% if guessers %}, picked by {{ guessers|join:", " }}{% endif %}{% endwith %}
         </li>
     {% endfor %}
     </ul>
