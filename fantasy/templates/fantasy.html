@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 {% block fantasy-hd %}
-<div id="fantasy-sponsor"><a href="{% url fantasy-root %}">Fantasy Races</a> - presented by <a href="http://www.thesuitcaseofcourage.com/">Suitcase Of Courage</a> and <a href="http://www.flyingcracker.com">flyingcracker.com</a></div>
+<div id="fantasy-sponsor">{% block fantasy-backlink %}<a href="{% url fantasy-root %}">Fantasy Races</a>{% endblock %} - presented by <a href="http://www.thesuitcaseofcourage.com/">Suitcase Of Courage</a> and <a href="http://www.flyingcracker.com">flyingcracker.com</a></div>
 {% endblock %}
 {% block fantasy-bd %}
 <div id="fantasy-main-container" class="main">
