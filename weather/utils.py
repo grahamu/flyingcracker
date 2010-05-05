@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import datetime
+import pytz
 from decimal import Decimal
 from fc3.weatherstation.models import Weather
 from fc3.weather.models import ChartUrl
@@ -405,11 +406,6 @@ def weather_on_date(date):
     return Weather.objects.filter(timestamp__range=(datetime.datetime.combine(date, datetime.time.min),
                                                     datetime.datetime.combine(date, datetime.time.max))).order_by('timestamp')
 
-    #return Weather.objects.filter(
-                                  #timestamp__month=date.month,
-                                  #timestamp__year=date.year,
-                                  #timestamp__day=date.day).order_by('timestamp')
-
 def request_is_local(request):
     if request:
         remote = request.META.get('REMOTE_ADDR')
@@ -429,11 +425,14 @@ def get_date(request=None, date=None):
     If the date is not provided or is invalid, today is returned.
     
     '''
+    mountain_timezone = pytz.timezone('US/Mountain')
+    today = datetime.datetime.now(mountain_timezone).date()
+    
     if request_is_local(request):
         return datetime.date(2008,4,1)
     else:
         if not date:
-            return datetime.date.today()
+            return today
         else:
             # parse the YYYYMMDD date string
             try:
@@ -441,12 +440,12 @@ def get_date(request=None, date=None):
                 month = int(date[4:6])
                 day = int(date[6:8])
             except:
-                return datetime.date.today()
+                return today
             else:
                 try:
                     specified_date = datetime.date(year, month, day)
                 except ValueError:
-                    return datetime.date.today()
+                    return today
                 else:
                     return specified_date
     
@@ -455,12 +454,12 @@ def get_today(request=None):
     Returns a datetime.date object corresponding to today,
     unless the requesting address is local in which case
     we return a date for which our local database has weather records.
-    
     '''
     if request_is_local(request):
         return datetime.date(2008,4,1)
     else:
-        return datetime.date.today()
+        mountain_timezone = pytz.timezone('US/Mountain')
+        return datetime.datetime.now(mountain_timezone).date()
 
 def get_today_timestamp(request=None):
     '''
@@ -472,7 +471,8 @@ def get_today_timestamp(request=None):
     if request_is_local(request):
         today = datetime.datetime(2008,4,1,10,11,12)
     else:
-        today = datetime.datetime.now()
+        mountain_timezone = pytz.timezone('US/Mountain')
+        today = datetime.datetime.now(mountain_timezone)
     return today
 
 def temp_chart_filename(unit, date, type, extra):
