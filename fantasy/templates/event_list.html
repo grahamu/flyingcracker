@@ -31,7 +31,7 @@ Click on a {{ series.event_label|lower }} to enter your picks or see results.<br
                 <td>{{ r.event.start_date|date:"D F d" }}<br />{{ r.event.start_time|time:"f a" }} UTC</td>
                 {% with user|user_time:r.event.guess_deadline as cutoff %}
                 <td>{{ cutoff|date:"D F d" }}<br />{{ cutoff|time:"f a" }}<br />
-                {% firstof user.get_profile.timezone r.event.timezone %}</td>
+                {% firstof user.get_profile.timezone "UTC" %}</td>
                 {% endwith %}
                 <td class="nobg">{% if is_admin %}<a href="{% url fantasy-event-edit r.event.pk %}">Edit {{ series.event_label|lower }}</a>{% endif %}</td>
             </tr>

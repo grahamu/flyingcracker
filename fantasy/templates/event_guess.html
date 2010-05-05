@@ -15,16 +15,19 @@
 {% endblock %}
 
 {% block fantasy-main %}
+{% if not event.guess_deadline_elapsed %}
+<div class="fantasy-guess-deadline">
+Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
+                <span class="date">{{ cutoff|date:"D F d" }} {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
+                {% endwith %}
+</div>
+{% endif %}
 <div class="section-header">
     <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
 {% if user.is_authenticated %}
-{% if not event.guess_deadline_elapsed %}
-<div class="fantasy-guess-deadline">
-Guess Deadline: {{ event.guess_cutoff|date:"D F d" }} {{ event.guess_cutoff|time:"f a" }} UTC
-</div>
-{% endif %}
+<hr />
 <div class="fantasy-form-help">
 Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label|lower }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
 You may select {{ series.competitor_label|lower }}s individually or by choosing a team.
@@ -66,9 +69,9 @@ once you submit your picks you will not be able to change them. Pick carefully!
     {% if guess_timestamp %}
     {% with user|user_time:guess_timestamp as timestamp %}
     pick submitted {{ timestamp|date:"D F d, Y" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+    <hr />
     {% endwith %}
     {% endif %}
-    <hr />
   </div>
   <div class="yui-u">
     <div class="fantasy-form-container">
@@ -89,7 +92,6 @@ once you submit your picks you will not be able to change them. Pick carefully!
     </div>
   </div>
 </div>
-
 {% if add_competitor_ok %}
 <div class="fantasy-form-help">
 Or add a new {{ series.competitor_label }} by entering the name below and clicking on "Add {{ series.competitor_label }}".
@@ -109,7 +111,7 @@ Or add a new {{ series.competitor_label }} by entering the name below and clicki
   </form>
 </div>
 {% endif %}
-    
+
 {% else %}
 <div class="fantasy-form-container">
 Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.event_label }}.

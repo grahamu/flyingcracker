@@ -962,8 +962,11 @@ th.flowHead{
 }
 .fantasy-guess-deadline {
 	font-style: bold;
-	color: #f84747;
 	font-size: 110%;
+	float: right;
+}
+.fantasy-guess-deadline .date {
+	color: #f84747;
 }
 .fantasy-list-container {
     padding-top: 0.5em;
