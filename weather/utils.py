@@ -421,8 +421,7 @@ def request_is_local(request):
     else:
         remote = None
     if remote is None or remote.startswith("192.168.5.") or \
-       remote.startswith("10.0.1.") or \
-       remote.startswith("127.0.0.1"):  # internal testing machine
+       remote.startswith("10.0.1."):
         return True
     else:
         return False
