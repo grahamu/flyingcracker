@@ -41,7 +41,7 @@ def weather(request):
 
     # Get time in MT for forecast timestamp comparison
     mountain_tz = timezone('US/Mountain')
-    now = datetime.now(tzlocal()).astimezone(mountain_tz)
+    now = datetime.now(mountain_tz)
     
     cbac = CBAC()
     if cbac:
@@ -222,10 +222,18 @@ def unit_change(request):
 from fc3.weather.models import ChartUrl
 
 def get_chart(date, data_type, size, plots, unit, force_create=False):
+    '''
+    Returns a chart URL.
+    Retrieves this url from the database if it exists, recreating
+    the url if the chart is more than an hour old.
+    Uses `date` to help filter the ChartUrl.
+    '''
     if force_create:
         return utils.create_chart_url(date, data_type, size, plots, unit)
     
-    now = datetime.now()
+    mountain_timezone = timezone('US/Mountain')
+    now = datetime.now(mountain_timezone)
+    
     try:
         chart = ChartUrl.objects.get(date=date, data_type=data_type, size=size, plots=plots, unit=unit)
     except ChartUrl.DoesNotExist:

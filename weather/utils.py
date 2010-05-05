@@ -28,13 +28,15 @@ def create_chart_url(date, data_type, size, plots, unit):
     '''
     if type(date) == datetime.date:
         date = datetime.datetime(date.year, date.month, date.day)
-        
+    mountain_timezone = pytz.timezone('US/Mountain')
+    db_date = mountain_timezone.localize(date)
+    
     plot_colors = []
     qs_list = []
     
     if ChartUrl.PLOT_TODAY in plots:
-        date_wx = weather_on_date(date)
-        qs_list.append(gchart.hourly_data(date_wx, date))
+        wx_records = weather_on_date(db_date)
+        qs_list.append(gchart.hourly_data(wx_records, date))
         if data_type == ChartUrl.DATA_TEMP:
             plot_colors.append('0000FF')
         elif data_type == ChartUrl.DATA_PRESS:
@@ -48,9 +50,10 @@ def create_chart_url(date, data_type, size, plots, unit):
     
     if ChartUrl.PLOT_YESTERDAY in plots:
         one_day = datetime.timedelta(days=1)
+        db_yesterday = db_date - one_day
         yesterday = date - one_day
-        yesterday_wx = weather_on_date(yesterday)
-        qs_list.append(gchart.hourly_data(yesterday_wx, yesterday))
+        wx_records = weather_on_date(db_yesterday)
+        qs_list.append(gchart.hourly_data(wx_records, yesterday))
         if data_type == ChartUrl.DATA_TEMP:
             plot_colors.append('87CEEB')
         elif data_type == ChartUrl.DATA_PRESS:
@@ -64,9 +67,10 @@ def create_chart_url(date, data_type, size, plots, unit):
 
     if ChartUrl.PLOT_YEAR_AGO in plots:
         one_year = datetime.timedelta(days=365) # don't worry about leap years
+        db_year_ago = db_date - one_year
         year_ago = date - one_year
-        year_ago_wx = weather_on_date(year_ago)
-        qs_list.append(gchart.hourly_data(year_ago_wx, year_ago))
+        wx_records = weather_on_date(db_year_ago)
+        qs_list.append(gchart.hourly_data(wx_records, year_ago))
         plot_colors.append('BEBEBE')
             
     WIDTH_DEFAULT = 300
@@ -400,18 +404,25 @@ def weather_on_date(date):
     Return all Weather records for a specific date.
     
     '''
+    mountain_timezone = pytz.timezone('US/Mountain')
     if type(date) == datetime.datetime:
-        date = datetime.date(date.year, date.month, date.day)
+        date = date.date()
+    start = datetime.datetime.combine(date, datetime.time.min)
+    start = mountain_timezone.localize(start)
+    end = datetime.datetime.combine(date, datetime.time.max)
+    end = mountain_timezone.localize(end)
 
-    return Weather.objects.filter(timestamp__range=(datetime.datetime.combine(date, datetime.time.min),
-                                                    datetime.datetime.combine(date, datetime.time.max))).order_by('timestamp')
+    return Weather.objects.filter(timestamp__range=(start, end)).\
+           order_by('timestamp')
 
 def request_is_local(request):
     if request:
         remote = request.META.get('REMOTE_ADDR')
     else:
         remote = None
-    if remote is None or remote.startswith("192.168.5.") or remote.startswith("10.0.2."):  # internal testing machine
+    if remote is None or remote.startswith("192.168.5.") or \
+       remote.startswith("10.0.1.") or \
+       remote.startswith("127.0.0.1"):  # internal testing machine
         return True
     else:
         return False
