@@ -113,7 +113,7 @@ def get_current_weather(request):
     
     # Force this timestamp to be Mountain Time
     timestamp = as_timezone(current.timestamp, "US/Mountain")
-    timestamp = date_filter(timestamp, "H:i \M\T D M j,Y")
+    timestamp = date_filter(timestamp, "H:i \M\T D M j")
 
     temp_unit = request.COOKIES.get("temp_unit")
     if temp_unit is None:
