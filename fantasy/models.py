@@ -40,6 +40,7 @@ class Series(models.Model):
     guesses                 = generic.GenericRelation('Guess')
 
     class Meta:
+        verbose_name = 'series'
         verbose_name_plural = 'series'
         ordering = ('name',)
 

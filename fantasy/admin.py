@@ -5,20 +5,18 @@ import fantasy.models as fantasy
 
 
 class GuessAdmin(admin.ModelAdmin):
-    list_display = ('series', 'event', 'username', 'competitor', 'late_entry', 'timestamp')
+    list_display = ('user', 'competitor', 'late_entry', 'timestamp')
     list_display_links = ('competitor',)
-    list_filter = ('user', 'late_entry')
+    list_filter = ('user', 'late_entry', 'timestamp')
     list_editable = ('late_entry',)
     
-    def series(self, obj):
-        return "%s" % obj.guess_for.series.__unicode__()
+    #def series(self, obj):
+        #return "%s" % obj.guess_for.series.__unicode__()
+    #series.verbose_name = 'series'
 
-    def event(self, obj):
-        return "%s" % obj.guess_for.__unicode__()
-
-    def username(self, obj):
-        return "%s" % obj.user.user.username
-    username.short_description = 'User'
+    #def event(self, obj):
+        #return "%s" % obj.guess_for.__unicode__()
+    #event.verbose_name = 'event'
     
     def competitor(self, obj):
         return "%s" % obj.competitor
