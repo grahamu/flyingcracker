@@ -1,4 +1,5 @@
 {% extends "fantasy-series.html" %}
+{% load user_time %}
 
 {% block fantasy-main %}
 <div class="section-header">
@@ -8,6 +9,19 @@
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
 
+{% if user_guesses %}
+<hr />
+<div class="fantasy-guess-deadline fantasy-form-help">
+{% with user|user_time:guess_timestamp as timestamp %}
+submitted {{ timestamp|date:"D F d, Y" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+{% endwith %}</div>
+<h2>My Picks</h2>
+{% for guess in user_guesses %}
+{{ guess.competitor }} ({{ guess.result }})<br />
+{% endfor %}
+{% endif %}
+
+<hr />
 <h2>{{ series.event_label|capfirst }} Result</h2>
 {% if event_points_list and not event.result_locked %}(pending Series administrator approval){% endif %}
 <div id="result-list-container" class="fantasy-list-container">

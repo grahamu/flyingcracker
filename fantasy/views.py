@@ -610,6 +610,22 @@ def event_result(request, id):
     event = get_object_or_404(Event, pk=id)
     series = event.series
 
+    user_guesses = []
+    ctype, obj_id = event.guess_generics()
+    guess_qs = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=user)
+    if guess_qs:
+        for guess in guess_qs:
+            try:
+                result = Result.objects.get(competitor=guess.competitor, event=event)
+            except Result.DoesNotExist:
+                result = 'X'
+            else:
+                result = str(result.result)
+            user_guesses.append({'result': result, 'competitor': guess.competitor})
+        guess_timestamp = guess_qs[0].timestamp
+    else:
+        guess_timestamp = None
+
     if not event.guess_deadline_elapsed():
     # if request.method == 'POST': redirect to some "sorry, the race has not yet started." page.
         return HttpResponseRedirect(reverse('fantasy-root'))
@@ -636,14 +652,14 @@ def event_result(request, id):
 
     late_guesses = False
     event_points_list = []
-    user_list = series.guesser_list()
-    for u in user_list:
-        user_guesses = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=u)
-        if not user_guesses:
+    guesser_list = series.guesser_list()
+    for u in guesser_list:
+        guess_qs = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=u)
+        if not guess_qs:
             late_entry = False
             all_result_qs = []
         else:
-            late_entry = user_guesses[0].late_entry
+            late_entry = guess_qs[0].late_entry
             if late_entry:
                 late_guesses = True
             if series.guess_once_per_series:
@@ -676,6 +692,8 @@ def event_result(request, id):
         'late_guesses': late_guesses,
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(request.user),
+        'user_guesses': user_guesses,
+        'guess_timestamp': guess_timestamp,
     })
     return render_to_response('event_result.html', c)
 

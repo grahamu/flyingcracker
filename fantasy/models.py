@@ -212,10 +212,15 @@ class Guess(models.Model):
     object_id       = models.PositiveIntegerField()
     guess_for       = generic.GenericForeignKey()
     late_entry      = models.BooleanField(default=False)
-    timestamp       = models.DateTimeField(auto_now_add=True)
+    timestamp       = models.DateTimeField()
 
     class Meta:
         verbose_name_plural = 'guesses'
     
     def __unicode__(self):
         return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user)
+
+    def save(self, **kwargs):
+        if not self.id:
+            self.timestamp = datetime.now()
+        super(Guess, self).save()
