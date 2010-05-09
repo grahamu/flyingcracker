@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load i18n markup %}
+
+{% block extra_title %}{% trans "Preview your comment" %}{% endblock %}
+
+{% block body %}
+  {% load comments %}
+  <form action="{% comment_form_target %}" method="post">{% csrf_token %}
+    {{ form.content_type }}
+    {{ form.object_pk }}
+    {{ form.timestamp }}
+    {{ form.security_hash }}  
+    <p style="display:none;">
+      <label for="id_honeypot">If you enter anything in this field your comment will be treated as spam</label>{{ form.honeypot }}
+    </p>
+    {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+    
+    <div id="comment-block">
+    <div id="comments-container">
+      <h2>{% trans "Preview your comment" %}</h2>
+    <div class="comment-list">
+    <div class="comment-item">
+    {{ comment|safe|markdown }}
+    </div>
+    </div>
+      <p>
+      {% trans "and" %} <input type="submit" name="submit" class="submit-post" value="{% trans "Post your comment" %}" id="submit" /> {% trans "or make changes" %}:
+      </p>
+      <p>(Use <a href="http://daringfireball.net/projects/markdown/basics">markdown</a> syntax for special formatting.)</p>
+  <p>
+    {{ form.comment }}
+  </p>
+    <p class="submit">
+    <input type="submit" name="submit" class="submit-post" value="{% trans "Post" %}" />
+    <input type="submit" name="preview" class="submit-preview" value="{% trans "Preview" %}" />
+    </p>
+  </form>
+    </div>
+    </div>
+{% endblock %}

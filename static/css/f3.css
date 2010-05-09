@@ -1067,7 +1067,7 @@ hr.comment-separator {
 }
 #comment-block {
 	background-color: #D3D3D3;
-	margin: 1em 0 0 1em;
+	margin: 1em 0 1em 1em;
 	padding-left: 1em;
 	border: #7F9DB9 1px solid;
 }
@@ -1101,4 +1101,49 @@ hr.comment-separator {
 .series-title .subhead {
 	margin-top: 0.5em;
 	font-weight: bold;
+}
+.sub-header {
+	font-size: 90%;
+	font-weight: normal;
+}
+.comment-help {
+	float: right;
+}
+.comment-item strong {
+	font-weight: bold;
+}
+.comment-item em {
+    font-style: italic;
+}
+.comment-item ul {
+	margin-left: 1em;
+	padding-left: 0.2em;
+	margin-bottom: 1em;
+}
+.comment-item ul li {
+    padding-left: 0.2em;
+	list-style: disc;
+}
+.comment-item ol {
+	margin-left: 1.5em;
+	padding-left: 0;
+}
+.comment-item ol li {
+	list-style: decimal;
+	padding-left: 0em;
+}
+.comment-item h1 {
+	font-weight: bold;
+	font-size: 120%;
+}
+#comments-container h2 {
+	font-weight:bold;
+	font-size:110%;
+	padding-bottom:0.25em;
+}
+textarea#id_comment {
+	width: 590px;
+	height: 80px;
+	border: 3px solid #7F9DB9;
+	padding: 5px;
 }

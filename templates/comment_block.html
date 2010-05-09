@@ -4,15 +4,20 @@
 {% get_comment_list for comment_obj as comment_list %}
 {% if comment_list %}
 <h2>Comments</h2>
+{% if user.is_authenticated %}
+<div>
+<div class="comment-help">
+Use <a href="http://daringfireball.net/projects/markdown/basics">markdown</a> syntax for special formatting.
+</div>
+<h3>Add Comment</h3>
+{% get_comment_form for comment_obj as form %}
+{% include "comment_form.html" %}
+</div>
+{% endif %}
 <div class="comment-list">
 {% for comment in comment_list reversed %}
     {% include "comment_item.html" %}
 {% endfor %}
 </div>
-{% endif %}
-{% if user.is_authenticated %}
-<h3>Add Comment</h3>
-{% get_comment_form for comment_obj as form %}
-{% include "comment_form.html" %}
 {% endif %}
 </div>

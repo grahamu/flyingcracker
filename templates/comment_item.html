@@ -1,6 +1,7 @@
+{% load markup %}
 <div class="comment-item">
     <p>
-    {{ comment.comment }}
+    {{ comment.comment|markdown }}
     </p>
     <div class="comment-posted">
     Posted by: <span class="comment-user">{{ comment.user }}</span> on {{ comment.submit_date|date:"l M j, Y" }} at {{ comment.submit_date|date:"P" }}
