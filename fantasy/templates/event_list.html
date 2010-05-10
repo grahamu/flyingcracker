@@ -7,7 +7,7 @@
 <h2>Coming Up Next: <a href="{{ next_event.get_absolute_url }}">{{ next_event }}</a></h2>
 <p>
 Guess deadline in {{ next_event.guess_deadline|timeuntil }} {% with user|user_time:next_event.guess_deadline as cutoff %}
-                ({{ cutoff|date:"D F d" }} {{ cutoff|time:"f a" }}
+                ({{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }}
                 {% firstof user.get_profile.timezone "UTC" %})
                 {% endwith %}
 </p>
