@@ -961,7 +961,7 @@ th.flowHead{
     color: #555555
 }
 .fantasy-guess-deadline {
-	font-style: bold;
+	font-weight: bold;
 	font-size: 110%;
 	float: right;
 }
