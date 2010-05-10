@@ -23,6 +23,7 @@ class GuessAdmin(admin.ModelAdmin):
     competitor.short_description = 'Guess'
 admin.site.register(fantasy.Guess, GuessAdmin)
 
+
 class EventAdmin(admin.ModelAdmin):
 #    list_display = ('series', )
     list_filter = ('series', )

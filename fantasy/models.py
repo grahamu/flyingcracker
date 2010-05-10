@@ -6,6 +6,7 @@ from django.db.models import permalink
 from datetime import date, datetime
 from django.utils.translation import ugettext_lazy as _
 from scoresys.models import ScoringSystem
+from fantasy import managers
 
 
 class Series(models.Model):
@@ -97,6 +98,8 @@ class Event(models.Model):
     series          = models.ForeignKey(Series)
     result_locked   = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
     guesses         = generic.GenericRelation('Guess')
+    
+    objects = managers.EventManager()
     
     class Meta:
         ordering = ['start_date']

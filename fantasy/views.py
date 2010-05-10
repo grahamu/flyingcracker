@@ -111,6 +111,7 @@ def series_detail(request, id):
     c = RequestContext(request, {
         'series': series,
         'event_list': events,
+        'next_event': Event.objects.get_next(series),
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(request.user),
     })

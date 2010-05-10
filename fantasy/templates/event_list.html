@@ -2,10 +2,23 @@
 {% load user_time %}
 
 {% block fantasy-main %}
+{% if next_event %}
+<div>
+<h2>Coming Up Next: <a href="{{ next_event.get_absolute_url }}">{{ next_event }}</a></h2>
+<p>
+Guess deadline in {{ next_event.guess_deadline|timeuntil }} {% with user|user_time:next_event.guess_deadline as cutoff %}
+                ({{ cutoff|date:"D F d" }} {{ cutoff|time:"f a" }}
+                {% firstof user.get_profile.timezone "UTC" %})
+                {% endwith %}
+</p>
+</div>
+<hr />
+{% endif %}
 <div class="section-header">
     <div class="section-title">{{ series }}</div>
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
+<hr />
 <div class="fantasy-form-help">
 Click on a {{ series.event_label|lower }} to enter your picks or see results.<br />
 </div>
