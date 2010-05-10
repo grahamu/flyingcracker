@@ -14,7 +14,7 @@
 <hr />
 <div class="fantasy-guess-deadline fantasy-form-help">
 {% with user|user_time:guess_timestamp as timestamp %}
-submitted {{ timestamp|date:"D F d, Y" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
 {% endwith %}</div>
 <h2>My Picks</h2>
 {% for guess in user_guesses %}

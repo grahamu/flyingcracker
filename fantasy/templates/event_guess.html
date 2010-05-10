@@ -21,7 +21,7 @@
 {% if not event.guess_deadline_elapsed %}
 <div class="fantasy-guess-deadline">
 Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
-                <span class="date">{{ cutoff|date:"D F d" }} {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
+                <span class="date">{{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
                 {% endwith %}
 </div>
 {% endif %}
@@ -71,7 +71,7 @@ once you submit your picks you will not be able to change them. Pick carefully!
     </div>
     {% if guess_timestamp %}
     {% with user|user_time:guess_timestamp as timestamp %}
-    pick submitted {{ timestamp|date:"D F d, Y" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+    pick submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
     <hr />
     {% endwith %}
     {% endif %}
