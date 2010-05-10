@@ -80,7 +80,7 @@ class Series(models.Model):
         return u'%s' % self.name
     
     def get_absolute_url(self):
-        return ('fantasy-series-detail', [self.pk])
+        return ('fantasy-event-list', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
 
 

@@ -4,7 +4,7 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('fc3.fantasy.views',
     url(r'^$',                                      'root', name='fantasy-root'),
     url(r'^series/add/$',                           'series_edit', name='fantasy-series-add'),
-    url(r'^series/(?P<id>[0-9]+)/$',                'series_detail', name='fantasy-series-detail'),
+    url(r'^series/(?P<id>[0-9]+)/$',                'event_list', name='fantasy-event-list'),
     url(r'^series/(?P<id>[0-9]+)/edit/$',           'series_edit', name='fantasy-series-edit'),
     url(r'^series/(?P<id>[0-9]+)/leaderboard/$',    'leaderboard', name='fantasy-series-leaderboard'),
     url(r'^series/(?P<id>[0-9]+)/email/$',          'series_email', name='fantasy-series-email'),

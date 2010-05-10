@@ -1157,3 +1157,7 @@ ul.messages li.success {
 	color: green;
 	font-size: 110%
 }
+.alert {
+	background: yellow;
+	padding: 5px;
+}

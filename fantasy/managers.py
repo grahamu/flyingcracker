@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 
 class EventManager(models.Manager):
     
-    def get_next(self, series):
+    def get_next_in(self, series):
         '''
         Returns the next chronological Event.
         '''

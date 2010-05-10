@@ -68,9 +68,10 @@ def series_edit(request, id=None):
 
 
 
-def series_detail(request, id):
+def event_list(request, id):
     '''
-    A list of events for the series, with winner if applicable, and user's current guess if applicable.
+    A list of Events associated with a Series.
+    Includes user picks and event winners.
 
     '''
     if request.user.is_authenticated():
@@ -80,6 +81,8 @@ def series_detail(request, id):
         
     series = get_object_or_404(Series, pk=id)
     qs = Event.objects.filter(series=series)
+    next_event = Event.objects.get_next_in(series)
+    next_guesses = None
     events = []
     row_class = 'race-complete'
     for event in qs:
@@ -87,33 +90,44 @@ def series_detail(request, id):
         if event.start_time_elapsed() and results and event.result_locked:
             row_class = 'race-complete'
         else:
-            if not series.guess_once_per_series and event.guess_deadline_elapsed():
+            if not series.guess_once_per_series and \
+               event.guess_deadline_elapsed():
                 row_class = 'guess-deadline'
             else:
                 row_class = 'race-future'
             
         if user:
             ctype, obj_id = event.guess_generics()
-            picks = Competitor.objects.filter(guess__content_type=ctype, guess__object_id=obj_id, guess__user=user)
+            picks = Competitor.objects.filter(guess__content_type=ctype,
+                                              guess__object_id=obj_id,
+                                              guess__user=user)
             if not picks:
                 guesses = None
             else:
                 guesses = []
                 for pick in picks:
-                    result_qs = Result.objects.filter(event=event, competitor=pick)
+                    result_qs = Result.objects.filter(event=event,
+                                                      competitor=pick)
                     if not result_qs:
                         guesses.append(pick)
                     else:
                         result_text = ' & '.join([r.result for r in result_qs])
                         guesses.append(u'(%s) ' % result_text + unicode(pick))
-            events.append({'event': event, 'guesses': guesses, 'row_class': row_class})
+            events.append({'event': event,
+                           'guesses': guesses,
+                           'row_class': row_class})
+            if event == next_event:
+                next_guesses = picks
         else:
-            events.append({'event': event, 'guesses': None, 'row_class': row_class})
+            events.append({'event': event,
+                           'guesses': None,
+                           'row_class': row_class})
         
     c = RequestContext(request, {
         'series': series,
         'event_list': events,
-        'next_event': Event.objects.get_next(series),
+        'next_event': next_event,
+        'next_guesses': next_guesses,
         'points_list': series_points_list(series)[:10],
         'is_admin': series.is_admin(request.user),
     })
@@ -437,7 +451,7 @@ def event_add(request, series_id):
             event.series = series
             event.save()
             messages.success(request, 'Added event "%s".' % str(event))
-            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
+            return HttpResponseRedirect(reverse('fantasy-event-list', args=[series.pk]))
     else:
         event_form = EventForm(instance=event)
 
@@ -955,7 +969,7 @@ def series_email(request, id):
 #            send_mail(subject, body, mail_from, recipients)
 
             messages.success(request, 'Your email has been sent.')
-            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
+            return HttpResponseRedirect(reverse('fantasy-event-list', args=[series.pk]))
     else:
         email_form = EmailSeriesForm()
 
