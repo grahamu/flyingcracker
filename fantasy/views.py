@@ -6,7 +6,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.db.models import Q, F
 from django.contrib.contenttypes.models import ContentType
-from fc3.fantasy.models import Series, Event, Competitor, Guess, Result, Team
+from django.contrib import messages
+from fantasy.models import Series, Event, Competitor, Guess, Result, Team
 
 def root(request):
     active_queryset = Series.objects.filter(
@@ -54,6 +55,7 @@ def series_edit(request, id=None):
         series_form = SeriesForm(data=request.POST, instance=series)
         if series_form.is_valid():
             series = series_form.save()
+            messages.success(request, 'Saved series "%s".' % str(series))
             return HttpResponseRedirect(reverse('fantasy-root'))
     else:
         series_form = SeriesForm(instance=series)
@@ -299,6 +301,7 @@ def competitor_edit(request, id):
         competitor_form = CompetitorForm(data=request.POST, instance=competitor, team_qs=team_qs, initial={'series_pk': series.pk})
         if competitor_form.is_valid():
             competitor = competitor_form.save()
+            messages.success(request, 'Saved competitor "%s".' % str(competitor))
             return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
     else:
         competitor_form = CompetitorForm(instance=competitor, team_qs=team_qs, initial={'series_pk': series.pk})
@@ -398,6 +401,7 @@ def competitor_import(request, id):
                     'competitor_list': Competitor.objects.filter(name__in=new_names, series=series),
                     'is_admin': series.is_admin(request.user),
                 })
+                messages.success(request, '%d competitors were successfully imported.' % new_names.count())
                 return render_to_response('competitors_imported.html', c)
             else:
                 return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
@@ -432,6 +436,7 @@ def event_add(request, series_id):
             event = event_form.save(commit=False)
             event.series = series
             event.save()
+            messages.success(request, 'Added event "%s".' % str(event))
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
     else:
         event_form = EventForm(instance=event)
@@ -465,7 +470,8 @@ def event_edit(request, id):
         event_form = EventForm(data=request.POST, instance=event)
         if event_form.is_valid():
             event = event_form.save()
-            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
+            messages.success(request, 'Saved %s "%s".' % (series.event_label, str(event)))
+            return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
     else:
         event_form = EventForm(instance=event)
 
@@ -571,7 +577,8 @@ def event_detail(request, id):
                               competitor=Competitor.objects.get(pk=guess['competitor']),
                               late_entry=guess_deadline_elapsed)
                     g.save()
-            return HttpResponseRedirect(reverse('fantasy-series-detail', args=[event.series.pk]))
+            messages.success(request, "Your picks have been saved.")
+            return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
     else:
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
         team_form = TeamGuessForm(teams=team_choices)
@@ -757,6 +764,7 @@ def result_edit(request, id):
                                competitor=Competitor.objects.get(pk=result['competitor']),
                                entered_by=request.user)
                     r.save()
+            messages.success(request, '%s results have been saved.' % str(series.event_label))
             return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
     else:
         formset = ResultFormset(initial=initial_results, competitors=competitor_choices)
@@ -796,7 +804,7 @@ def team_add(request, series_id):
                                  competitor_qs=competitor_qs)
         if team_form.is_valid():
             team = team_form.save()
-            #request.flash['notice'] = 'Added new team "%s".' % str(team)
+            messages.success(request, 'Added new team "%s".' % str(team))
             return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
     else:
         team_form = TeamEditForm(instance=team,
@@ -838,7 +846,7 @@ def team_edit(request, id):
                                 )
         if team_form.is_valid():
             team = team_form.save()
-            #request.flash['notice'] = 'Saved team "%s".' % str(team)
+            messages.success(request, 'Saved team "%s".' % str(team))
             return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
     else:
         team_form = TeamEditForm(instance=team,
@@ -946,7 +954,7 @@ def series_email(request, id):
             
 #            send_mail(subject, body, mail_from, recipients)
 
-            #request.flash['notice'] = 'Your email has been sent'
+            messages.success(request, 'Your email has been sent.')
             return HttpResponseRedirect(reverse('fantasy-series-detail', args=[series.pk]))
     else:
         email_form = EmailSeriesForm()

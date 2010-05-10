@@ -2,6 +2,7 @@
 {% load user_time %}
 
 {% block fantasy-main %}
+{{ block.super }}
 <div class="section-header">
     <div class="section-title">
         {{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a>

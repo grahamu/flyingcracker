@@ -2,6 +2,7 @@
 {% load humanize %}
 
 {% block fantasy-main %}
+{{ block.super }}
 <div class="section-header">
     <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}

@@ -1,6 +1,7 @@
 {% extends "fantasy-admin.html" %}
 
 {% block fantasy-main %}
+{{ block.super }}
 <div class="section-header">
     <div class="section-title"><span class="action-title">{% if series.pk %}Edit{% else %}Add{% endif %} Series</span></div>
 </div>

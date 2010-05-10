@@ -17,6 +17,7 @@
 {% block fantasy-backlink %}<a href="{{ series.get_absolute_url }}">{{ series }}</a>{% endblock %}
 
 {% block fantasy-main %}
+{{ block.super }}
 {% if not event.guess_deadline_elapsed %}
 <div class="fantasy-guess-deadline">
 Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
