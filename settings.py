@@ -53,7 +53,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
                                'fc3.context_processors.miniblog',
                                'fc3.context_processors.system_version',
                                'fc3.context_processors.login_url_with_redirect',
-                               'djangoflash.context_processors.flash',
+                               'django.contrib.messages.context_processors.messages',
                                'django.core.context_processors.auth',
                                'django.core.context_processors.debug',
                                'django.core.context_processors.i18n',
@@ -66,7 +66,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'djangoflash.middleware.FlashMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
@@ -93,6 +93,7 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'django_extensions',
     'django.contrib.flatpages',
+    'django.contrib.messages',
 
     'south',
     'uni_form',
@@ -101,7 +102,6 @@ INSTALLED_APPS = (
     'profiles',
     'sms',
     'timezones',
-    'serviceclient',
     
     'scoresys',
     'home',
@@ -120,6 +120,8 @@ AUTHENTICATION_BACKENDS = (
     "fc3.email-auth.EmailBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 ACCOUNT_ACTIVATION_DAYS = 10
 

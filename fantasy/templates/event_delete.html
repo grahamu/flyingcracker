@@ -1,6 +1,7 @@
 {% extends "fantasy-admin.html" %}
 
 {% block fantasy-main %}
+{{ block.super }}
 <h1>Delete {{ series.event_label|capfirst }}</h1>
 <h2>Series: <a href="{{ series.get_absolute_url }}">{{ series }}</a></h2>
 <div class="fantasy-form-help">

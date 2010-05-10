@@ -1,6 +1,7 @@
 {% extends "fantasy-series.html" %}
 
 {% block fantasy-main %}
+{{ block.super }}
 <div class="section-header">
     <div class="section-title">{{ series }}</div>
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
