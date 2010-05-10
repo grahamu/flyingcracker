@@ -129,13 +129,14 @@ Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.
     {% endfor %}
     </ul>
     {% endif %}
-{% if is_admin %}
     <br />
-    <a href="{% url fantasy-event-edit event.pk %}">Edit {{ series.event_label|lower }}</a><br />
-{% endif %}
     {% if is_admin or event.start_time_elapsed %}
-    <br />
-<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a><br />
+    <a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a><br />
     {% endif %}
+    {% if is_admin %}
+    <a href="{% url fantasy-event-edit event.pk %}">Edit {{ series.event_label|lower }}</a><br />
+    <a href="{% url fantasy-series-email series.pk %}">Email guessers in this Series</a>
+    {% endif %}
+
 </div>
 {% endblock %}

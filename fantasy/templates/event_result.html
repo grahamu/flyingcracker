@@ -57,7 +57,10 @@ submitted {{ timestamp|date:"D F d, Y" }}<br />{{ timestamp|time:"f a" }} {% fir
 
 <div  class="fantasy-form-container">
     {% if is_admin or not event.result_locked %}
-    <a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
+    <a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a><br />
+    {% endif %}
+    {% if is_admin %}
+        <a href="{% url fantasy-series-email series.pk %}">Email guessers in this Series</a><br />
     {% endif %}
 </div>
 
