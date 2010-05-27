@@ -1161,3 +1161,7 @@ ul.messages li.success {
 	background: yellow;
 	padding: 5px;
 }
+.picks-entered {
+    background: green;
+    padding: 5px;
+}

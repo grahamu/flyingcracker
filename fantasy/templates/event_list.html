@@ -9,7 +9,7 @@
 {% if not next_guesses %}
 <div class="alert">ALERT: You have no picks for this {{ series.event_label|lower }}!</div>
 {% else %}
-<p>My picks: {{ next_guesses|join:", " }}.</p>
+<div class="picks-entered">My picks: {{ next_guesses|join:", " }}.</div>
 {% endif %}
 <p>
 Guess deadline in {{ next_event.guess_deadline|timeuntil }} {% with user|user_time:next_event.guess_deadline as cutoff %}
