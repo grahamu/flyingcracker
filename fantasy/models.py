@@ -141,6 +141,17 @@ class Event(models.Model):
         # make our list of guessers contain only unique entries
         return list(set(guessers))
 
+    def guess_list(self):
+        '''
+        Returns a queryset of Guesses for this Event.
+        '''
+        if self.series.guess_once_per_series:
+            return self.series.guesses()
+        else:
+            guesses = [{'timestamp': g.timestamp, 'player':g.user}
+                       for g in self.guesses.all().order_by('timestamp')]
+        return guesses
+        
     def __unicode__(self):
         return u'%s' % self.name
     

@@ -69,12 +69,6 @@ once you submit your picks you will not be able to change them. Pick carefully!
       </form>
     {% endif %}
     </div>
-    {% if guess_timestamp %}
-    {% with user|user_time:guess_timestamp as timestamp %}
-    pick submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
-    <hr />
-    {% endwith %}
-    {% endif %}
   </div>
   <div class="yui-u">
     <div class="fantasy-form-container">
@@ -121,14 +115,29 @@ Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.
 </div>
 {% endif %}
 <div  class="fantasy-list-container">
-    {% if guessers %}
-    <h2>Players with picks in this {{ series.event_label }}</h2>
-    <ul>
-    {% for user in guessers %}
-    <li>{{ user.username }}</li>
-    {% endfor %}
-    </ul>
+    {% for g in guesses %}
+    {% if forloop.first %}
+    <table class="fantasy-list-table">
+      <thead>
+        <tr>
+          <th>Player</th><th>Guess Time</th>
+        </tr>
+      </thead>
+      <tbody>
     {% endif %}
+        <tr>
+          <td>{{ g.player }}</td>
+          {% with user|user_time:g.timestamp as timestamp %}
+          <td>{{ timestamp|date:"D F d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
+          {% endwith %}
+        </tr>
+    {% if forloop.last %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% empty %}
+    No guesses yet!
+    {% endfor %}
     <br />
     {% if is_admin or event.start_time_elapsed %}
     <a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a><br />

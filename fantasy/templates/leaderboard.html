@@ -7,6 +7,10 @@
     {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 <h2>Leaderboard</h2>
+{% if provisional %}
+(Standings provisional based on event result approval.)
+{% endif %}
+
 <div id="leaderboard-container" class="fantasy-list-container">
 {% if points_list %}
     

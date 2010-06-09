@@ -87,7 +87,7 @@ def event_list(request, id):
     row_class = 'race-complete'
     for event in qs:
         results = Result.objects.filter(event=event)
-        if event.start_time_elapsed() and results and event.result_locked:
+        if event.start_time_elapsed() and results:
             row_class = 'race-complete'
         else:
             if not series.guess_once_per_series and \
@@ -129,6 +129,7 @@ def event_list(request, id):
         'next_event': next_event,
         'next_guesses': next_guesses,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('event_list.html', c)
@@ -182,13 +183,11 @@ def series_points_list(series, include_late_entries=False, include_timely_entrie
                 continue
 
         if series.guess_once_per_series:
-            result_qs = Result.objects.filter(event__result_locked=True,
-                                              event__series=series,
+            result_qs = Result.objects.filter(event__series=series,
                                               event__series__guesses__user=u,
                                               event__series__guesses__competitor=F('competitor'))
         else:
-            result_qs = Result.objects.filter(event__result_locked=True,
-                                              event__series=series,
+            result_qs = Result.objects.filter(event__series=series,
                                               event__guesses__user=u,
                                               event__guesses__competitor=F('competitor'))
         points = 0
@@ -234,6 +233,13 @@ def series_points_list(series, include_late_entries=False, include_timely_entrie
     return points_list
 
 
+def series_provisional(series):
+    if Result.objects.filter(event__series=series, event__result_locked=False):
+        return True
+    else:
+        return False
+    
+    
 def leaderboard(request, id):
     '''
     A list of user scores for events in the series.
@@ -242,12 +248,14 @@ def leaderboard(request, id):
     series = get_object_or_404(Series, pk=id)
     user_list = series.guesser_list()
     points_list = series_points_list(series, include_late_entries=False)
+    provisional = series_provisional(series)
     late_points_list = series_points_list(series, include_late_entries=True, include_timely_entries=False)
     scoresys_results = series.scoring_system.results()
     #scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {
         'series': series,
         'points_list': points_list,
+        'provisional': provisional,
         'late_points_list': late_points_list,
         'scoresys_results': scoresys_results,
         'user_list': user_list,
@@ -291,6 +299,7 @@ def competitor_list(request, id):
         'competitor_list': competitor_qs,
         'competitor_form': competitor_form,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('competitor_list.html', c)
@@ -460,6 +469,7 @@ def event_add(request, series_id):
         'series': series,
         'event': event,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('event_edit.html', c)
@@ -494,6 +504,7 @@ def event_edit(request, id):
         'series': series,
         'event': event,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('event_edit.html', c)
@@ -518,6 +529,7 @@ def event_delete(request, id):
             'event': event,
             'result_list': results,
             'points_list': series_points_list(series)[:10],
+            'provisional': series_provisional(series),
             'is_admin': series.is_admin(request.user),
         })
         return render_to_response('event_delete.html', c)
@@ -597,7 +609,14 @@ def event_detail(request, id):
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
         team_form = TeamGuessForm(teams=team_choices)
 
-    guessers = event.guesser_list()
+    guess_list = event.guess_list()
+    guesses = []
+    # We want just one Guess per guesser
+    players = []
+    for g in guess_list:
+        if g['player'] not in players:
+            guesses.append(g)
+            players.append(g['player'])
 
     if curr_guesses:
         guess_timestamp = curr_guesses[0].timestamp
@@ -608,12 +627,13 @@ def event_detail(request, id):
         'series': event.series,
         'event': event,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'formset': formset,
         'team_form': team_form,
         'add_competitor_ok': False, # series.users_enter_competitors,
         'late_entry': late_entry,
         'is_admin': series.is_admin(request.user),
-        'guessers': guessers,
+        'guesses': guesses,
         'guess_timestamp': guess_timestamp,
     })
     return render_to_response('event_guess.html', c)
@@ -632,9 +652,12 @@ def event_result(request, id):
     event = get_object_or_404(Event, pk=id)
     series = event.series
 
+    if not event.guess_deadline_elapsed():
+    # if request.method == 'POST': redirect to some "sorry, the race has not yet started." page.
+        return HttpResponseRedirect(reverse('fantasy-root'))
+
     user_guesses = []
-    ctype, obj_id = event.guess_generics()
-    guess_qs = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=user)
+    guess_qs = event.guesses.filter(user=user)
     if guess_qs:
         for guess in guess_qs:
             try:
@@ -647,10 +670,6 @@ def event_result(request, id):
         guess_timestamp = guess_qs[0].timestamp
     else:
         guess_timestamp = None
-
-    if not event.guess_deadline_elapsed():
-    # if request.method == 'POST': redirect to some "sorry, the race has not yet started." page.
-        return HttpResponseRedirect(reverse('fantasy-root'))
 
     result_qs = Result.objects.filter(event=event, result__in=series.scoring_system.results())
     ordered_results = series.scoring_system.sort_by_result(list(result_qs), 'result')
@@ -713,6 +732,7 @@ def event_result(request, id):
         'event_points_list': event_points_list,
         'late_guesses': late_guesses,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
         'user_guesses': user_guesses,
         'guess_timestamp': guess_timestamp,
@@ -791,6 +811,7 @@ def result_edit(request, id):
         'options_form': options_form,
         'entered_by': entered_by,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('result_edit.html', c)
@@ -829,6 +850,7 @@ def team_add(request, series_id):
         'series': series,
         'team': team,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('team_edit.html', c)
@@ -872,6 +894,7 @@ def team_edit(request, id):
         'series': series,
         'team': team,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('team_edit.html', c)
@@ -890,6 +913,7 @@ def team_list(request, series_id):
         'series': series,
         'team_list': team_qs,
         'points_list': series_points_list(series)[:10],
+        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('team_list.html', c)

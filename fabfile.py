@@ -17,7 +17,7 @@ def prod():
     env.remote_app_dir = '/home2/%(user)s/webapps/django/%(project_name)s' % env
     env.remote_apache_dir = '/home2/%(user)s/webapps/django/apache2' % env
     env.remote_lib_dir = '/home2/%(user)s/lib' % env
-    env.hg_libs = ['serviceclient']
+    env.hg_libs = []
     env.git_libs = ['django-mailer-2', 'django-notification']
 
 def deploy():
