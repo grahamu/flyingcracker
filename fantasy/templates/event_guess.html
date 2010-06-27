@@ -18,19 +18,17 @@
 
 {% block fantasy-main %}
 {{ block.super }}
-{% if not event.guess_deadline_elapsed %}
 <div class="fantasy-guess-deadline">
 Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
                 <span class="date">{{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
                 {% endwith %}
 </div>
-{% endif %}
 <div class="section-header">
     <div class="section-title">{{ event }}</div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
-{% if user.is_authenticated %}
 <hr />
+{% if user.is_authenticated %}
 <div class="fantasy-form-help">
 Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label|lower }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
 You may select {{ series.competitor_label|lower }}s individually or by choosing a team.

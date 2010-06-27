@@ -1,17 +1,22 @@
 {% extends "fantasy-series.html" %}
 {% load user_time %}
 
+{% block fantasy-backlink %}<a href="{{ series.get_absolute_url }}">{{ series }}</a>{% endblock %}
+
 {% block fantasy-main %}
 {{ block.super }}
+<div class="fantasy-guess-deadline">
+Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
+                <span class="date">{{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
+                {% endwith %}
+</div>
 <div class="section-header">
-    <div class="section-title">
-        {{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a>
-    </div>
+    <div class="section-title">{{ event }}</div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
 </div>
 
-{% if user_guesses %}
 <hr />
+{% if user_guesses %}
 <div class="fantasy-guess-deadline fantasy-form-help">
 {% with user|user_time:guess_timestamp as timestamp %}
 submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
