@@ -691,6 +691,7 @@ def event_result(request, id):
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=bad_guess)
         bad_guess_list.append({'competitor': bad_guess, 'result': '?', 'guessers': [g.user for g in guessers]})
 
+    found_results = False
     late_guesses = False
     event_points_list = []
     guesser_list = series.guesser_list()
@@ -712,6 +713,8 @@ def event_result(request, id):
                                                   event__guesses__user=u,
                                                   event__guesses__competitor=F('competitor'))
         points = 0
+        if all_result_qs:
+            found_results = True
         for r in all_result_qs:
             result_points = series.scoring_system.points(r.result)
             points += result_points
@@ -723,7 +726,18 @@ def event_result(request, id):
         
     import operator
     event_points_list.sort(key=operator.itemgetter('points'), reverse=True)
+    if not found_results:
+        event_points_list = None
 
+    guess_list = event.guess_list()
+    guesses = []
+    # We want just one Guess per guesser
+    players = []
+    for g in guess_list:
+        if g['player'] not in players:
+            guesses.append(g)
+            players.append(g['player'])
+        
     c = RequestContext(request, {
         'series': event.series,
         'event': event,
@@ -736,6 +750,7 @@ def event_result(request, id):
         'is_admin': series.is_admin(request.user),
         'user_guesses': user_guesses,
         'guess_timestamp': guess_timestamp,
+        'guesses': guesses,
     })
     return render_to_response('event_result.html', c)
 
