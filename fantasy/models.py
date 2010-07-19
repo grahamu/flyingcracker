@@ -66,6 +66,14 @@ class Series(models.Model):
     def guess_cutoff(self):
         qs = Event.objects.filter(series=self).order_by('guess_deadline')
         return qs[0].guess_deadline
+    
+    def guess_list(self):
+        if not self.guess_once_per_series:
+            return None
+        else:
+            guesses = [{'timestamp': g.timestamp, 'player':g.user}
+                       for g in self.guesses.all().order_by('timestamp')]
+        return guesses
         
     def is_admin(self, user):
         return user == self.owner or user.is_staff
@@ -146,7 +154,7 @@ class Event(models.Model):
         Returns a queryset of Guesses for this Event.
         '''
         if self.series.guess_once_per_series:
-            return self.series.guesses()
+            return self.series.guess_list()
         else:
             guesses = [{'timestamp': g.timestamp, 'player':g.user}
                        for g in self.guesses.all().order_by('timestamp')]
