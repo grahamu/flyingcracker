@@ -99,8 +99,8 @@ class Event(models.Model):
     '''
     name            = models.CharField(max_length=100)
     description     = models.CharField(max_length=100, blank=True, null=True)
-    start_date      = models.DateField()
-    start_time      = models.TimeField(help_text='in UTC (Greenwich time)')
+    start_date      = models.DateField(help_text='(format: YYYY-MM-DD)')
+    start_time      = models.TimeField(help_text='(format: HH:MM) in UTC (Greenwich time)')
     guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
     location        = models.CharField(max_length=100, blank=True, null=True)
     series          = models.ForeignKey(Series)
@@ -172,6 +172,7 @@ class Competitor(models.Model):
     name        = models.CharField(max_length=100)
     series      = models.ForeignKey(Series)
     team        = models.ForeignKey('Team', blank=True, null=True)
+    active      = models.BooleanField(default=True, help_text='Players may only pick "active" competitors.')
     
     class Meta:
         unique_together = ('name', 'series')

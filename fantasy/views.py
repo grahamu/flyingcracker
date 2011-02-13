@@ -135,7 +135,8 @@ def event_list(request, id):
     return render_to_response('event_list.html', c)
 
 
-def series_points_list(series, include_late_entries=False, include_timely_entries=True):
+def series_points_list(series, include_late_entries=False,
+                       include_timely_entries=True):
     '''
     Returns a list of usernames and their accumulated points in a Series.
     
@@ -184,12 +185,12 @@ def series_points_list(series, include_late_entries=False, include_timely_entrie
 
         if series.guess_once_per_series:
             result_qs = Result.objects.filter(event__series=series,
-                                              event__series__guesses__user=u,
-                                              event__series__guesses__competitor=F('competitor'))
+                            event__series__guesses__user=u,
+                            event__series__guesses__competitor=F('competitor'))
         else:
             result_qs = Result.objects.filter(event__series=series,
-                                              event__guesses__user=u,
-                                              event__guesses__competitor=F('competitor'))
+                            event__guesses__user=u,
+                            event__guesses__competitor=F('competitor'))
         points = 0
         result_totals = copy.copy(result_blank)
         event_points = copy.copy(event_blank)
@@ -219,8 +220,12 @@ def series_points_list(series, include_late_entries=False, include_timely_entrie
         points_list.append({'name': str(u.username),
                             'points': points,
                             'late': late_guess_events or late_guess_series,
-                            'place_totals': [{'key':key, 'val':result_totals[key]} for key in result_keys],
-                            'event_points': [{'key':key, 'val':event_points[key]} for key in event_keys],
+                            'place_totals': \
+                                [{'key':key, 'val':result_totals[key]} \
+                                 for key in result_keys],
+                            'event_points': \
+                                [{'key':key, 'val':event_points[key]} \
+                                 for key in event_keys],
                             'cumulative_points': cumulative_points,
                            })
         
@@ -249,7 +254,8 @@ def leaderboard(request, id):
     user_list = series.guesser_list()
     points_list = series_points_list(series, include_late_entries=False)
     provisional = series_provisional(series)
-    late_points_list = series_points_list(series, include_late_entries=True, include_timely_entries=False)
+    late_points_list = series_points_list(series, include_late_entries=True,
+                                          include_timely_entries=False)
     scoresys_results = series.scoring_system.results()
     #scoresys_results = sorted(series.scoring_system.results(), key=int)
     c = RequestContext(request, {
@@ -280,14 +286,17 @@ def competitor_list(request, id):
     team_qs = Team.objects.filter(series=series)
         
     if request.method == 'POST':
-        competitor_form = CompetitorForm(data=request.POST, team_qs=team_qs, instance=competitor)
+        competitor_form = CompetitorForm(data=request.POST, team_qs=team_qs,
+                                         instance=competitor)
         if competitor_form.is_valid():
             competitor = competitor_form.save()
+            messages.success(request, 'Added "%s".' % str(competitor))
             next = request.GET.get('next', None)
             if next:
                 return HttpResponseRedirect(next)
             else:
-                return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
+                return HttpResponseRedirect(reverse('fantasy-competitor-list',
+                                                    args=[series.pk]))
             
     else:
         competitor_form = CompetitorForm(team_qs=team_qs, instance=competitor)
@@ -321,13 +330,20 @@ def competitor_edit(request, id):
     team_qs = Team.objects.filter(series=series)
     
     if request.method == 'POST':
-        competitor_form = CompetitorForm(data=request.POST, instance=competitor, team_qs=team_qs, initial={'series_pk': series.pk})
+        competitor_form = CompetitorForm(data=request.POST,
+                                         instance=competitor,
+                                         team_qs=team_qs,
+                                         initial={'series_pk': series.pk})
         if competitor_form.is_valid():
             competitor = competitor_form.save()
-            messages.success(request, 'Saved competitor "%s".' % str(competitor))
-            return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
+            messages.success(request, 'Saved "%s".'
+                             % str(competitor))
+            return HttpResponseRedirect(reverse('fantasy-competitor-list',
+                                                args=[series.pk]))
     else:
-        competitor_form = CompetitorForm(instance=competitor, team_qs=team_qs, initial={'series_pk': series.pk})
+        competitor_form = CompetitorForm(instance=competitor,
+                                         team_qs=team_qs,
+                                         initial={'series_pk': series.pk})
 
     c = RequestContext(request, {
         'competitor_form': competitor_form,
@@ -361,7 +377,8 @@ def competitor_delete(request, id):
         return render_to_response('competitor_delete.html', c)
     else:
         competitor.delete()
-        return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
+        return HttpResponseRedirect(reverse('fantasy-competitor-list',
+                                            args=[series.pk]))
 
     
 @login_required
@@ -380,7 +397,8 @@ def competitor_export(request, id):
     
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=competitor_list_series_%d.csv' % series.pk
+    response['Content-Disposition'] = \
+            'attachment; filename=competitor_list_series_%d.csv' % series.pk
     writer = csv.writer(response)
     
     writer.writerow(['name'])
@@ -583,7 +601,9 @@ def event_detail(request, id):
                                     extra=series.num_guesses)
 
     competitor_choices = [('', '------')]
-    competitor_choices.extend([(c.pk, smart_str(c.name_and_team())) for c in Competitor.objects.filter(series=series)])
+    competitor_choices.extend([(c.pk, smart_str(c.name_and_team())) \
+                               for c in Competitor.objects.filter \
+                               (series=series, active=True)])
 
     team_choices = [('', '------')]
     # This value for each Team choice consists of a comma-separated list
@@ -854,7 +874,7 @@ def team_add(request, series_id):
                                  competitor_qs=competitor_qs)
         if team_form.is_valid():
             team = team_form.save()
-            messages.success(request, 'Added new team "%s".' % str(team))
+            messages.success(request, 'Added new team "%s".' % team)
             return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
     else:
         team_form = TeamEditForm(instance=team,

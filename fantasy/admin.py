@@ -32,4 +32,6 @@ admin.site.register(fantasy.Event, EventAdmin)
 admin.site.register(fantasy.Series)
 admin.site.register(fantasy.Competitor)
 admin.site.register(fantasy.Result)
+admin.site.register(fantasy.Team)
+
 

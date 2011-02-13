@@ -21,7 +21,7 @@ class CompetitorForm(forms.ModelForm):
     
     class Meta:
         model = Competitor
-        fields = ('name','series', 'team')
+        fields = ('name','series', 'team', 'active')
 
     def __init__(self, *args, **kwargs):
         team_qs = kwargs.pop('team_qs', [])
@@ -126,17 +126,19 @@ class TeamEditForm(forms.ModelForm):
             
     def save(self, commit=True):
         team = forms.ModelForm.save(self, commit)
-        members = self.cleaned_data['members']
-        # Remove competitors currently associated with the Team
-        # which are not selected.
-        for competitor in team.competitor_set.all():
-            if not competitor in members:
-                competitor.team = None
+        if 'members' in self.fields:
+            members = self.cleaned_data['members']
+            # Remove competitors currently associated with the Team
+            # which are not selected.
+            for competitor in team.competitor_set.all():
+                if not competitor in members:
+                    competitor.team = None
+                    competitor.save()
+            # Add selected competitors to the Team
+            for competitor in members:
+                competitor.team = team
                 competitor.save()
-        # Add selected competitors to the Team
-        for competitor in members:
-            competitor.team = team
-            competitor.save()
+        return team
 
 
 class EventForm(forms.ModelForm):
