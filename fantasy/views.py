@@ -33,7 +33,7 @@ def root(request):
         'active_series': active_queryset,
         'completed_series': completed_queryset,
     })
-    return render_to_response('series_list.html', c)
+    return render_to_response('fantasy/series_list.html', c)
 
 
 @login_required
@@ -65,11 +65,11 @@ def series_edit(request, id=None):
         'series_form': series_form,
         'series': series,
     })
-    return render_to_response('series_edit.html', c)
+    return render_to_response('fantasy/series_edit.html', c)
 
 
 
-def event_list(request, id):
+def series_dashboard(request, id):
     '''
     A list of Events associated with a Series.
     Includes user picks and event winners.
@@ -133,7 +133,7 @@ def event_list(request, id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('event_list.html', c)
+    return render_to_response('fantasy/event_list.html', c)
 
 
 def series_points_list(series, include_late_entries=False,
@@ -268,7 +268,7 @@ def leaderboard(request, id):
         'user_list': user_list,
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('leaderboard.html', c)
+    return render_to_response('fantasy/leaderboard.html', c)
 
 
 @login_required
@@ -312,7 +312,7 @@ def competitor_list(request, id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('competitor_list.html', c)
+    return render_to_response('fantasy/competitor_list.html', c)
 
 
 @login_required
@@ -352,7 +352,7 @@ def competitor_edit(request, id):
         'competitor': competitor,
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('competitor_edit.html', c)
+    return render_to_response('fantasy/competitor_edit.html', c)
 
 
 @login_required
@@ -375,7 +375,7 @@ def competitor_delete(request, id):
             'result_list': results,
             'is_admin': series.is_admin(request.user),
         })
-        return render_to_response('competitor_delete.html', c)
+        return render_to_response('fantasy/competitor_delete.html', c)
     else:
         competitor.delete()
         return HttpResponseRedirect(reverse('fantasy-competitor-list',
@@ -448,7 +448,7 @@ def competitor_import(request, id):
                 messages.success(request,
                                  '%d competitors were successfully imported.' \
                                  % new_names.count())
-                return render_to_response('competitors_imported.html', c)
+                return render_to_response('fantasy/competitors_imported.html', c)
             else:
                 return HttpResponseRedirect(reverse('fantasy-competitor-list',
                                                     args=[series.pk]))
@@ -460,7 +460,7 @@ def competitor_import(request, id):
         'series': series,
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('competitor_import.html', c)
+    return render_to_response('fantasy/competitor_import.html', c)
 
 
 @login_required
@@ -484,7 +484,7 @@ def event_add(request, series_id):
             event.series = series
             event.save()
             messages.success(request, 'Added event "%s".' % str(event))
-            return HttpResponseRedirect(reverse('fantasy-event-list',
+            return HttpResponseRedirect(reverse('fantasy-series-home',
                                                 args=[series.pk]))
     else:
         event_form = EventForm(instance=event)
@@ -497,7 +497,7 @@ def event_add(request, series_id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('event_edit.html', c)
+    return render_to_response('fantasy/event_edit.html', c)
 
 
 
@@ -534,7 +534,7 @@ def event_edit(request, id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('event_edit.html', c)
+    return render_to_response('fantasy/event_edit.html', c)
 
 
 @login_required
@@ -559,7 +559,7 @@ def event_delete(request, id):
             'provisional': series_provisional(series),
             'is_admin': series.is_admin(request.user),
         })
-        return render_to_response('event_delete.html', c)
+        return render_to_response('fantasy/event_delete.html', c)
     else:
         event.delete()
         return HttpResponseRedirect(series.get_absolute_url)
@@ -703,7 +703,7 @@ def event_detail(request, id):
         'guesses': guesses,
         'guess_timestamp': guess_timestamp,
     })
-    return render_to_response('event_guess.html', c)
+    return render_to_response('fantasy/event_guess.html', c)
 
 
 def event_result(request, id):
@@ -825,7 +825,7 @@ def event_result(request, id):
         'guess_timestamp': guess_timestamp,
         'guesses': guesses,
     })
-    return render_to_response('event_result.html', c)
+    return render_to_response('fantasy/event_result.html', c)
 
 
 @login_required
@@ -914,7 +914,7 @@ def result_edit(request, id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('result_edit.html', c)
+    return render_to_response('fantasy/result_edit.html', c)
 
 
 @login_required
@@ -954,7 +954,7 @@ def team_add(request, series_id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('team_edit.html', c)
+    return render_to_response('fantasy/team_edit.html', c)
 
 
 @login_required
@@ -999,7 +999,7 @@ def team_edit(request, id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('team_edit.html', c)
+    return render_to_response('fantasy/team_edit.html', c)
 
 
 @login_required
@@ -1018,7 +1018,7 @@ def team_list(request, series_id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('team_list.html', c)
+    return render_to_response('fantasy/team_list.html', c)
 
 
 @login_required
@@ -1038,7 +1038,7 @@ def team_detail(request, id):
         'team': team,
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('team_detail.html', c)
+    return render_to_response('fantasy/team_detail.html', c)
 
 
 @login_required
@@ -1095,7 +1095,7 @@ def series_email(request, id):
 #            send_mail(subject, body, mail_from, recipients)
 
             messages.success(request, 'Your email has been sent.')
-            return HttpResponseRedirect(reverse('fantasy-event-list',
+            return HttpResponseRedirect(reverse('fantasy-series-home',
                                                 args=[series.pk]))
     else:
         email_form = EmailSeriesForm()
@@ -1105,4 +1105,4 @@ def series_email(request, id):
         'series': series,
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('series_email.html', c)
+    return render_to_response('fantasy/series_email.html', c)

@@ -1,4 +1,4 @@
-{% extends "fantasy-series.html" %}
+{% extends "fantasy/series.html" %}
 
 {% block fantasy-main %}
 {{ block.super }}
@@ -8,7 +8,7 @@
 </div>
 <div class="fantasy-form-help">
 </div>
-{% include 'team_detail_snippet.html' %}
+{% include 'fantasy/team_detail_snippet.html' %}
 {% if is_admin %}
 <a href="{% url fantasy-team-edit team.pk %}">Edit this Team</a>
 <a href="{% url fantasy-team-list series.pk %}">Team List</a><br />
