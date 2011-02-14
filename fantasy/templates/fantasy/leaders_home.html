@@ -1,0 +1,24 @@
+        <div id="fantasy-top-ten" class="fantasy-nav-item">
+          <div class="subhead">Top Ten Players{% if provisional %}*{% endif %}</div>
+          <div class="body">
+            {% for p in points_list %}
+            {% if forloop.first %}
+            <table class="fantasy-list-table">
+            {% endif %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ p.name }}</td>
+                    <td class="center">{{ p.points }}</td>
+                </tr>
+            {% if forloop.last %}
+            </table>
+            {% if provisional %}
+            * Standings provisional based on event result approval.
+            {% endif %}
+            {% endif %}
+            {% empty %}
+            No leaders yet!
+            {% endfor %}
+            </div>
+            {% if series.pk %}<a href="{% url fantasy-series-leaderboard series.pk %}">Complete Series Standings</a>{% endif %}
+        </div>

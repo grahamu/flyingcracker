@@ -1,0 +1,110 @@
+{% extends "fantasy/fantasy.html" %}
+{% load user_time %}
+
+{% block fantasy-bd %}
+<div class="yui-ge">
+  <div id="fantasy-main-container" class="yui-u first">
+    <div class="main">
+    {% if messages %}
+      <div id="message-block">
+        <ul class="messages">
+        {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    </div>
+    
+    <div class="section-header">
+      <div class="section-title">{{ series }}</div>
+      {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
+    </div>
+    
+    <div id="series-home" class="yui-navset">
+      <ul class="yui-nav">
+        <li class="selected"><a href="#tab-current"><em>Current/Last {{ series.event_label }}</em></a></li>
+        {% if next_event %}
+        <li><a href="#tab-next"><em>Next {{ series.event_label }}</em></a></li>
+        {% endif %}
+        <li><a href="#tab-leaders"><em>Leaders</em></a></li>
+        <li><a href="#tab-messages"><em>Message Board</em></a></li>
+        <li><a href="#tab-all"><em>All {{ series.event_label }}s</em></a></li>
+        <li><a href="#tab-admin"><em>Admin</em></a></li>
+      </ul>
+      <div class="yui-content">
+        <div id="tab-current">
+          <p>Current/Last {{series.event_label }} </p>
+        </div>
+        
+        {% if next_event %}
+        <div id="tab-next">
+          <div><a href="{{ next_event.get_absolute_url }}">{{ next_event }}</a></div>
+          <div>{{ next_event.description }}</div>
+          {% if not next_guesses %}
+          <div class="alert">ALERT: You have no picks for this {{ series.event_label|lower }}!</div>
+          {% else %}
+          <div class="picks-entered">My picks: {{ next_guesses|join:", " }}.</div>
+          {% endif %}
+          <p>
+          Guess deadline in {{ next_event.guess_deadline|timeuntil }} {% with user|user_time:next_event.guess_deadline as cutoff %}
+                          ({{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }}
+                          {% firstof user.get_profile.timezone "UTC" %})
+                          {% endwith %}
+          </p>
+        </div>
+        {% endif %}
+        
+        <div id="tab-leaders">
+          <div class="fantasy-leaders">
+          {% include "fantasy/leaders_home.html" %}
+          </div>
+        </div>
+        
+        <div id="tab-messages">
+          <div id="comment-block">
+          {% with series as comment_obj %}
+          {% include "comment_block.html" %}
+          {% endwith %}
+          </div>
+        </div>
+        
+        <div id="tab-all">
+          {% if event_list %}
+          <div id="event-list-container" class="fantasy-list-container">
+              <table id="event-list-table" class="fantasy-list-table">
+              {% if series.guess_once_per_series %}
+              {% include "fantasy/event_list_snippet_1guess.html" %}
+              {% else %}
+              {% include "fantasy/event_list_snippet.html" %}
+              {% endif %}
+              </table>
+          </div>
+          {% else %}
+          No {{ series.event_label|lower }}s found.<br />
+          {% endif %}
+        </div>
+        
+        {% if is_admin %}
+        <div id="tab-admin">
+          <input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /><br />
+          <a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
+          <a href="{% url fantasy-team-list series.pk %}">Team List</a><br />
+          <a href="{% url fantasy-series-edit series.pk %}">Edit this Series</a><br />
+          <a href="{% url fantasy-series-email series.pk %}">Email guessers in this Series</a>
+        </div>
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+  <div id="fantasy-nav-container" class="yui-u">
+  </div>
+</div>
+
+<script>
+(function() {
+var myTabs = new YAHOO.widget.TabView("series-home");
+})();
+</script>
+{% endblock %}

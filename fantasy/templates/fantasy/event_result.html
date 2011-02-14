@@ -13,6 +13,7 @@ Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
 <div class="section-header">
     <div class="section-title">{{ event }}</div>
     {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
+    {% if is_admin %}<a href="{% url fantasy-event-edit event.pk %}">Edit {{ series.event_label|lower }}</a>{% endif %}
 </div>
 
 <hr />

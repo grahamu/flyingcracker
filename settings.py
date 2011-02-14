@@ -125,7 +125,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 ACCOUNT_ACTIVATION_DAYS = 10
 
-YUI_VERSION = "2.8.1"
+YUI_VERSION = "2.8.2"
 
 SYSTEM_NAME = "cracklyfinger.com"
 

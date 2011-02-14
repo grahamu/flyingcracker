@@ -91,11 +91,7 @@ def series_dashboard(request, id):
         if event.start_time_elapsed() and results:
             row_class = 'race-complete'
         else:
-            if not series.guess_once_per_series and \
-               event.guess_deadline_elapsed():
-                row_class = 'guess-deadline'
-            else:
-                row_class = 'race-future'
+            row_class = 'race-future'
             
         if user:
             ctype, obj_id = event.guess_generics()
@@ -133,7 +129,7 @@ def series_dashboard(request, id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    return render_to_response('fantasy/event_list.html', c)
+    return render_to_response('fantasy/series_home.html', c)
 
 
 def series_points_list(series, include_late_entries=False,

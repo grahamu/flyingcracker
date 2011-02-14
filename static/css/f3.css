@@ -977,6 +977,7 @@ th.flowHead{
 }
 .fantasy-list-table, .fantasy-select-table, .fantasy-pick-options {
     margin-bottom: 1em;
+	width: 100%;
 }
 .fantasy-list-table th, .fantasy-select-table th {
 	font: bold 11px Arial, Helvetica, Verdana;
@@ -999,7 +1000,7 @@ th.flowHead{
     background-color: #f84747;
 }
 .fantasy-list-table tr.race-future {
-	background-color: #98FB98;
+	background-color: #D0FFD0;
 }
 .fantasy-list-table td {
 	font-family : Arial, Helvetica, Verdana;
@@ -1014,7 +1015,7 @@ th.flowHead{
     border-bottom: 0;
 	background: white;
 }
-.fantasy-list-table td.center {
+.fantasy-list-table td.center, .fantasy-list-table th.center {
     text-align: center;
 }
 .fantasy-select-table td {
@@ -1025,6 +1026,11 @@ th.flowHead{
 }
 #fantasy-nav-container {
     background-color: pink;
+}
+.fantasy-leaders {
+    background-color: pink;
+	border: black thin solid;
+	padding: 1em;
 }
 #fantasy-nav-container .main {
     padding: 1em;
@@ -1098,7 +1104,7 @@ hr.comment-separator {
 	margin-left: 1em;
 	font-size: 108%;
 }
-.series-title .subhead {
+.subhead {
 	margin-top: 0.5em;
 	font-weight: bold;
 }
