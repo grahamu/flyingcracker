@@ -63,6 +63,11 @@ once you submit your picks you will not be able to change them. Pick carefully!
             {% endfor %}
             </tbody>
         </table>
+        {% if options_form %}
+        <div class="fantasy-pick-options">
+        {{ options_form.remaining_events }}&nbsp;Save these picks for all remaining events!
+        </div>
+        {% endif %}
         <input type="submit" name="guess" value="Submit Picks" />
       </form>
     {% endif %}

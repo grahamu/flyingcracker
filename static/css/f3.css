@@ -975,7 +975,7 @@ th.flowHead{
     padding-top: 1em;
     padding-bottom: 1em;
 }
-.fantasy-list-table, .fantasy-select-table {
+.fantasy-list-table, .fantasy-select-table, .fantasy-pick-options {
     margin-bottom: 1em;
 }
 .fantasy-list-table th, .fantasy-select-table th {

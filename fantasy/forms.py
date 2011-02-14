@@ -92,6 +92,15 @@ class TeamGuessForm(forms.Form):
         self['team'].field.choices = team_list
 
 
+class PickOptionsForm(forms.Form):
+    '''
+    Form used to present options about the competitor selection
+    for an event or series.
+    '''
+    remaining_events = forms.BooleanField(label='Feeling lazy?',
+                                    help_text=
+                            'Save these picks for all remaining events')
+
 class CompetitorModelMultipleChoiceField(ModelMultipleChoiceField):
 
     def label_from_instance(self, obj):

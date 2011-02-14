@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect, HttpResponse
@@ -433,19 +434,24 @@ def competitor_import(request, id):
                 my_comps = Competitor.objects.filter(series=series)
                 my_names = [c.name.lower() for c in my_comps]
                 import_comps = Competitor.objects.filter(series=import_series)
-                new_names = [c.name for c in import_comps if c.name.lower() not in my_names]
+                new_names = [c.name for c in import_comps if c.name.lower() \
+                             not in my_names]
                 for name in new_names:
                     new_competitor = Competitor(name=name, series=series)
                     new_competitor.save()
                 c = RequestContext(request, {
                     'series': series,
-                    'competitor_list': Competitor.objects.filter(name__in=new_names, series=series),
+                    'competitor_list': Competitor.objects.filter(
+                        name__in=new_names, series=series),
                     'is_admin': series.is_admin(request.user),
                 })
-                messages.success(request, '%d competitors were successfully imported.' % new_names.count())
+                messages.success(request,
+                                 '%d competitors were successfully imported.' \
+                                 % new_names.count())
                 return render_to_response('competitors_imported.html', c)
             else:
-                return HttpResponseRedirect(reverse('fantasy-competitor-list', args=[series.pk]))
+                return HttpResponseRedirect(reverse('fantasy-competitor-list',
+                                                    args=[series.pk]))
     else:
         import_form = CompetitorImportForm(series_qs=qs)
 
@@ -478,7 +484,8 @@ def event_add(request, series_id):
             event.series = series
             event.save()
             messages.success(request, 'Added event "%s".' % str(event))
-            return HttpResponseRedirect(reverse('fantasy-event-list', args=[series.pk]))
+            return HttpResponseRedirect(reverse('fantasy-event-list',
+                                                args=[series.pk]))
     else:
         event_form = EventForm(instance=event)
 
@@ -512,8 +519,10 @@ def event_edit(request, id):
         event_form = EventForm(data=request.POST, instance=event)
         if event_form.is_valid():
             event = event_form.save()
-            messages.success(request, 'Saved %s "%s".' % (series.event_label, str(event)))
-            return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
+            messages.success(request, 'Saved %s "%s".' % \
+                             (series.event_label, str(event)))
+            return HttpResponseRedirect(reverse('fantasy-event-detail',
+                                                args=[event.pk]))
     else:
         event_form = EventForm(instance=event)
 
@@ -575,7 +584,8 @@ def event_detail(request, id):
     competitor = Competitor(series=series)
     
     ctype, obj_id = event.guess_generics()
-    curr_guesses = Guess.objects.filter(content_type=ctype, object_id=obj_id, user=user)
+    curr_guesses = Guess.objects.filter(content_type=ctype, object_id=obj_id,
+                                        user=user)
     guesses = [{'competitor': r.competitor.pk} for r in curr_guesses]
     
     guess_deadline_elapsed = event.guess_deadline_elapsed()
@@ -592,7 +602,8 @@ def event_detail(request, id):
     #
     #  Otherwise, solicit guess(es).
     #
-    from fantasy.forms import GuessForm, GuessAndResultBaseFormset, TeamGuessForm
+    from fantasy.forms import GuessForm, GuessAndResultBaseFormset, \
+         TeamGuessForm, PickOptionsForm
     from django.forms.formsets import formset_factory
     from django.utils.encoding import smart_str
 
@@ -608,26 +619,61 @@ def event_detail(request, id):
     team_choices = [('', '------')]
     # This value for each Team choice consists of a comma-separated list
     # Competitor pks for Competitors who are members of the Team.
-    team_choices.extend([(",".join([str(c.pk) for c in t.competitor_set.all()]), smart_str(t.short())) for t in Team.objects.filter(series=series).order_by('short_name', 'name')])
+    team_choices.extend([(",".join([str(c.pk) \
+                                    for c in t.competitor_set.all()]),
+                          smart_str(t.short())) for t in Team.objects.filter( \
+                              series=series).order_by('short_name', 'name')])
 
     if request.method == 'POST':
-        formset = GuessFormset(request.POST, initial=guesses, competitors=competitor_choices)
-        team_form = TeamGuessForm(data=request.POST, teams=team_choices)
+        formset = GuessFormset(request.POST, initial=guesses,
+                               competitors=competitor_choices)
         if formset.is_valid():
-            curr_guesses.delete()   # delete all existing guesses for this event
+            selected_competitors = []
             for guess in formset.cleaned_data:
                 if guess.get('competitor', None):
-                    g = Guess(content_type=ctype,
-                              object_id=obj_id,
-                              user=user,
-                              competitor=Competitor.objects.get(pk=guess['competitor']),
-                              late_entry=guess_deadline_elapsed)
-                    g.save()
-            messages.success(request, "Your picks have been saved.")
-            return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
+                    selected_competitors.append(Competitor.objects \
+                                                .get(pk=guess['competitor']))
+                    
+            curr_guesses.delete()   # delete user's guesses for this event
+            for competitor in selected_competitors:
+                g = Guess.objects.create(content_type=ctype,
+                                         object_id=obj_id,
+                                         user=user,
+                                         competitor=competitor,
+                                         late_entry=guess_deadline_elapsed)
+                
+            options_form = PickOptionsForm(data=request.POST or None)
+            if options_form.is_valid() and \
+               options_form.cleaned_data['remaining_events']:
+                # Remove guesses for incomplete events
+                # and substitute these picks.
+                qs = Event.objects.filter(series=series,
+                                guess_deadline__gt=datetime.datetime.today()) \
+                   .exclude(pk=event.pk)
+                for incomplete_event in qs:
+                    ctype, obj_id = incomplete_event.guess_generics()
+                    curr_guesses = Guess.objects.filter(content_type=ctype,
+                                                        object_id=obj_id,
+                                                        user=user)
+                    curr_guesses.delete()
+                    for competitor in selected_competitors:
+                        g = Guess.objects.create(content_type=ctype,
+                                                 object_id=obj_id,
+                                                 user=user,
+                                                 competitor=competitor)
+
+                messages.success(request, "Your picks have been saved for "
+                                 "%d remaining events." % (len(qs)+1))
+            else:
+                messages.success(request, "Your picks have been saved.")
+                
+            return HttpResponseRedirect(reverse('fantasy-event-detail',
+                                                args=[event.pk]))
     else:
         formset = GuessFormset(initial=guesses, competitors=competitor_choices)
-        team_form = TeamGuessForm(teams=team_choices)
+        options_form = PickOptionsForm(data=request.POST or None)
+        
+    team_form = TeamGuessForm(data=request.POST or None, teams=team_choices)
 
     guess_list = event.guess_list()
     guesses = []
@@ -650,6 +696,7 @@ def event_detail(request, id):
         'provisional': series_provisional(series),
         'formset': formset,
         'team_form': team_form,
+        'options_form': options_form,
         'add_competitor_ok': False, # series.users_enter_competitors,
         'late_entry': late_entry,
         'is_admin': series.is_admin(request.user),
@@ -673,7 +720,8 @@ def event_result(request, id):
     series = event.series
 
     if not event.guess_deadline_elapsed():
-    # if request.method == 'POST': redirect to some "sorry, the race has not yet started." page.
+    # if request.method == 'POST': redirect to a
+    # "sorry, the race has not yet started." page.
         return HttpResponseRedirect(reverse('fantasy-root'))
 
     user_guesses = []
@@ -681,20 +729,25 @@ def event_result(request, id):
     if guess_qs:
         for guess in guess_qs:
             try:
-                result = Result.objects.get(competitor=guess.competitor, event=event)
+                result = Result.objects.get(competitor=guess.competitor,
+                                            event=event)
             except Result.DoesNotExist:
                 result = 'X'
             else:
                 result = str(result.result)
-            user_guesses.append({'result': result, 'competitor': guess.competitor})
+            user_guesses.append({'result': result,
+                                 'competitor': guess.competitor})
         guess_timestamp = guess_qs[0].timestamp
     else:
         guess_timestamp = None
 
-    result_qs = Result.objects.filter(event=event, result__in=series.scoring_system.results())
-    ordered_results = series.scoring_system.sort_by_result(list(result_qs), 'result')
+    result_qs = Result.objects.filter(event=event,
+                                    result__in=series.scoring_system.results())
+    ordered_results = series.scoring_system.sort_by_result(list(result_qs),
+                                                           'result')
     
-    # Get the content_type and object_id for referencing guesses made for this Event.
+    # Get the content_type and object_id
+    # for referencing guesses made for this Event.
     ctype, obj_id = event.guess_generics()
 
     bad_guess_list = []
@@ -781,7 +834,8 @@ def result_edit(request, id):
     Edit the results for a event.
     
     '''
-    from fc3.fantasy.forms import ResultForm, GuessAndResultBaseFormset, EventOptionsForm
+    from fc3.fantasy.forms import ResultForm, GuessAndResultBaseFormset, \
+         EventOptionsForm
     from django.forms.formsets import formset_factory
     
     event = get_object_or_404(Event, pk=id)
@@ -795,17 +849,20 @@ def result_edit(request, id):
     competitor_choices.extend([(a.pk, str(a)) for a in all_competitors])
     
     event_results = Result.objects.filter(event=event)
-    ordered_results = series.scoring_system.sort_by_result(list(event_results), 'result')
+    ordered_results = series.scoring_system.sort_by_result(list(event_results),
+                                                           'result')
     
     all_result_list = series.scoring_system.results()
 
     # Create a list of results for this Event
     if not ordered_results:
-        unassigned_results = results = initial_results = [{'result': s} for s in all_result_list]
+        unassigned_results = results = initial_results = \
+                           [{'result': s} for s in all_result_list]
         entered_by = None
     else:
         entered_by = ordered_results[0].entered_by
-        results = [{'result': r.result, 'competitor': r.competitor.pk} for r in ordered_results]
+        results = [{'result': r.result, 'competitor': r.competitor.pk}  
+                   for r in ordered_results]
         curr_result_list = [r.result for r in ordered_results]
         unassigned_results = series.scoring_system.sort_by_result(list(set(all_result_list) - set(curr_result_list)))
         initial_results = results + [{'result': s} for s in unassigned_results]
@@ -821,22 +878,30 @@ def result_edit(request, id):
             
             # Create a list in the same format as 'results'.
             # If nothing has changed, don't erase and resave!
-            form_results = [{'result': result['result'], 'competitor': int(result['competitor'])} for result in formset.cleaned_data if result and result['result'] and result['competitor']]
+            form_results = [{'result': result['result'],
+                             'competitor': int(result['competitor'])}
+                            for result in formset.cleaned_data
+                            if result and result['result']
+                                and result['competitor']]
             form_results.sort()
             results.sort()
             if form_results != results:
-                event_results.delete()   # delete all existing results for this event
+                event_results.delete()   # delete user's results for this event
                 
                 for result in form_results:
                     r = Result(event=event,
                                result=result['result'],
-                               competitor=Competitor.objects.get(pk=result['competitor']),
+                               competitor=Competitor.objects.get(
+                                   pk=result['competitor']),
                                entered_by=request.user)
                     r.save()
-            messages.success(request, '%s results have been saved.' % str(series.event_label))
-            return HttpResponseRedirect(reverse('fantasy-event-detail', args=[event.pk]))
+            messages.success(request, '%s results have been saved.'
+                             % str(series.event_label))
+            return HttpResponseRedirect(reverse('fantasy-event-detail',
+                                                args=[event.pk]))
     else:
-        formset = ResultFormset(initial=initial_results, competitors=competitor_choices)
+        formset = ResultFormset(initial=initial_results,
+                                competitors=competitor_choices)
         options_form = EventOptionsForm(instance=event)
 
     c = RequestContext(request, {
@@ -875,7 +940,8 @@ def team_add(request, series_id):
         if team_form.is_valid():
             team = team_form.save()
             messages.success(request, 'Added new team "%s".' % team)
-            return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
+            return HttpResponseRedirect(reverse('fantasy-team-list',
+                                                args=[series.pk]))
     else:
         team_form = TeamEditForm(instance=team,
                                  competitor_qs=competitor_qs)
@@ -918,7 +984,8 @@ def team_edit(request, id):
         if team_form.is_valid():
             team = team_form.save()
             messages.success(request, 'Saved team "%s".' % str(team))
-            return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
+            return HttpResponseRedirect(reverse('fantasy-team-list',
+                                                args=[series.pk]))
     else:
         team_form = TeamEditForm(instance=team,
                                  competitor_qs=competitor_qs,
@@ -1028,7 +1095,8 @@ def series_email(request, id):
 #            send_mail(subject, body, mail_from, recipients)
 
             messages.success(request, 'Your email has been sent.')
-            return HttpResponseRedirect(reverse('fantasy-event-list', args=[series.pk]))
+            return HttpResponseRedirect(reverse('fantasy-event-list',
+                                                args=[series.pk]))
     else:
         email_form = EmailSeriesForm()
 
