@@ -1,0 +1,24 @@
+{% load user_time %}
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th class="center">Picks?</th>
+                <th>{{ series.event_label }}</th>
+                <th>My Guess{{ series.num_guesses|pluralize:",es" }}</th>
+                <th>Guess Cutoff</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for r in event_list %}
+            <tr class="{{ r.row_class }}">
+                <td>{{ forloop.counter }}.</td>
+                <td class="center">{% if r.guesses %}<img src="/static/img/active.png">{% else %}<img src="/static/img/inactive.png">{% endif %}</td>
+                <td><a href="{{ r.event.get_absolute_url }}">{{ r.event }}</a><br />{{ r.event.description }}</td>
+                <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
+                {% with user|user_time:r.event.guess_deadline as cutoff %}
+                <td>{{ cutoff|date:"D F d" }}<br />{{ cutoff|time:"f a" }}<br />
+                {% firstof user.get_profile.timezone "UTC" %}</td>
+                {% endwith %}
+            </tr>
+{% endfor %}
+        </tbody>
