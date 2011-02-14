@@ -87,11 +87,17 @@
         
         {% if is_admin %}
         <div id="tab-admin">
-          <input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /><br />
-          <a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
-          <a href="{% url fantasy-team-list series.pk %}">Team List</a><br />
-          <a href="{% url fantasy-series-edit series.pk %}">Edit this Series</a><br />
-          <a href="{% url fantasy-series-email series.pk %}">Email guessers in this Series</a>
+          <table class="fantasy-list-table">
+          <tbody>
+            <tr>
+              <td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /></td>
+              <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url fantasy-competitor-list series.pk %}';" /></td>
+              <td><input type="button" value="Team List" onclick="location.href='{% url fantasy-team-list series.pk %}';" /></td>
+              <td><input type="button" value="Edit Series" onclick="location.href='{% url fantasy-series-edit series.pk %}';" /></td>
+              <td><input type="button" value="Email Players" onclick="location.href='{% url fantasy-series-email series.pk %}';" /></td>
+            </tr>
+          </tbody>
+          </table>
         </div>
         {% endif %}
         
