@@ -99,8 +99,7 @@ class Event(models.Model):
     '''
     name            = models.CharField(max_length=100)
     description     = models.CharField(max_length=100, blank=True, null=True)
-    start_date      = models.DateField(help_text='(format: YYYY-MM-DD)')
-    start_time      = models.TimeField(help_text='(format: HH:MM) in UTC (Greenwich time)')
+    start           = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
     guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
     location        = models.CharField(max_length=100, blank=True, null=True)
     series          = models.ForeignKey(Series)
@@ -110,7 +109,7 @@ class Event(models.Model):
     objects = managers.EventManager()
     
     class Meta:
-        ordering = ['start_date']
+        ordering = ['start']
         unique_together = ('name', 'series')
 
     def guess_cutoff(self):
@@ -130,7 +129,7 @@ class Event(models.Model):
             return self.series.guess_deadline_elapsed()
 
     def start_time_elapsed(self):
-        return datetime.combine(self.start_date, self.start_time) < datetime.utcnow()
+        return self.start < datetime.utcnow()
 
     def guess_generics(self):
         if self.series.guess_once_per_series:

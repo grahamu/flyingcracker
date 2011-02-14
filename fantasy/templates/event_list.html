@@ -47,7 +47,10 @@ Click on a {{ series.event_label|lower }} to enter your picks or see results.<br
                 <td>{{ forloop.counter }}.</td>
                 <td><a href="{{ r.event.get_absolute_url }}">{{ r.event }}</a><br />{{ r.event.description }}</td>
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
-                <td>{{ r.event.start_date|date:"D F d" }}<br />{{ r.event.start_time|time:"f a" }} UTC</td>
+                {% with user|user_time:r.event.start as start %}
+                <td>{{ start|date:"D F d" }}<br />{{ start|time:"f a" }}<br />
+                {% firstof user.get_profile.timezone "UTC" %}</td>
+                {% endwith %}
                 {% with user|user_time:r.event.guess_deadline as cutoff %}
                 <td>{{ cutoff|date:"D F d" }}<br />{{ cutoff|time:"f a" }}<br />
                 {% firstof user.get_profile.timezone "UTC" %}</td>

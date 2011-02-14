@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div>
+<div class="registration-thanks">
 {% if account %}
-Welcome {{ account }}, your registration is now complete. Nice job!<br />
+Welcome {{ account }}, your registration is now complete.<br />
+<br />
+Nice job!<br />
+<br />
 <p>Please <a href="{% url auth_login %}?next={% url fc-home %}">log in</a> to access the advanced features of this site.</p>
 {% else %}
 Sorry, you must register within {{ expiration_days }} days. Please <a href="{% url registration_register %}">try again</a>.

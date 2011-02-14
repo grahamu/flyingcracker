@@ -662,8 +662,8 @@ def event_detail(request, id):
                                                  user=user,
                                                  competitor=competitor)
 
-                messages.success(request, "Your picks have been saved for "
-                                 "%d remaining events." % (len(qs)+1))
+                messages.success(request, "Saved %s for "
+                                 "%d upcoming %ss." % (", ".join([str(c) for c in selected_competitors]), (len(qs)+1), event.series.event_label))
             else:
                 messages.success(request, "Your picks have been saved.")
                 

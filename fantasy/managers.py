@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from django.db import models
 from django.shortcuts import get_object_or_404
 
@@ -12,7 +12,7 @@ class EventManager(models.Manager):
         from fantasy.models import Series
         
         assert isinstance(series, Series)
-        qs = self.filter(start_date__gt=date.today())
+        qs = self.filter(start__gt=datetime.utcnow())
         if qs:
             return qs[0]
         else:
