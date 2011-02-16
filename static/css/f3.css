@@ -1051,10 +1051,15 @@ th.flowHead{
 td.event-points {
 	text-align: center;
 }
+.comment-textarea {
+	padding: 1em;
+	width: 95%;
+	margin-bottom: 0.5em;
+}
 .comment-list {
 	background-color: white;
-	width: 575px;
 	padding: 1em;
+	width: 95%;
 	margin-bottom: 1em;
 	border: #7F9DB9 1px solid;
 }

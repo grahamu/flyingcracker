@@ -2,7 +2,6 @@
 
 <div id="comments-container">
 {% get_comment_list for comment_obj as comment_list %}
-{% if comment_list %}
 <h2>Comments</h2>
 {% if user.is_authenticated %}
 <div>
@@ -17,7 +16,8 @@ Use <a href="http://daringfireball.net/projects/markdown/basics">markdown</a> sy
 <div class="comment-list">
 {% for comment in comment_list reversed %}
     {% include "comment_item.html" %}
+{% empty %}
+No comments yet...
 {% endfor %}
 </div>
-{% endif %}
 </div>

@@ -4,9 +4,10 @@
   {{ form.object_pk }}
   {{ form.timestamp }}
   {{ form.security_hash }}
-  <p>
-    {{ form.comment }}
-  </p>
+  <div>
+    <textarea rows="5" name="{{ form.comment.html_name }}" id="{{ account_form.description.auto_id }}" class="comment-textarea">{{ form.comment.value }}</textarea>
+    {{ form.comment.errors }}
+  </div>
   <p style="display:none;">
     <label for="id_honeypot">If you enter anything in this field your comment will be treated as spam</label>{{ form.honeypot }}
   </p>
