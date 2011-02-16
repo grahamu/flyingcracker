@@ -946,7 +946,7 @@ th.flowHead{
     padding-bottom: 0.25em;
 }
 .section-header {
-    padding-bottom: 0.5em;
+    padding: 0.5em;
 }
 .section-title {
     font-size: 130%;

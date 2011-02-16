@@ -4,8 +4,8 @@
 {% block fantasy-bd %}
 <div class="yui-ge">
   <div id="fantasy-main-container" class="yui-u first">
-    <div class="main">
     {% if messages %}
+    <div class="main">
       <div id="message-block">
         <ul class="messages">
         {% for message in messages %}
@@ -13,8 +13,8 @@
         {% endfor %}
         </ul>
       </div>
-    {% endif %}
     </div>
+    {% endif %}
     
     <div class="section-header">
       <div class="section-title">{{ series }}</div>
@@ -27,52 +27,29 @@
         <li class="selected"><a href="#tab-current"><em>{{ current_event.short_name }}</em></a></li>
         {% endif %}
         {% if next_event %}
-        <li{% if not current_event %} class="selected"{% endif %}><a href="#tab-next"><em>Next {{ series.event_label }}</em></a></li>
+        <li{% if not current_event %} class="selected"{% endif %}><a href="#tab-next"><em>{{ next_event.short_name }}</em></a></li>
         {% endif %}
-        <li{% if not current_event and not next_event %} class="selected"{% endif %}><a href="#tab-leaders"><em>Leaders</em></a></li>
-        <li><a href="#tab-messages"><em>Message Board</em></a></li>
         <li><a href="#tab-all"><em>All {{ series.event_label }}s</em></a></li>
+        <li><a href="#tab-messages"><em>Message Board</em></a></li>
+        <li{% if not current_event and not next_event %} class="selected"{% endif %}><a href="#tab-leaders"><em>Leaders</em></a></li>
+        {% if is_admin %}
         <li><a href="#tab-admin"><em>Admin</em></a></li>
+        {% endif %}
       </ul>
       
       <div class="yui-content">
+      
         {% if current_event %}
         <div id="tab-current">
-        {% include "fantasy/event_result_snippet.html" %}
+          {% include "fantasy/event_result_snippet.html" %}
         </div>
         {% endif %}
         
         {% if next_event %}
         <div id="tab-next">
-          <div><a href="{{ next_event.get_absolute_url }}">{{ next_event }}</a></div>
-          <div>{{ next_event.description }}</div>
-          {% if not next_guesses %}
-          <div class="alert">ALERT: You have no picks for this {{ series.event_label|lower }}!</div>
-          {% else %}
-          <div class="picks-entered">My picks: {{ next_guesses|join:", " }}.</div>
-          {% endif %}
-          <p>
-          Guess deadline in {{ next_event.guess_deadline|timeuntil }} {% with user|user_time:next_event.guess_deadline as cutoff %}
-                          ({{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }}
-                          {% firstof user.get_profile.timezone "UTC" %})
-                          {% endwith %}
-          </p>
+          {% include "fantasy/event_guess_snippet.html" %}
         </div>
         {% endif %}
-        
-        <div id="tab-leaders">
-          <div class="fantasy-leaders">
-          {% include "fantasy/leaders_home.html" %}
-          </div>
-        </div>
-        
-        <div id="tab-messages">
-          <div id="comment-block">
-          {% with series as comment_obj %}
-          {% include "comment_block.html" %}
-          {% endwith %}
-          </div>
-        </div>
         
         <div id="tab-all">
           {% if event_list %}
@@ -88,6 +65,20 @@
           {% else %}
           No {{ series.event_label|lower }}s found.<br />
           {% endif %}
+        </div>
+        
+        <div id="tab-messages">
+<!--          <div id="comment-block"> -->
+          {% with series as comment_obj %}
+          {% include "comment_block.html" %}
+          {% endwith %}
+<!--          </div> -->
+        </div>
+        
+        <div id="tab-leaders">
+          <div class="fantasy-leaders">
+          {% include "fantasy/leaders_home.html" %}
+          </div>
         </div>
         
         {% if is_admin %}

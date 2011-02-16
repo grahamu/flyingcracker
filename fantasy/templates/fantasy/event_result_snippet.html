@@ -3,112 +3,127 @@
 {% block fantasy-main %}
 {{ block.super }}
 <div class="section-header">
-    <div class="section-title">{{ event }}</div>
-    {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
-    {% if is_admin %}<a href="{% url fantasy-event-edit event.pk %}">Edit {{ series.event_label|lower }}</a>{% endif %}
+  <div class="fantasy-guess-deadline">
+    {% if is_admin %}
+    <input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url fantasy-event-edit event.pk %}';" />
+    {% endif %}
+  </div>
+  <div class="section-title">{{ event }}</div>
+  {% if event.description %}
+  <div class="section-tagline">{{ event.description }}</div>
+  {% endif %}
 </div>
-<hr />
-{% if user_guesses %}
-<div class="fantasy-guess-deadline fantasy-form-help">
-{% with user|user_time:guess_timestamp as timestamp %}
-submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
-{% endwith %}</div>
-<h2>My Picks</h2>
-{% for guess in user_guesses %}
-{{ guess.competitor }} ({{ guess.result }})<br />
-{% endfor %}
+
+{% if user_guesses and not result_list %}
+<div class="section-header">
+  <hr />
+  <div class="fantasy-guess-deadline fantasy-form-help">
+    {% with user|user_time:guess_timestamp as timestamp %}
+    submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+    {% endwith %}
+  </div>
+  <h2>My Picks</h2>
+  {% for guess in user_guesses %}
+  {{ guess.competitor }} ({{ guess.result }})<br />
+  {% endfor %}
+</div>
 {% endif %}
 
 {% if result_list %}
-<hr />
-<h2>{{ series.event_label|capfirst }} Result</h2>
-{% if event_points_list and not event.result_locked %}(pending Series administrator approval){% endif %}
-<div id="result-list-container" class="fantasy-list-container">
+<div class="section-header">
+  <hr />
+  <h2>{{ series.event_label|capfirst }} Result</h2>
+  {% if event_points_list and not event.result_locked %}(pending Series administrator approval){% endif %}
+  <div id="result-list-container" class="fantasy-list-container">
     <table id="result-list-table" class="fantasy-list-table">
-        <thead>
-            <tr>
-                <th>Place</th>
-                <th>Fantasy<br />Points</th>
-                <th>{{ series.competitor_label }}</th>
-                <th>Picked By</th>
-            </tr>
-        </thead>
-        <tbody>
+      <thead>
+        <tr>
+          <th>Place</th>
+          <th>Fantasy<br />Points</th>
+          <th>{{ series.competitor_label }}</th>
+          <th>Picked By</th>
+        </tr>
+      </thead>
+      <tbody>
 {% for r in result_list %}
-            <tr>
-                <td class="center">{{ r.result }}</td>
-                <td class="center">{{ r.points_for_result }}</td>
-                <td>{{ r.competitor }}</td>
-                <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
-            </tr>
+        <tr>
+          <td class="center">{{ r.result }}</td>
+          <td class="center">{{ r.points_for_result }}</td>
+          <td>{{ r.competitor }}</td>
+          <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}</td>
+        </tr>
 {% endfor %}
-        </tbody>
+      </tbody>
     </table>
     {% with result_list.0.entered_by.username as entered_by %}
     {% if entered_by %}<div class="cbnewspubdate">[results kindly entered by {{ entered_by }}]</div>{% endif %}
     {% endwith %}
+  </div>
 </div>
 {% endif %}
 
-<div  class="fantasy-form-container">
-    {% if is_admin or not event.result_locked and user.is_authenticated %}
-    <a href="{% url fantasy-result-edit event.pk %}">{% if result_list %}Edit{% else %}Enter{% endif %} {{ series.event_label|lower }} results</a><br />
-    {% endif %}
-    {% if is_admin %}
-        <a href="{% url fantasy-series-email series.pk %}">Email guessers in this Series</a><br />
-    {% endif %}
+<div class="section-header">
+  {% if is_admin or not event.result_locked and user.is_authenticated %}
+  <input type="button" value="{% if result_list %}Edit{% else %}Enter{% endif %} {{ series.event_label|lower }} results" onclick="location.href='{% url fantasy-result-edit event.pk %}';" />
+  {% endif %}
+  {% if is_admin %}
+  <input type="button" value="Email players" onclick="location.href='{% url fantasy-series-email series.pk %}';" />
+  {% endif %}
 </div>
 
 {% if bad_guess_list %}
-<h2>{% if result_list %}Out of the points{% else %}Guesses{% endif %}</h2>
-<div id="result-list-container" class="fantasy-list-container">
+<div class="section-header">
+  <h2>{% if result_list %}Out of the points{% else %}Guesses{% endif %}</h2>
+  <div id="result-list-container" class="fantasy-list-container">
     <table id="guesser-list-table" class="fantasy-list-table">
-        <thead>
-            <tr>
-                <th>Place</th>
-                <th>{{ series.competitor_label }}</th>
-                <th>Picked By</th>
-            </tr>
-        </thead>
-        <tbody>
+      <thead>
+        <tr>
+          <th>Place</th>
+          <th>{{ series.competitor_label }}</th>
+          <th>Picked By</th>
+        </tr>
+      </thead>
+      <tbody>
 {% for g in bad_guess_list %}
-            <tr>
-                <td class="center">{{ g.result }}</td>
-                <td>{{ g.competitor }}</td>
-                <td>{% with g.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}
-            </tr>
+        <tr>
+          <td class="center">{{ g.result }}</td>
+          <td>{{ g.competitor }}</td>
+          <td>{% with g.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}</td>
+        </tr>
 {% endfor %}
-        </tbody>
+      </tbody>
     </table>
+  </div>
 </div>
 {% endif %}
 
+<div class="section-header">
 {% if event_points_list %}
-<h2>Fantasy Points awarded for this {{ series.event_label|capfirst }}</h2>
-{% if event_points_list and not event.result_locked %}(pending Series administrator approval){% endif %}
-<div id="result-list-container" class="fantasy-list-container">
+  <h2>Fantasy Points awarded for this {{ series.event_label|capfirst }}</h2>
+  {% if event_points_list and not event.result_locked %}(pending Series administrator approval){% endif %}
+  <div id="result-list-container" class="fantasy-list-container">
     <table id="event-points-list-table" class="fantasy-list-table">
-        <thead>
-            <tr>
-                <th>Player</th>
-                <th>Points</th>
-            </tr>
-        </thead>
-        <tbody>
-{% for r in event_points_list %}
-            <tr>
-                <td>{{ r.name }}{% if r.late %}&nbsp;*{% endif %}</td>
-                <td class="center">{{ r.points }}</td>
-            </tr>
-{% endfor %}
-        </tbody>
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for r in event_points_list %}
+        <tr>
+          <td>{{ r.name }}{% if r.late %}&nbsp;*{% endif %}</td>
+          <td class="center">{{ r.points }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
     </table>
     {% if late_guesses %}
     <p>*&nbsp;<span class="late-entry">{{ series.late_entry_footnote }}</span></p>
     {% endif %}
-</div>
+  </div>
 {% else %}
-<div  class="fantasy-list-container">
+  <div  class="fantasy-list-container">
     {% for g in guesses %}
     {% if forloop.first %}
     <table class="fantasy-list-table">
@@ -132,8 +147,9 @@ submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firsto
     {% empty %}
     No guesses yet!
     {% endfor %}
-</div>
+  </div>
 {% endif %}
+</div>
 
 {% if is_admin and not result_list %}<br /><a href="{% url fantasy-event-delete event.pk %}">Delete {{ series.event_label|lower }}</a>{% endif %}
 {% endblock %}
