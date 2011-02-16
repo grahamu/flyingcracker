@@ -98,6 +98,7 @@ class Event(models.Model):
     
     '''
     name            = models.CharField(max_length=100)
+    short_name      = models.CharField(max_length=20, blank=True)
     description     = models.CharField(max_length=100, blank=True, null=True)
     start           = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
     guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)

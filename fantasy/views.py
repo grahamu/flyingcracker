@@ -83,6 +83,7 @@ def series_dashboard(request, id):
     series = get_object_or_404(Series, pk=id)
     qs = Event.objects.filter(series=series)
     next_event = Event.objects.get_next_in(series)
+    current_event = Event.objects.get_current_in(series)
     next_guesses = None
     events = []
     row_class = 'race-complete'
@@ -119,16 +120,22 @@ def series_dashboard(request, id):
             events.append({'event': event,
                            'guesses': None,
                            'row_class': row_class})
-        
+            
     c = RequestContext(request, {
         'series': series,
         'event_list': events,
+        'current_event': current_event,
         'next_event': next_event,
         'next_guesses': next_guesses,
         'points_list': series_points_list(series)[:10],
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
+    # Get context vars for event 'current_event' and
+    # add them to this context.
+    if current_event:
+        c.update(event_result_context(current_event, user))
+        
     return render_to_response('fantasy/series_home.html', c)
 
 
@@ -720,6 +727,17 @@ def event_result(request, id):
     # "sorry, the race has not yet started." page.
         return HttpResponseRedirect(reverse('fantasy-root'))
 
+    context_vars = event_result_context(event, user)
+        
+    c = RequestContext(request, context_vars)
+    return render_to_response('fantasy/event_result.html', c)
+
+
+def event_result_context(event, user):
+    '''
+    Returns a dictionary of context variables for event result.
+    '''
+    series = event.series
     user_guesses = []
     guess_qs = event.guesses.filter(user=user)
     if guess_qs:
@@ -807,7 +825,7 @@ def event_result(request, id):
             guesses.append(g)
             players.append(g['player'])
         
-    c = RequestContext(request, {
+    return {
         'series': event.series,
         'event': event,
         'result_list': ordered_results,
@@ -816,14 +834,13 @@ def event_result(request, id):
         'late_guesses': late_guesses,
         'points_list': series_points_list(series)[:10],
         'provisional': series_provisional(series),
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(user),
         'user_guesses': user_guesses,
         'guess_timestamp': guess_timestamp,
         'guesses': guesses,
-    })
-    return render_to_response('fantasy/event_result.html', c)
+    }
 
-
+    
 @login_required
 def result_edit(request, id):
     '''

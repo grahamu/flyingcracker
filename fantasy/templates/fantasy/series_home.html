@@ -23,19 +23,24 @@
     
     <div id="series-home" class="yui-navset">
       <ul class="yui-nav">
-        <li class="selected"><a href="#tab-current"><em>Current/Last {{ series.event_label }}</em></a></li>
-        {% if next_event %}
-        <li><a href="#tab-next"><em>Next {{ series.event_label }}</em></a></li>
+        {% if current_event %}
+        <li class="selected"><a href="#tab-current"><em>{{ current_event.short_name }}</em></a></li>
         {% endif %}
-        <li><a href="#tab-leaders"><em>Leaders</em></a></li>
+        {% if next_event %}
+        <li{% if not current_event %} class="selected"{% endif %}><a href="#tab-next"><em>Next {{ series.event_label }}</em></a></li>
+        {% endif %}
+        <li{% if not current_event and not next_event %} class="selected"{% endif %}><a href="#tab-leaders"><em>Leaders</em></a></li>
         <li><a href="#tab-messages"><em>Message Board</em></a></li>
         <li><a href="#tab-all"><em>All {{ series.event_label }}s</em></a></li>
         <li><a href="#tab-admin"><em>Admin</em></a></li>
       </ul>
+      
       <div class="yui-content">
+        {% if current_event %}
         <div id="tab-current">
-          <p>Current/Last {{series.event_label }} </p>
+        {% include "fantasy/event_result_snippet.html" %}
         </div>
+        {% endif %}
         
         {% if next_event %}
         <div id="tab-next">
