@@ -82,8 +82,8 @@ def series_dashboard(request, id):
         
     series = get_object_or_404(Series, pk=id)
     qs = Event.objects.filter(series=series)
-    next_event = Event.objects.get_next_in(series)
-    current_event = Event.objects.get_current_in(series)
+    next = Event.objects.get_next_in(series)
+    current = Event.objects.get_current_in(series)
     next_guesses = None
     events = []
     row_class = 'race-complete'
@@ -114,13 +114,24 @@ def series_dashboard(request, id):
             events.append({'event': event,
                            'guesses': guesses,
                            'row_class': row_class})
-            if event == next_event:
+            if event == next:
                 next_guesses = picks
         else:
             events.append({'event': event,
                            'guesses': None,
                            'row_class': row_class})
             
+    # Get context vars for event 'current_event' and
+    # add them to this context.
+    if current:
+        current_event = event_result_context(current, user)
+    else:
+        current_event = None
+    if next:
+        next_event = event_guess_context(next, user)
+    else:
+        next_event = None
+        
     c = RequestContext(request, {
         'series': series,
         'event_list': events,
@@ -131,10 +142,6 @@ def series_dashboard(request, id):
         'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
-    # Get context vars for event 'current_event' and
-    # add them to this context.
-    if current_event:
-        c.update(event_result_context(current_event, user))
         
     return render_to_response('fantasy/series_home.html', c)
 
@@ -708,6 +715,11 @@ def event_detail(request, id):
     })
     return render_to_response('fantasy/event_guess.html', c)
 
+def event_guess_context(event, user):
+    '''
+    Returns a dictionary of context variables for event guess.
+    '''
+    return None
 
 def event_result(request, id):
     '''

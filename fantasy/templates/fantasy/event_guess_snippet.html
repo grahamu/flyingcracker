@@ -13,8 +13,6 @@
 </style>
 {% endblock %}
 
-{% block fantasy-main %}
-{{ block.super }}
 <div class="fantasy-guess-deadline">
 Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
                 <span class="date">{{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
@@ -148,4 +146,3 @@ Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.
     {% endif %}
 
 </div>
-{% endblock %}
