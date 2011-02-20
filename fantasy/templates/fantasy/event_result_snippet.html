@@ -39,8 +39,8 @@
       <thead>
         <tr>
           <th>Place</th>
-          <th>Fantasy<br />Points</th>
           <th>{{ series.competitor_label }}</th>
+          <th>Fantasy<br />Points</th>
           <th>Picked By</th>
         </tr>
       </thead>
@@ -48,8 +48,8 @@
 {% for r in wrapper.result_list %}
         <tr>
           <td class="center">{{ r.result }}</td>
-          <td class="center">{{ r.points_for_result }}</td>
           <td>{{ r.competitor }}</td>
+          <td class="center">{{ r.points_for_result }}</td>
           <td>{% with r.guessers as guessers %}{% if guessers %}{{ guessers|join:", " }}{% else %}------{% endif %}{% endwith %}</td>
         </tr>
 {% endfor %}
@@ -65,9 +65,6 @@
 <div class="section-header">
   {% if is_admin or not event.result_locked and user.is_authenticated %}
   <input type="button" value="{% if result_list %}Edit{% else %}Enter{% endif %} {{ series.event_label|lower }} results" onclick="location.href='{% url fantasy-result-edit event.pk %}';" />
-  {% endif %}
-  {% if is_admin %}
-  <input type="button" value="Email players" onclick="location.href='{% url fantasy-series-email series.pk %}';" />
   {% endif %}
 </div>
 

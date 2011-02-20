@@ -1,6 +1,11 @@
 {% extends "fantasy/fantasy.html" %}
 {% load user_time %}
 
+{% block javascript %}
+{{ block.super }}
+<script src="{{ MEDIA_URL }}js/form_scripts/event_guess.js" type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
 {% block fantasy-main %}
 {{ block.super }}
 <div class="section-header">
@@ -11,10 +16,10 @@
 <div id="tab-menu" class="yui-navset">
   <ul class="yui-nav">
     {% if current_event %}
-    <li class="selected"><a href="#tab-current"><em>{{ current_event.event.short_name }}</em></a></li>
+    <li class="selected"><a href="#tab-current"><em>{% if current_event.event.results_locked %}Previous:{% else %}Current:{% endif %} {{ current_event.event.short_name }}</em></a></li>
     {% endif %}
     {% if next_event %}
-    <li{% if not current_event %} class="selected"{% endif %}><a href="#tab-next"><em>{{ next_event.event.short_name }}</em></a></li>
+    <li{% if not current_event %} class="selected"{% endif %}><a href="#tab-next"><em>Next: {{ next_event.event.short_name }}</em></a></li>
     {% endif %}
     <li><a href="#tab-all"><em>All {{ series.event_label }}s</em></a></li>
     <li><a href="#tab-messages"><em>Message Board</em></a></li>
@@ -71,13 +76,23 @@
     
     {% if is_admin %}
     <div id="tab-admin">
+      <div class="section-header">
+        <div class="fantasy-guess-deadline">
+          <input type="button" value="Edit Series" onclick="location.href='{% url fantasy-series-edit series.pk %}';" />
+        </div>
+        <div class="section-title">{{ series }}</div>
+        {% if series.description %}
+        <div class="section-tagline">{{ series.description }}</div>
+        {% endif %}
+      <hr />
+      Hi {{ series }} administrator. Here are the fun buttons! Use them wisely.
+      </div>
       <table class="fantasy-list-table">
       <tbody>
         <tr>
           <td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /></td>
           <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url fantasy-competitor-list series.pk %}';" /></td>
           <td><input type="button" value="Team List" onclick="location.href='{% url fantasy-team-list series.pk %}';" /></td>
-          <td><input type="button" value="Edit Series" onclick="location.href='{% url fantasy-series-edit series.pk %}';" /></td>
           <td><input type="button" value="Email Players" onclick="location.href='{% url fantasy-series-email series.pk %}';" /></td>
         </tr>
       </tbody>

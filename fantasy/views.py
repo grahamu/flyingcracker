@@ -124,11 +124,11 @@ def series_dashboard(request, id):
     # Get context vars for event 'current_event' and
     # add them to this context.
     if current:
-        current_event = event_result_context(current, user)
+        current_event = event_result_context(request, current, user)
     else:
         current_event = None
     if next:
-        next_event = event_guess_context(next, user)
+        next_event = event_guess_context(request, next, user)
     else:
         next_event = None
         
@@ -590,6 +590,75 @@ def event_detail(request, id):
         
     event = get_object_or_404(Event, pk=id)
     series = event.series
+    ctype, obj_id = event.guess_generics()
+    
+    cv = event_guess_context(request, event, user)
+    if cv['guess_deadline_elapsed']:
+        if series.allow_late_guesses:
+            if cv['guesses']:
+                return event_result(request, id)
+        else:
+            return event_result(request, id)
+    
+    if request.method == 'POST' and cv['formset'].is_valid():
+        selected_competitors = []
+        for guess in cv['formset'].cleaned_data:
+            if guess.get('competitor', None):
+                selected_competitors.append(Competitor.objects \
+                                            .get(pk=guess['competitor']))
+                
+        cv['curr_guesses'].delete()   # delete user's guesses for this event
+        for competitor in selected_competitors:
+            g = Guess.objects.create(content_type=ctype,
+                                     object_id=obj_id,
+                                     user=user,
+                                     competitor=competitor,
+                                     late_entry=cv['guess_deadline_elapsed'])
+            
+        if cv['options_form'].is_valid() and \
+           cv['options_form'].cleaned_data['remaining_events']:
+            # Remove guesses for incomplete events
+            # and substitute these picks.
+            qs = Event.objects.filter(series=series,
+                            guess_deadline__gt=datetime.datetime.today()) \
+               .exclude(pk=event.pk)
+            for incomplete_event in qs:
+                ctype, obj_id = incomplete_event.guess_generics()
+                curr_guesses = Guess.objects.filter(content_type=ctype,
+                                                    object_id=obj_id,
+                                                    user=user)
+                curr_guesses.delete()
+                for competitor in selected_competitors:
+                    g = Guess.objects.create(content_type=ctype,
+                                             object_id=obj_id,
+                                             user=user,
+                                             competitor=competitor)
+
+            messages.success(request, "Saved %s for "
+                             "%d upcoming %ss." % (", ".join([str(c) for c in selected_competitors]), (len(qs)+1), event.series.event_label))
+        else:
+            messages.success(request, "Saved %s for %s." % (", ".join([str(c) for c in selected_competitors]), event))
+            
+        next = request.GET.get('next', None)
+        if next:
+            return HttpResponseRedirect(next)
+        else:
+            return HttpResponseRedirect(reverse('fantasy-event-detail',
+                                            args=[event.pk]))
+        
+    c = RequestContext(request, cv)
+    return render_to_response('fantasy/event_guess.html', c)
+
+def event_guess_context(request, event, user):
+    '''
+    Returns a dictionary of context variables for event guess.
+    '''
+    from fantasy.forms import GuessForm, GuessAndResultBaseFormset, \
+         TeamGuessForm, PickOptionsForm
+    from django.forms.formsets import formset_factory
+    from django.utils.encoding import smart_str
+    
+    series = event.series
     # Create un-saved instance for adding a new Competitor
     competitor = Competitor(series=series)
     
@@ -602,20 +671,8 @@ def event_detail(request, id):
     late_entry = False
     if guess_deadline_elapsed:
         if series.allow_late_guesses:
-            if guesses:
-                return event_result(request, id)
-            else:
+            if not guesses:
                 late_entry = True
-        else:
-            return event_result(request, id)
-
-    #
-    #  Otherwise, solicit guess(es).
-    #
-    from fantasy.forms import GuessForm, GuessAndResultBaseFormset, \
-         TeamGuessForm, PickOptionsForm
-    from django.forms.formsets import formset_factory
-    from django.utils.encoding import smart_str
 
     GuessFormset = formset_factory(GuessForm, GuessAndResultBaseFormset,
                                     max_num=series.num_guesses,
@@ -634,55 +691,10 @@ def event_detail(request, id):
                           smart_str(t.short())) for t in Team.objects.filter( \
                               series=series).order_by('short_name', 'name')])
 
-    if request.method == 'POST':
-        formset = GuessFormset(request.POST, initial=guesses,
-                               competitors=competitor_choices)
-        if formset.is_valid():
-            selected_competitors = []
-            for guess in formset.cleaned_data:
-                if guess.get('competitor', None):
-                    selected_competitors.append(Competitor.objects \
-                                                .get(pk=guess['competitor']))
-                    
-            curr_guesses.delete()   # delete user's guesses for this event
-            for competitor in selected_competitors:
-                g = Guess.objects.create(content_type=ctype,
-                                         object_id=obj_id,
-                                         user=user,
-                                         competitor=competitor,
-                                         late_entry=guess_deadline_elapsed)
-                
-            options_form = PickOptionsForm(data=request.POST or None)
-            if options_form.is_valid() and \
-               options_form.cleaned_data['remaining_events']:
-                # Remove guesses for incomplete events
-                # and substitute these picks.
-                qs = Event.objects.filter(series=series,
-                                guess_deadline__gt=datetime.datetime.today()) \
-                   .exclude(pk=event.pk)
-                for incomplete_event in qs:
-                    ctype, obj_id = incomplete_event.guess_generics()
-                    curr_guesses = Guess.objects.filter(content_type=ctype,
-                                                        object_id=obj_id,
-                                                        user=user)
-                    curr_guesses.delete()
-                    for competitor in selected_competitors:
-                        g = Guess.objects.create(content_type=ctype,
-                                                 object_id=obj_id,
-                                                 user=user,
-                                                 competitor=competitor)
+    formset = GuessFormset(data=request.POST or None, initial=guesses,
+                           competitors=competitor_choices)
+    options_form = PickOptionsForm(data=request.POST or None)
 
-                messages.success(request, "Saved %s for "
-                                 "%d upcoming %ss." % (", ".join([str(c) for c in selected_competitors]), (len(qs)+1), event.series.event_label))
-            else:
-                messages.success(request, "Your picks have been saved.")
-                
-            return HttpResponseRedirect(reverse('fantasy-event-detail',
-                                                args=[event.pk]))
-    else:
-        formset = GuessFormset(initial=guesses, competitors=competitor_choices)
-        options_form = PickOptionsForm(data=request.POST or None)
-        
     team_form = TeamGuessForm(data=request.POST or None, teams=team_choices)
 
     guess_list = event.guess_list()
@@ -698,32 +710,26 @@ def event_detail(request, id):
         guess_timestamp = curr_guesses[0].timestamp
     else:
         guess_timestamp = None
-        
-    c = RequestContext(request, {
+    
+    return {
         'series': event.series,
         'event': event,
-        'points_list': series_points_list(series)[:10],
-        'provisional': series_provisional(series),
-        'formset': formset,
-        'team_form': team_form,
-        'options_form': options_form,
-        'add_competitor_ok': False, # series.users_enter_competitors,
+        'is_admin': series.is_admin(user),
         'late_entry': late_entry,
-        'is_admin': series.is_admin(request.user),
-        'guesses': guesses,
+        'formset': formset,
+        'options_form': options_form,
+        'team_form': team_form,
+        'guesses': guesses,        
         'guess_timestamp': guess_timestamp,
-    })
-    return render_to_response('fantasy/event_guess.html', c)
+        'guess_deadline_elapsed': guess_deadline_elapsed,
+        'curr_guesses': curr_guesses,
+        'add_competitor_ok': False, # series.users_enter_competitors,
+    }
 
-def event_guess_context(event, user):
-    '''
-    Returns a dictionary of context variables for event guess.
-    '''
-    return None
 
 def event_result(request, id):
     '''
-    Shows the results of a event.
+    Shows the results of an event.
     
     '''
     if request.user.is_authenticated():
@@ -735,17 +741,16 @@ def event_result(request, id):
     series = event.series
 
     if not event.guess_deadline_elapsed():
-    # if request.method == 'POST': redirect to a
-    # "sorry, the race has not yet started." page.
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        messages.info(request, "The guess deadline has not been reached!")
+        return HttpResponseRedirect(reverse('fantasy-series-home', args=[series.pk]))
 
-    context_vars = event_result_context(event, user)
+    context_vars = event_result_context(request, event, user)
         
     c = RequestContext(request, context_vars)
     return render_to_response('fantasy/event_result.html', c)
 
 
-def event_result_context(event, user):
+def event_result_context(request, event, user):
     '''
     Returns a dictionary of context variables for event result.
     '''
@@ -865,9 +870,12 @@ def result_edit(request, id):
     
     event = get_object_or_404(Event, pk=id)
     series = event.series
-    if (not series.is_admin(request.user) and event.result_locked) or \
-        not event.guess_deadline_elapsed():
-        return HttpResponseRedirect(reverse('fantasy-root'))
+    if (not series.is_admin(request.user) and event.result_locked):
+        messages.info(request, "Sorry, results are locked for this event.")
+        return HttpResponseRedirect(reverse('fantasy-series-home', args=[series.pk]))
+    if not event.guess_deadline_elapsed():
+        messages.error(request, "The guess deadline has not been reached!")
+        return HttpResponseRedirect(reverse('fantasy-series-home', args=[series.pk]))
     
     all_competitors = Competitor.objects.filter(series=series)
     competitor_choices = [('', '------')]
