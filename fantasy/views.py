@@ -952,8 +952,8 @@ def result_edit(request, id):
                     r.save()
             messages.success(request, '%s results have been saved.'
                              % str(series.event_label))
-            return HttpResponseRedirect(reverse('fantasy-event-detail',
-                                                args=[event.pk]))
+            return HttpResponseRedirect(reverse('fantasy-series-home',
+                                                args=[series.pk]))
     else:
         formset = ResultFormset(initial=initial_results,
                                 competitors=competitor_choices)
