@@ -532,8 +532,8 @@ def event_edit(request, id):
             event = event_form.save()
             messages.success(request, 'Saved %s "%s".' % \
                              (series.event_label, str(event)))
-            return HttpResponseRedirect(reverse('fantasy-event-detail',
-                                                args=[event.pk]))
+            return HttpResponseRedirect(reverse('fantasy-series-home',
+                                                args=[series.pk]))
     else:
         event_form = EventForm(instance=event)
 

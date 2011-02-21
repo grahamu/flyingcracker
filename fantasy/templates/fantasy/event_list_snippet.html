@@ -6,6 +6,7 @@
                 <th>{{ series.event_label }}</th>
                 <th>My Guess{{ series.num_guesses|pluralize:",es" }}</th>
                 <th>Guess Cutoff</th>
+                {% if is_admin %}<th>Admin</th>{% endif %}
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,9 @@
                 <td>{{ cutoff|date:"D F d" }}<br />{{ cutoff|time:"f a" }}<br />
                 {% firstof user.get_profile.timezone "UTC" %}</td>
                 {% endwith %}
+                {% if is_admin %}
+                <td><input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url fantasy-event-edit r.event.pk %}';" /></td>
+                {% endif %}
             </tr>
 {% endfor %}
         </tbody>
