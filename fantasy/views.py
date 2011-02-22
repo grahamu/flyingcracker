@@ -494,7 +494,7 @@ def event_add(request, series_id):
             event = event_form.save(commit=False)
             event.series = series
             event.save()
-            messages.success(request, 'Added event "%s".' % str(event))
+            messages.success(request, 'Added event "%s".' % event)
             return HttpResponseRedirect(reverse('fantasy-series-home',
                                                 args=[series.pk]))
     else:
@@ -531,7 +531,7 @@ def event_edit(request, id):
         if event_form.is_valid():
             event = event_form.save()
             messages.success(request, 'Saved %s "%s".' % \
-                             (series.event_label, str(event)))
+                             (series.event_label, event))
             return HttpResponseRedirect(reverse('fantasy-series-home',
                                                 args=[series.pk]))
     else:
