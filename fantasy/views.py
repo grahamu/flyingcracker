@@ -140,7 +140,7 @@ def series_dashboard(request, id):
         'next_guesses': next_guesses,
         'points_list': series_points_list(series)[:10],
         'provisional': series_provisional(series),
-        'is_admin': series.is_admin(request.user),
+        'is_admin': series.is_admin(user),
     })
         
     return render_to_response('fantasy/series_home.html', c)

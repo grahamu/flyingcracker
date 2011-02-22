@@ -76,7 +76,10 @@ class Series(models.Model):
         return guesses
         
     def is_admin(self, user):
-        return user == self.owner or user.is_staff
+        if user:
+            return user == self.owner or user.is_staff
+        else:
+            return False
     
     def is_hidden(self):
         return self.status == self.HIDDEN_STATUS
