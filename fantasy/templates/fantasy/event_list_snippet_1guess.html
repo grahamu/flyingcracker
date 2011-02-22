@@ -15,11 +15,11 @@
                 <td><a href="{{ r.event.get_absolute_url }}">{{ r.event }}</a><br />{{ r.event.description }}</td>
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
                 {% with user|user_time:r.event.guess_deadline as cutoff %}
-                <td>{{ cutoff|date:"D F d" }}<br />{{ cutoff|time:"f a" }}<br />
+                <td>{{ cutoff|date:"D N d" }}<br />{{ cutoff|time:"f a" }}<br />
                 {% firstof user.get_profile.timezone "UTC" %}</td>
                 {% endwith %}
                 {% with user|user_time:r.event.start as start %}
-                <td>{{ start|date:"D F d" }}<br />{{ start|time:"f a" }}<br />
+                <td>{{ start|date:"D N d" }}<br />{{ start|time:"f a" }}<br />
                 {% firstof user.get_profile.timezone "UTC" %}</td>
                 {% endwith %}
                 {% if is_admin %}

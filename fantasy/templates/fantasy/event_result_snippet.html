@@ -19,7 +19,7 @@
   <hr />
   <div class="fantasy-guess-deadline fantasy-form-help">
     {% with user|user_time:wrapper.guess_timestamp as timestamp %}
-    submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+    submitted {{ timestamp|date:"D N d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
     {% endwith %}
   </div>
   <h2>My Picks</h2>
@@ -134,7 +134,7 @@
         <tr>
           <td>{{ g.player }}</td>
           {% with user|user_time:g.timestamp as timestamp %}
-          <td>{{ timestamp|date:"D F d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
+          <td>{{ timestamp|date:"D N d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
           {% endwith %}
         </tr>
     {% if forloop.last %}

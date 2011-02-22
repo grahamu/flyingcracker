@@ -26,7 +26,7 @@
   <div class="fantasy-guess-deadline">
   Guess Deadline<br />
   {% with user|user_time:event.guess_cutoff as cutoff %}
-  <span class="date">{{ event.guess_deadline|timeuntil }}<br />{{ cutoff|date:"D F d" }}<br />{{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
+  <span class="date">{{ event.guess_deadline|timeuntil }}<br />{{ cutoff|date:"D N d" }}<br />{{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
   {% endwith %}
   </div>
   <div class="fantasy-form-help">
@@ -137,7 +137,7 @@ Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.
         <tr>
           <td>{{ g.player }}</td>
           {% with user|user_time:g.timestamp as timestamp %}
-          <td>{{ timestamp|date:"D F d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
+          <td>{{ timestamp|date:"D N d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
           {% endwith %}
         </tr>
     {% if forloop.last %}

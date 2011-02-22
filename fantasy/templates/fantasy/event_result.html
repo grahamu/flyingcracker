@@ -7,7 +7,7 @@
 {{ block.super }}
 <div class="fantasy-guess-deadline">
 Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
-                <span class="date">{{ cutoff|date:"D F d" }}, {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
+                <span class="date">{{ cutoff|date:"D N d" }}, {{ cutoff|time:"f a" }} {% firstof user.get_profile.timezone "UTC" %}</span>
                 {% endwith %}
 </div>
 <div class="section-header">
@@ -20,7 +20,7 @@ Guess Deadline<br />{% with user|user_time:event.guess_cutoff as cutoff %}
 {% if user_guesses %}
 <div class="fantasy-guess-deadline fantasy-form-help">
 {% with user|user_time:guess_timestamp as timestamp %}
-submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
+submitted {{ timestamp|date:"D N d" }}<br />{{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}
 {% endwith %}</div>
 <h2>My Picks</h2>
 {% for guess in user_guesses %}
@@ -131,7 +131,7 @@ submitted {{ timestamp|date:"D F d" }}<br />{{ timestamp|time:"f a" }} {% firsto
         <tr>
           <td>{{ g.player }}</td>
           {% with user|user_time:g.timestamp as timestamp %}
-          <td>{{ timestamp|date:"D F d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
+          <td>{{ timestamp|date:"D N d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
           {% endwith %}
         </tr>
     {% if forloop.last %}
