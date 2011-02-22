@@ -531,6 +531,25 @@ th.flowHead{
 	font-size: 1em;
 }
 
+span.temp-today {
+	color:#0000ff;
+}
+span.temp-yesterday {
+	color:#87ceeb;
+}
+span.temp-year-ago {
+	color:#bebebe;
+}
+span.bp-today {
+	color:#d96c00;
+}
+span.bp-yesterday {
+	color:#ffcc99;
+}
+span.bp-year-ago {
+	color:#bebebe;
+}
+
 .cocktail {
 	font-family: arial, sans-serif;
 	font-size: 1em;

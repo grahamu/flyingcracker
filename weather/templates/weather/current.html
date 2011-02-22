@@ -21,12 +21,14 @@
 
 			<div class="body">
                 <div id="curr_weather">
+				    Temperature - <b><span class="temp-today">Today</span></b>, <b><span class="temp-yesterday">Yesterday</span></b>, and <b><span class="temp-year-ago">One Year Ago</span></b><br />
                     <div id="curr-temp-block" style="background: url({{ temp_chart_val|safe }}) no-repeat top">
                         <div id="curr_temp" class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
                             <span class="temp_value">{{ temp_val }}&#186;</span>
                             <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
                         </div>
                     </div>
+				    Barometric Pressure - <b><span class="bp-today">Today</span></b>, <b><span class="bp-yesterday">Yesterday</span></b>, and <b><span class="bp-year-ago">One Year Ago</span></b><br />
                     <div id="curr-barometer-block" style="background: url({{ baro_chart_val|safe }}) no-repeat top">
                         <div class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
                             <div id="curr_baro">
