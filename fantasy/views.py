@@ -651,7 +651,11 @@ def event_detail(request, id):
             return HttpResponseRedirect(reverse('fantasy-event-detail',
                                             args=[event.pk]))
         
-    c = RequestContext(request, cv)
+    c = RequestContext(request, {'wrapper': cv,
+                                 'is_admin': series.is_admin(request.user),
+                                 'series': series,
+                                 'event': event,
+                                 })
     return render_to_response('fantasy/event_guess.html', c)
 
 def event_guess_context(request, event, user):

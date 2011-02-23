@@ -118,7 +118,7 @@
 {% else %} {# not user.authenticated #}
 
 <div class="fantasy-form-container">
-Sign up to pick your favorite {{ series.competitor_label }}s for this {{ series.event_label }}.
+<a href="{% url registration_register %}">Sign up</a> to pick your favorite {{ series.competitor_label }}s for this {{ series.event_label }}.
 </div>
 {% endif %}
 
