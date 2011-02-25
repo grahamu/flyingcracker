@@ -1,0 +1,20 @@
+{% extends "fantasy/fantasy.html" %}
+
+{% block fantasy-bd %}
+{{ block.super }}
+<script>
+(function() {
+	var myTabs = new YAHOO.widget.TabView("tab-menu");
+	
+	//set the active Tab to the cookie value, if present:
+	if (YAHOO.util.Cookie.get("fantasy-dashboard")) {
+		myTabs.set("activeTab", myTabs.getTab(YAHOO.util.Cookie.get("fantasy-dashboard")));
+	};
+	
+	//when a Tab changes, set the cookie:
+	myTabs.on("activeTabChange", function(o) {
+		YAHOO.util.Cookie.set("fantasy-dashboard", this.getTabIndex(o.newValue));
+	});
+})();
+</script>
+{% endblock %}
