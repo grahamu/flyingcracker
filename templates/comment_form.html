@@ -5,7 +5,7 @@
   {{ form.timestamp }}
   {{ form.security_hash }}
   <div>
-    <textarea rows="5" name="{{ form.comment.html_name }}" id="{{ account_form.description.auto_id }}" class="comment-textarea">{{ form.comment.value }}</textarea>
+    <textarea rows="5" name="{{ form.comment.html_name }}" id="{{ account_form.description.auto_id }}" class="comment-textarea">{% if form.comment.value %}{{ form.comment.value }}{% endif %}</textarea>
     {{ form.comment.errors }}
   </div>
   <p style="display:none;">
