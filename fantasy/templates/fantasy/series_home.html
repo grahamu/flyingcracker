@@ -16,7 +16,7 @@
 <div id="tab-menu" class="yui-navset">
   <ul class="yui-nav">
     {% if current_event %}
-    <li class="selected"><a href="#tab-current"><em>{% if current_event.event.results_locked %}Previous:{% else %}Current:{% endif %} {{ current_event.event.short_name }}</em></a></li>
+    <li class="selected"><a href="#tab-current"><em>{% if current_event.event.result_locked %}Previous:{% else %}Current:{% endif %} {{ current_event.event.short_name }}</em></a></li>
     {% endif %}
     {% if next_event %}
     <li{% if not current_event %} class="selected"{% endif %}><a href="#tab-next"><em>Next: {{ next_event.event.short_name }}</em></a></li>
