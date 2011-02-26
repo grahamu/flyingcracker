@@ -294,9 +294,6 @@ def competitor_list(request, id):
     from fc3.fantasy.forms import CompetitorForm
     
     series = get_object_or_404(Series, pk=id)
-    if not series.is_admin(request.user):
-        # cannot edit Series data if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
     competitor = Competitor(series=series)
     team_qs = Team.objects.filter(series=series)
         
@@ -322,8 +319,6 @@ def competitor_list(request, id):
         'series': series,
         'competitor_list': competitor_qs,
         'competitor_form': competitor_form,
-        'points_list': series_points_list(series)[:10],
-        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('fantasy/competitor_list.html', c)
@@ -1077,8 +1072,6 @@ def team_list(request, series_id):
     c = RequestContext(request, {
         'series': series,
         'team_list': team_qs,
-        'points_list': series_points_list(series)[:10],
-        'provisional': series_provisional(series),
         'is_admin': series.is_admin(request.user),
     })
     return render_to_response('fantasy/team_list.html', c)

@@ -24,9 +24,7 @@
     <li><a href="#tab-all"><em>All {{ series.event_label }}s</em></a></li>
     <li><a href="#tab-messages"><em>Message Board</em></a></li>
     <li{% if not current_event and not next_event %} class="selected"{% endif %}><a href="#tab-leaders"><em>Leaders</em></a></li>
-    {% if is_admin %}
-    <li><a href="#tab-admin"><em>Admin</em></a></li>
-    {% endif %}
+    <li><a href="#tab-admin"><em>{% if is_admin %}Admin{% else %}Extras{% endif %}</em></a></li>
   </ul>
   
   <div class="yui-content">
@@ -74,31 +72,30 @@
       </div>
     </div>
     
-    {% if is_admin %}
     <div id="tab-admin">
       <div class="section-header">
+        {% if is_admin %}
         <div class="fantasy-guess-deadline">
           <input type="button" value="Edit Series" onclick="location.href='{% url fantasy-series-edit series.pk %}';" />
         </div>
+        {% endif %}
         <div class="section-title">{{ series }}</div>
         {% if series.description %}
         <div class="section-tagline">{{ series.description }}</div>
         {% endif %}
       <hr />
-      Hi {{ series }} administrator. Here are the fun buttons! Use them wisely.
       </div>
       <table class="fantasy-list-table">
       <tbody>
         <tr>
-          <td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /></td>
+          {% if is_admin %}<td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /></td>{% endif %}
           <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url fantasy-competitor-list series.pk %}';" /></td>
           <td><input type="button" value="Team List" onclick="location.href='{% url fantasy-team-list series.pk %}';" /></td>
-          <td><input type="button" value="Email Players" onclick="location.href='{% url fantasy-series-email series.pk %}';" /></td>
+          {% if is_admin %}<td><input type="button" value="Email Players" onclick="location.href='{% url fantasy-series-email series.pk %}';" /></td>{% endif %}
         </tr>
       </tbody>
       </table>
     </div>
-    {% endif %}
     
   </div>
 </div>

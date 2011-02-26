@@ -27,8 +27,7 @@
             <tbody>
               {% for c in teammates %}
               <tr>
-                <td>{{ c }}</td>
-                <td>{{ c.active|yesno:",Inactive" }}</td>
+                <td>{{ c }}{% if not c.active %}&nbsp;&nbsp;(inactive){% endif %}</td>
               </tr>
             {% endfor %}
             </tbody>
@@ -55,6 +54,6 @@ No teams found.<br />
 {% endif %}
 {% if is_admin %}
 <a href="{% url fantasy-team-add series.pk %}">Add a team to {{ series }}</a><br />
-<a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
 {% endif %}
+<a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
 {% endblock %}
