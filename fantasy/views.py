@@ -228,6 +228,9 @@ def series_points_list(series, include_late_entries=False,
             cumulative_points.append(total)
             last = total
             
+        rank_points = [points]
+        rank_points.extend([event_points[key] for key in event_keys])
+            
         points_list.append({'name': str(u.username),
                             'points': points,
                             'late': late_guess_events or late_guess_series,
@@ -238,10 +241,11 @@ def series_points_list(series, include_late_entries=False,
                                 [{'key':key, 'val':event_points[key]} \
                                  for key in event_keys],
                             'cumulative_points': cumulative_points,
+                            'rank_points': rank_points,
                            })
         
     import operator
-    points_list.sort(key=operator.itemgetter('points'), reverse=True)
+    points_list.sort(key=operator.itemgetter('rank_points'), reverse=True)
     
     # Return an empty list if there are no points
     if points_list and points_list[0]['points'] == 0:
