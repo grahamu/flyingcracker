@@ -229,7 +229,7 @@ def series_points_list(series, include_late_entries=False,
             last = total
             
         rank_points = [points]
-        rank_points.extend([event_points[key] for key in event_keys])
+        rank_points.extend([result_totals[key] for key in result_keys])
             
         points_list.append({'name': str(u.username),
                             'points': points,
