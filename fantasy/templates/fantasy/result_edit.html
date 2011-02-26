@@ -2,10 +2,6 @@
 
 {% block fantasy-main %}
 {{ block.super }}
-<div class="section-header">
-    <div class="section-title">{{ event }} - <a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
-    {% if event.description %}<div class="section-tagline">{{ event.description }}</div>{% endif %}
-</div>
 <div class="fantasy-form-help">
 Pick a {{ series.competitor_label }} and enter their place for each result.<br />
 Clear {{ series.competitor_label|capfirst }} name to delete a result.<br />

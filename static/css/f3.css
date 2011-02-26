@@ -1184,7 +1184,11 @@ textarea#id_comment {
 }
 ul.messages li.success {
 	color: green;
-	font-size: 110%
+	font-size: 110%;
+}
+ul.messages li.error {
+	color: pink;
+	font-size: 110%;
 }
 .alert {
 	background: yellow;

@@ -3,10 +3,6 @@
 
 {% block fantasy-main %}
 {{ block.super }}
-<div class="section-header">
-    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a><span class="action-title">&nbsp;&nbsp;~&nbsp;&nbsp;{% if team.pk %}Edit{% else %}Add{% endif %} Team</span></div>
-    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
-</div>
 <div class="fantasy-form-help">
 Enter a team name and select {{ series.competitor_label }}s for {{ series }}. Click Submit when you are done.
 </div>

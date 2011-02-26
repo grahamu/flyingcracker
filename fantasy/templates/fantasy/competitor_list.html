@@ -3,10 +3,6 @@
 
 {% block fantasy-main %}
 {{ block.super }}
-<div class="section-header">
-    <div class="section-title"><a href="{{ series.get_absolute_url }}">{{ series }}</a></div>
-    {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
-</div>
 <div class="fantasy-form-help">The following {{ series.competitor_label }}s are available for this series.<br />
 To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button, or <a href="{% url fantasy-competitor-import series.pk %}">Import {{ series.competitor_label }}s</a> from other Series.</div>
 {% if is_admin %}
