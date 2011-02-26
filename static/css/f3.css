@@ -1021,12 +1021,19 @@ span.bp-year-ago {
 .fantasy-list-table tr.race-future {
 	background-color: #D0FFD0;
 }
-.fantasy-list-table td {
+.fantasy-invisible-table {
+	width: 100%;
+}
+.fantasy-list-table td, .fantasy-invisible-table td {
 	font-family : Arial, Helvetica, Verdana;
 	font-size : 10pt;
 	vertical-align : top;
 	border-bottom: thin solid #666699;
 	padding: 6px 0px 6px 8px;
+}
+.fantasy-invisible-table td {
+	border-bottom: none;
+	padding: 0px 0px 6px 0px;
 }
 .fantasy-list-table td.nobg {
 	border-top: 0;

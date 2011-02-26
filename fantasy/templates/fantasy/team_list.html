@@ -5,23 +5,39 @@
 <div class="fantasy-form-help">
 </div>
 {% if team_list %}
+
 <div id="team-list-container" class="fantasy-list-container">
-    <table id="team-list-table" class="fantasy-list-table">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Team</th>
-                <th>{{ series.competitor_label }}s</th>
-                <th class="nobg">&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody>
+  <table id="team-list-table" class="fantasy-list-table">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Team</th>
+        <th>{{ series.competitor_label }}s</th>
+        {% if is_admin %}<th>Admin</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
 {% for t in team_list %}
-            <tr class="{{ r.row_class }}">
-                <td>{{ forloop.counter }}.</td>
-                <td>{{ t }}</td>
-                <td>{{ t.competitor_set.all|join:"<br />" }}</td>
-                <td class="nobg">{% if is_admin %}<a href="{% url fantasy-team-edit t.pk %}">Edit team</a>{% endif %}</td>
+      <tr class="{{ r.row_class }}">
+        <td>{{ forloop.counter }}.</td>
+        <td>{{ t }}</td>
+        {% with t.competitor_set.all as teammates %}
+        <td>
+          <table class="fantasy-invisible-table">
+            <tbody>
+              {% for c in teammates %}
+              <tr>
+                <td>{{ c }}</td>
+                <td>{{ c.active|yesno:",Inactive" }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </td>
+        {% endwith %}
+        {% if is_admin %}
+        <td><input type="button" value="Edit team" onclick="location.href='{% url fantasy-team-edit t.pk %}';" /></td>
+        {% endif %}
             </tr>
 {% empty %}
             <tr>
