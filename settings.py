@@ -43,8 +43,8 @@ SECRET_KEY = 'r9o847m+!y4vy6ohegip0d)a95pmbok9y0k@^7)pl#tfhq7zwy'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.load_template_source',
 )
 
@@ -54,7 +54,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
                                'fc3.context_processors.system_version',
                                'fc3.context_processors.login_url_with_redirect',
                                'django.contrib.messages.context_processors.messages',
-                               'django.core.context_processors.auth',
+                               'django.contrib.auth.context_processors.auth',
                                'django.core.context_processors.debug',
                                'django.core.context_processors.i18n',
                                'django.core.context_processors.media',

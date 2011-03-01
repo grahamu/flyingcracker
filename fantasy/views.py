@@ -755,7 +755,11 @@ def event_result(request, id):
 
     context_vars = event_result_context(request, event, user)
         
-    c = RequestContext(request, context_vars)
+    c = RequestContext(request, {'wrapper': context_vars,
+                                 'is_admin': series.is_admin(request.user),
+                                 'series': series,
+                                 'event': event,
+                                 })
     return render_to_response('fantasy/event_result.html', c)
 
 
