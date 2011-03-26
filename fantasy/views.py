@@ -897,8 +897,9 @@ def result_edit(request, id):
         messages.info(request, "Sorry, results are locked for this event.")
         return HttpResponseRedirect(reverse('fantasy-series-home',
                                             args=[series.pk]))
-    if not event.guess_deadline_elapsed():
-        messages.error(request, "The guess deadline has not been reached!")
+    if not event.start_time_elapsed():
+        messages.error(request, "Cannot enter results since this event has "
+                       "not started.")
         return HttpResponseRedirect(reverse('fantasy-series-home',
                                             args=[series.pk]))
     
