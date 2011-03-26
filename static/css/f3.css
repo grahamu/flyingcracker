@@ -1194,7 +1194,7 @@ ul.messages li.success {
 	font-size: 110%;
 }
 ul.messages li.error {
-	color: pink;
+	color: red;
 	font-size: 110%;
 }
 .alert {

@@ -898,8 +898,8 @@ def result_edit(request, id):
         return HttpResponseRedirect(reverse('fantasy-series-home',
                                             args=[series.pk]))
     if not event.start_time_elapsed():
-        messages.error(request, "Cannot enter results since this event has "
-                       "not started.")
+        messages.error(request, "Sorry, you are not allowed to enter results "
+                       "before the event starts!")
         return HttpResponseRedirect(reverse('fantasy-series-home',
                                             args=[series.pk]))
     
