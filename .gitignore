@@ -1,0 +1,7 @@
+*.pyc
+dist
+MANIFEST
+.DS_Store
+cron_mail*.*
+settings_local.py
+

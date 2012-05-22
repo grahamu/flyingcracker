@@ -29,16 +29,26 @@ class CBAC(Forecast):
         
         rss = xml
         channel = rss.find('channel')
+        if not channel:
+            return None
         item = channel.find('item')
+        if not item:
+            return None
         
         # Get the data we want
         pubdate = item.findtext('pubdate')
+        if not pubdate:
+            return None
         
         report_el = item.find('report')
+        if not report_el:
+            return None
         synopsis = report_el.findtext("weathersynopsis")
         reportedby = report_el.findtext("reportedby")
         
         forecast_el = report_el.find('forecast')
+        if not forecast_el:
+            return None
         today = forecast_el.findtext('today')
         tonight = forecast_el.findtext('tonight')
         tomorrow = forecast_el.findtext('tomorrow')
