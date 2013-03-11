@@ -12,7 +12,7 @@ from fantasy import managers
 class Series(models.Model):
     '''
     A series of one or more events, i.e. Formula One 2009.
-    
+
     '''
     name                    = models.CharField(max_length=100, unique=True)
     description             = models.CharField(max_length=100, blank=True, null=True)
@@ -48,7 +48,7 @@ class Series(models.Model):
     def guesser_list(self):
         '''
         Returns a list of Users who have guesses in this Series.
-        
+
         '''
         if self.guess_once_per_series:
             guessers = [g.user for g in self.guesses.all()]
@@ -66,7 +66,7 @@ class Series(models.Model):
     def guess_cutoff(self):
         qs = Event.objects.filter(series=self).order_by('guess_deadline')
         return qs[0].guess_deadline
-    
+
     def guess_list(self):
         if not self.guess_once_per_series:
             return None
@@ -74,22 +74,22 @@ class Series(models.Model):
             guesses = [{'timestamp': g.timestamp, 'player':g.user}
                        for g in self.guesses.all().order_by('timestamp')]
         return guesses
-        
+
     def is_admin(self, user):
         if user:
             return user == self.owner or user.is_staff
         else:
             return False
-    
+
     def is_hidden(self):
         return self.status == self.HIDDEN_STATUS
-    
+
     def is_complete(self):
         return self.status == self.COMPLETE_STATUS
-    
+
     def __unicode__(self):
         return u'%s' % self.name
-    
+
     def get_absolute_url(self):
         return ('fantasy-series-home', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
@@ -98,20 +98,20 @@ class Series(models.Model):
 class Event(models.Model):
     '''
     An event in a series, i.e. Monaco Grand Prix.
-    
+
     '''
     name            = models.CharField(max_length=100)
     short_name      = models.CharField(max_length=20, blank=True)
     description     = models.CharField(max_length=100, blank=True, null=True)
-    start           = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
     guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
+    start           = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
     location        = models.CharField(max_length=100, blank=True, null=True)
     series          = models.ForeignKey(Series)
     result_locked   = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
     guesses         = generic.GenericRelation('Guess')
-    
+
     objects = managers.EventManager()
-    
+
     class Meta:
         ordering = ['start']
         unique_together = ('name', 'series')
@@ -119,7 +119,7 @@ class Event(models.Model):
     def guess_cutoff(self):
         '''
         For display only.
-        
+
         '''
         if self.guess_deadline:
             return self.guess_deadline
@@ -162,10 +162,10 @@ class Event(models.Model):
             guesses = [{'timestamp': g.timestamp, 'player':g.user}
                        for g in self.guesses.all().order_by('timestamp')]
         return guesses
-        
+
     def __unicode__(self):
         return u'%s' % self.name
-    
+
     def get_absolute_url(self):
         return ('fantasy-event-detail', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
@@ -176,11 +176,11 @@ class Competitor(models.Model):
     series      = models.ForeignKey(Series)
     team        = models.ForeignKey('Team', blank=True, null=True)
     active      = models.BooleanField(default=True, help_text='Players may only pick "active" competitors.')
-    
+
     class Meta:
         unique_together = ('name', 'series')
         ordering = ['name']
-    
+
     def __unicode__(self):
         return u'%s' % self.name
 
@@ -195,13 +195,13 @@ class Team(models.Model):
     series          = models.ForeignKey(Series)
     name            = models.CharField(max_length=100)
     short_name      = models.CharField(max_length=50, blank=True)
-    
+
     class Meta:
         ordering = ['name']
-        
+
     def __unicode__(self):
         return u'%s' % self.name
-    
+
     def short(self):
         if self.short_name:
             return u'%s' % self.short_name
@@ -214,11 +214,11 @@ class Result(models.Model):
     event       = models.ForeignKey(Event)
     result      = models.CharField(max_length=50)
     entered_by  = models.ForeignKey(User, blank=True, null=True)
-    
+
     class Meta:
         ordering = ['result']
         unique_together = ('competitor','event', 'result')
-    
+
     def __unicode__(self):
         return u'%s: %s: %s' % (self.event, self.result, self.competitor)
 
@@ -229,8 +229,8 @@ class Result(models.Model):
 
     def points_for_result(self):
         return self.event.series.scoring_system.points(self.result)
-    
-    
+
+
 class Guess(models.Model):
     user            = models.ForeignKey(User)
     competitor      = models.ForeignKey(Competitor)
@@ -242,7 +242,7 @@ class Guess(models.Model):
 
     class Meta:
         verbose_name_plural = 'guesses'
-    
+
     def __unicode__(self):
         return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user)
 
