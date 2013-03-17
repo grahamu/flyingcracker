@@ -247,6 +247,6 @@ class Guess(models.Model):
         return u'%s: %s by %s' % (self.guess_for, self.competitor, self.user)
 
     def save(self, **kwargs):
-        if not self.id:
+        if not self.id and not self.timestamp:
             self.timestamp = datetime.now()
         super(Guess, self).save()
