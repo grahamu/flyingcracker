@@ -15,10 +15,10 @@ urlpatterns = patterns('',
     (r'^admin/doc/',                        include('django.contrib.admindocs.urls')),
     (r'^admin/',                            include(admin.site.urls)),
     (r'^comments/',                         include('django.contrib.comments.urls')),
-    
+
     # Application URLs
     (r'^accounts/',                         include('registration.urls')),
-    (r'^profiles/',                         include('profiles_urls')),
+#    (r'^profiles/',                         include('profiles_urls')),
 #    (r'^client/',                           include('serviceclient.urls')),
     (r'^blog/',                             include('blog.urls')),
     (r'^cam/',                              include('cam.urls')),
@@ -38,23 +38,10 @@ if pattern_views and settings.DEBUG:
 
 if settings.STATIC_URL[ :5] != 'http:':
     urlpatterns += patterns('django.views.static',
-        (r'^' + settings.STATIC_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.STATIC_ROOT }),
+        (r'^' + settings.STATIC_URL + '(?P<path>.*)$', 'serve', {'document_root': settings.STATIC_ROOT }),
     )
 
 if hasattr(settings, 'LOCAL_URL') and hasattr(settings, 'LOCAL_ROOT'):
     urlpatterns += patterns('django.views.static',
         (r'^' + settings.LOCAL_URL + '/(?P<path>.*)$', 'serve', {'document_root': settings.LOCAL_ROOT }),
     )
-
-#
-# Put the feeds stuff after all other URLs so URL resolution works!
-#
-from fc3.feeds import RssSiteNewsFeed, AtomSiteNewsFeed
-
-feeds = {
-    'rss': RssSiteNewsFeed,
-    'atom': AtomSiteNewsFeed,
-}
-urlpatterns += patterns('',
-    (r'^feeds/(?P<url>.*)/$',               'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
-)

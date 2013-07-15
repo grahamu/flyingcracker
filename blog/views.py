@@ -16,11 +16,11 @@ def upload_file(request):
             fd = open(filepath, 'wb')
             fd.write(file['content'])
             fd.close()
-            fileurl = '/%s/%s' % (settings.STATIC_URL, filename)
+            fileurl = '%s%s' % (settings.STATIC_URL, filename)
             result = {"status": "UPLOADED", "image_url": fileurl}
         else:
             result = {"status": "upload failed"}
-            
+
         json = simplejson.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json, mimetype='text/html')  # try mimetype='application/javascript'
     else:

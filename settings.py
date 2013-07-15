@@ -4,7 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = BASE_DIR
 
-ALLOWED_INCLUDE_ROOTS = BASE_DIR
+ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
@@ -99,10 +99,10 @@ INSTALLED_APPS = (
     'uni_form',
     'registration',
     'django_mailer',
-    'profiles',
+#    'profiles',
     'sms',
     'timezones',
-    
+
     'scoresys',
     'home',
     'fcprofile',
