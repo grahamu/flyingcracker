@@ -14,7 +14,7 @@
     <meta name="robots" content="ALL" />
     <meta name="distribution" content="Global" />
     <meta name="rating" content="Safe For Kids" />
-    <meta name="copyright" content="2000-2007 - CracklyFinger.com" />
+    <meta name="copyright" content="2000-2013 - CracklyFinger.com" />
     <meta name="author" content="Graham Ullrich" />
     <meta http-equiv="reply-to" content="" />
     <meta name="language" content="English" />
@@ -37,8 +37,8 @@
 
     {% block javascript %}
 	<!-- jQuery -->
-	<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
-	<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/jquery-ui.min.js"></script>
+	<script type="text/javascript" language="javascript" src="{% static "js/jquery.js" %}"></script>
+	<script type="text/javascript" language="javascript" src="{% static "js/jquery-ui.min.js" %}"></script>
 
 	<!-- Individual YUI JS files -->
 	<script type="text/javascript" src="{{ yui_path }}/build/utilities/utilities.js"></script>
@@ -59,7 +59,7 @@
 
     {% block my_source %}
     <!-- My source - always after standard javascript block -->
-    <script type="text/javascript" src="/static/js/doc_utils.js"></script>
+    <script type="text/javascript" src="{% static "js/doc_utils.js" %}"></script>
     {% endblock my_source %}
 
     {% block extrahead %}
@@ -141,7 +141,7 @@
 		<!-- the unwrapped div.yui-b takes a fixed width and alignment based on the class of the top-level containing node -->
 		<div class="yui-b left1">
             {% block leftbar %}
-            <img src="/static/img/logo.png" height="170" alt="nav photo" />
+            <img src="{% static "img/logo.png" %}" height="170" alt="nav photo" />
             <div id="newsblog">
                 {% for post in miniblog %}
                 <div class="post">
@@ -154,7 +154,7 @@
                 </div>
             </div>
             <div id="rss">
-                <a href="/feeds/rss/"><img alt="RSS Feed" src="/static/img/feed-icon-28x28.png" /></a>&nbsp;
+                <a href="/feeds/rss/"><img alt="RSS Feed" src="{% static "img/feed-icon-28x28.png" %}" /></a>&nbsp;
             </div> <!-- rss -->
             {% endblock leftbar %}
         </div>

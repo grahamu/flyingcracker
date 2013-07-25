@@ -1,5 +1,5 @@
 {% extends "fantasy/admin.html" %}
-{% load uni_form_tags %}
+{% load uni_form_tags staticfiles %}
 
 {% block fantasy-main %}
 {{ block.super }}
@@ -32,7 +32,7 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ competitor }}</td>
                 <td>{{ competitor.team.short }}</td>
-                <td class="center">{{ competitor.active|yesno:'<img src="/static/img/active.png">,<img src="/static/img/inactive.png">'|safe }}</td>
+                <td class="center">{{ competitor.active|yesno:'<img src="{% static "img/active.png" %}">,<img src="{% static "img/inactive.png" %}">'|safe }}</td>
                 {% if is_admin %}
                 <td><input type="button" value="Edit" onclick="location.href='{% url fantasy-competitor-edit competitor.pk %}';" /></td>
                 {% endif %}

@@ -8,7 +8,7 @@ ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = "/home2/graham/webapps/static_media/"
 
 ADMINS = (
     ('Graham Ullrich', 'graham@flyingcracker.com'),
@@ -94,6 +94,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'django.contrib.flatpages',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
 
     'south',
     'uni_form',
@@ -131,6 +132,7 @@ SYSTEM_NAME = "cracklyfinger.com"
 
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
+ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com']
 # import local settings overriding the defaults
 try:
     from settings_local import *

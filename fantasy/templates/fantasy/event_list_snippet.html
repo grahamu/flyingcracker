@@ -1,4 +1,4 @@
-{% load user_time %}
+{% load user_time staticfiles %}
         <thead>
             <tr>
                 <th>&nbsp;</th>
@@ -13,7 +13,7 @@
 {% for r in event_list %}
             <tr class="{{ r.row_class }}">
                 <td>{{ forloop.counter }}.</td>
-                <td class="center">{% if r.guesses %}<img src="/static/img/active.png">{% else %}<img src="/static/img/inactive.png">{% endif %}</td>
+                <td class="center">{% if r.guesses %}<img src="{% static "img/active.png" %}">{% else %}<img src="{% static "img/inactive.png" %}">{% endif %}</td>
                 <td><a href="{{ r.event.get_absolute_url }}">{{ r.event }}</a><br />{{ r.event.description }}</td>
                 <td>{% if r.guesses %}{{ r.guesses|join:"<br />" }}{% else %}?{% endif %}</td>
                 {% with user|user_time:r.event.guess_deadline as cutoff %}
