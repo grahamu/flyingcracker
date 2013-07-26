@@ -1,5 +1,5 @@
 {% extends "fantasy/series_dashboard.html" %}
-{% load user_time %}
+{% load user_time staticfiles %}
 
 {% block javascript %}
 {{ block.super }}
@@ -26,7 +26,7 @@
     <li{% if not current_event and not next_event %} class="selected"{% endif %}><a href="#tab-leaders"><em>Leaders</em></a></li>
     <li><a href="#tab-admin"><em>{% if is_admin %}Admin{% else %}Extras{% endif %}</em></a></li>
   </ul>
-  
+
   <div class="yui-content">
     {% if current_event %}
     <div id="tab-current">
@@ -35,7 +35,7 @@
       {% endwith %}
     </div>
     {% endif %}
-    
+
     {% if next_event %}
     <div id="tab-next">
       {% with wrapper=next_event %}
@@ -43,7 +43,7 @@
       {% endwith %}
     </div>
     {% endif %}
-    
+
     <div id="tab-all">
       {% if event_list %}
       <div id="event-list-container" class="fantasy-list-container">
@@ -59,24 +59,24 @@
       No {{ series.event_label|lower }}s found.<br />
       {% endif %}
     </div>
-    
+
     <div id="tab-messages">
       {% with series as comment_obj %}
       {% include "comment_block.html" %}
       {% endwith %}
     </div>
-    
+
     <div id="tab-leaders">
       <div class="fantasy-leaders">
       {% include "fantasy/leaders_home.html" %}
       </div>
     </div>
-    
+
     <div id="tab-admin">
       <div class="section-header">
         {% if is_admin %}
         <div class="fantasy-guess-deadline">
-          <input type="button" value="Edit Series" onclick="location.href='{% url fantasy-series-edit series.pk %}';" />
+          <input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy-series-edit' series.pk %}';" />
         </div>
         {% endif %}
         <div class="section-title">{{ series }}</div>
@@ -88,15 +88,15 @@
       <table class="fantasy-list-table">
       <tbody>
         <tr>
-          {% if is_admin %}<td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /></td>{% endif %}
-          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url fantasy-competitor-list series.pk %}';" /></td>
-          <td><input type="button" value="Team List" onclick="location.href='{% url fantasy-team-list series.pk %}';" /></td>
-          {% if is_admin %}<td><input type="button" value="Email Players" onclick="location.href='{% url fantasy-series-email series.pk %}';" /></td>{% endif %}
+          {% if is_admin %}<td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url 'fantasy-event-add' series.pk %}';" /></td>{% endif %}
+          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url 'fantasy-competitor-list' series.pk %}';" /></td>
+          <td><input type="button" value="Team List" onclick="location.href='{% url 'fantasy-team-list' series.pk %}';" /></td>
+          {% if is_admin %}<td><input type="button" value="Email Players" onclick="location.href='{% url 'fantasy-series-email' series.pk %}';" /></td>{% endif %}
         </tr>
       </tbody>
       </table>
     </div>
-    
+
   </div>
 </div>
 {% endblock %}

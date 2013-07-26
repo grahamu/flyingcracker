@@ -6,7 +6,7 @@ Please log in to {{ system_name }}:
 <br />
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.<br />
-(Note: If you are not registered at {{ system_name }} you should <a href="{% url registration_register %}">Sign up</a>.)
+(Note: If you are not registered at {{ system_name }} you should <a href="{% url 'registration_register' %}">Sign up</a>.)
 {% endif %}
 
 <form method="post" action=".">{% csrf_token %}
@@ -25,10 +25,10 @@ Please log in to {{ system_name }}:
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <br />
-Not a member of {{ system_name }}?  <a href="{% url registration_register %}">Sign up</a> (it's fast and free!)
+Not a member of {{ system_name }}?  <a href="{% url 'registration_register' %}">Sign up</a> (it's fast and free!)
 <br />
 <br />
-Forgot your password?  <a href="{% url auth_password_reset %}">Click here</a>
+Forgot your password?  <a href="{% url 'auth_password_reset' %}">Click here</a>
 <br />
 <br />
 (Note: You must be a member of {{ system_name }} to participate in Fantasy Races.)

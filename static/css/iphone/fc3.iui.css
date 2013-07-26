@@ -18,7 +18,7 @@ form { margin: 0; }
 }
 body > div#content > ul,
 body > div#content > form > ul {
-	background-color: #FFF; 
+	background-color: #FFF;
 	border: 0px solid;
 	margin: 0;
 	padding: 0;
@@ -35,7 +35,7 @@ body > div#content > form > ul > li {
 /* titleBar */
 body > div.titleBar {
 	background-color: #000;
-	background-image: url(/static/img/iphone/toolBarOverlay.png);
+	background-image: url(../img/iphone/toolBarOverlay.png);
 	background-position: left center;
 	background-repeat: repeat-x;
 	border-bottom: 1px solid #333;
@@ -81,13 +81,13 @@ body > div.titleBar > div.titleButton > a {
 	width: 85px;
 }
 body > div.titleBar > div.titleButton > a:hover {
-	background-image: url(/static/img/iphone/toolBarOverlay.png);
+	background-image: url(../img/iphone/toolBarOverlay.png);
 	background-position: left center;
 	background-repeat: repeat-x;
 }
 body > div#content ul > li.pageTitleBar {
 	background-color: #FFF;
-	background-image: url(/static/img/iphone/titleOverlay.png);
+	background-image: url(../img/iphone/titleOverlay.png);
 	background-position: left center;
 	background-repeat: repeat-x;
 	border-bottom: none;
@@ -130,13 +130,13 @@ li.menu.first a {
 	font-weight: normal;
 }
 li.menu a[selected="progress"] {
-	background-image: url(/static/img/iphone/load.gif);
+	background-image: url(../img/iphone/load.gif);
 	background-position: 280px center;
 	background-repeat: no-repeat;
 }
 li.menu.first a { padding: 14px 10px 10px 10px; }
-body > div#content > ul > li.menu.login { background-image: url(/static/img/iphone/icons/login.gif); }
-body > div#content > ul > li.menu.logout { background-image: url(/static/img/iphone/icons/logout.gif); }
+body > div#content > ul > li.menu.login { background-image: url(../img/iphone/icons/login.gif); }
+body > div#content > ul > li.menu.logout { background-image: url(../img/iphone/icons/logout.gif); }
 
 #ft {
     padding-bottom: 10px;
@@ -159,7 +159,7 @@ body > div#content > ul > li.menu.logout { background-image: url(/static/img/iph
     text-decoration: none;
     white-space: nowrap;
     background: none;
-    -webkit-border-image: url(/static/img/iphone/toolButton.png) 0 5 0 5;
+    -webkit-border-image: url(../img/iphone/toolButton.png) 0 5 0 5;
 }
 
 /* Form */
@@ -207,7 +207,7 @@ form input[type=password]:focus {
 /* toolBar */
 body > div.toolBar {
 	background-color: #4D4F53;
-	background-image: url(/static/img/iphone/menuBar.gif);
+	background-image: url(../img/iphone/menuBar.gif);
 	background-position: top left;
 	background-repeat: repeat-x;
 	height: 60px;
@@ -241,7 +241,7 @@ div.toolBar ul li.arrow {
 div.toolBar ul li:hover { background-color: rgba(0,0,0,0.3); }
 div.toolBar ul li.arrow:hover { background-color: rgba(0,0,0,0.3); }
 div.toolBar div#toolBarLoad {
-	background-image: url(/static/img/iphone/more_bg.png);
+	background-image: url(../img/iphone/more_bg.png);
 	background-position: left center;
 	background-repeat: repeat-x;
 	color: #FFF;
@@ -276,7 +276,7 @@ a.is-favourite img.fav-done {
 /* Preload */
 #preloader {
     display: none;
-    background-image: url(/static/img/iphone/load.gif), url(/static/img/iphone/loading.gif), url(/static/img/iphone/favspinner.gif), url(/static/img/iphone/selection.png), url(/static/img/iphone/button.png), url(/static/img/iphone/shadow.png), url(/static/img/iphone/fav.gif), url(/static/img/iphone/select_bg.png), url(/static/img/iphone/input.png), url(/static/img/iphone/menuBar.gif), url(/static/img/iphone/update_bg.png), url(/static/img/iphone/titleOverlay.png), url(/static/img/iphone/arrow.gif);
+    background-image: url(../img/iphone/load.gif), url(../img/iphone/loading.gif), url(../img/iphone/favspinner.gif), url(../img/iphone/selection.png), url(../img/iphone/button.png), url(../img/iphone/shadow.png), url(../img/iphone/fav.gif), url(../img/iphone/select_bg.png), url(../img/iphone/input.png), url(../img/iphone/menuBar.gif), url(../img/iphone/update_bg.png), url(../img/iphone/titleOverlay.png), url(../img/iphone/arrow.gif);
 }
 
 
@@ -289,7 +289,7 @@ body > div#content > form > ul > li.black {
 
 
 body #content > .panel {
-    background: #C8C8C8 url(/static/img/iphone/pinstripes.png);
+    background: #C8C8C8 url(../img/iphone/pinstripes.png);
     box-sizing: border-box;
     padding: 10px;
 }
@@ -343,7 +343,7 @@ fieldset > .row.last { border-bottom-width: 0px !important; }
     width: 80px;
 }
 .toggle {
-    background: #FFFFFF url(/static/img/iphone/toggle.png) repeat-x;
+    background: #FFFFFF url(../img/iphone/toggle.png) repeat-x;
     border: 1px solid #AAA;
     font-size: 17px;
     font-weight: bold;
@@ -351,7 +351,7 @@ fieldset > .row.last { border-bottom-width: 0px !important; }
     -webkit-border-radius: 6px;
 }
 .toggle[toggled="true"] {
-    background: #194fdb url(/static/img/iphone/toggleOn.png) repeat-x;
+    background: #194fdb url(../img/iphone/toggleOn.png) repeat-x;
     border: 1px solid #143fae;
 }
 .toggleOn {
@@ -376,7 +376,7 @@ fieldset > .row.last { border-bottom-width: 0px !important; }
 .toggle[toggled="true"] > .toggleOn { display: block; }
 .toggle[toggled="true"] > .toggleOff { display: none; }
 .thumb {
-    background: #ffffff url(/static/img/iphone/thumb.png) repeat-x;
+    background: #ffffff url(../img/iphone/thumb.png) repeat-x;
     border: 1px solid #AAA;
     height: 23px;
     left: -1px;
@@ -404,9 +404,9 @@ div.titleBar:after,
 ul:after,
 div#update-inner:after,
 div#update-inner div.formRow:after {
-	content: "."; 
-	display: block; 
-	height: 0; 
-	clear: both; 
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
 	visibility: hidden;
 }

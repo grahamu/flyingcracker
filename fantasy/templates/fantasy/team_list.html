@@ -35,7 +35,7 @@
         </td>
         {% endwith %}
         {% if is_admin %}
-        <td><input type="button" value="Edit team" onclick="location.href='{% url fantasy-team-edit t.pk %}';" /></td>
+        <td><input type="button" value="Edit team" onclick="location.href='{% url 'fantasy-team-edit' t.pk %}';" /></td>
         {% endif %}
             </tr>
 {% empty %}
@@ -53,7 +53,7 @@
 No teams found.<br />
 {% endif %}
 {% if is_admin %}
-<a href="{% url fantasy-team-add series.pk %}">Add a team to {{ series }}</a><br />
+<a href="{% url 'fantasy-team-add' series.pk %}">Add a team to {{ series }}</a><br />
 {% endif %}
-<a href="{% url fantasy-competitor-list series.pk %}">{{ series.competitor_label }} List</a><br />
+<a href="{% url 'fantasy-competitor-list' series.pk %}">{{ series.competitor_label }} List</a><br />
 {% endblock %}

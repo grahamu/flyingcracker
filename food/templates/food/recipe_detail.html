@@ -9,20 +9,20 @@
 					{{ recipe }}
 				</div>
 			</div>
-				
+
 			<table>
 				{% for i in ingredients %}
 				<tr>
 					<td><span class="qty">{{ i.quantity }}</span></td>
 					<td><span class="name">
-						<a href="{% url food-ingredient-detail recipe_type=recipe_type,slug=i.slug %}">
+						<a href="{% url 'food-ingredient-detail' recipe_type=recipe_type slug=i.slug %}">
 						{{ i.title }}</a>
 					</span></td>
 					<td><span class="modifier">{{ i.modifier }}</span></td>
 				</tr>
 				{% endfor %}
 			</table>
-				
+
 			<div class="directions">
 				{{ recipe.directions|textile }}
 			</div>

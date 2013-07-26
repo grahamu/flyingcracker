@@ -18,25 +18,25 @@
     <li><a href="#tab-admin"><em>Admin</em></a></li>
     {% endif %}
   </ul>
-  
+
   <div class="yui-content">
     {% if active_series %}
     <div id="tab-active">
       {% include "fantasy/series_active_snippet.html" %}
     </div>
     {% endif %}
-    
+
     {% if completed_series %}
     <div id="tab-completed">
       {% include "fantasy/series_completed_snippet.html" %}
     </div>
     {% endif %}
-    
+
     {% if is_admin %}
     <div id="tab-admin">
       <div class="section-header">
         <div class="fantasy-guess-deadline">
-          <input type="button" value="Edit Series" onclick="location.href='{% url fantasy-series-edit series.pk %}';" />
+          <input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy-series-edit' series.pk %}';" />
         </div>
         <div class="section-title">{{ series }}</div>
         {% if series.description %}
@@ -47,20 +47,20 @@
       <table class="fantasy-list-table">
       <tbody>
         <tr>
-          <td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url fantasy-event-add series.pk %}';" /></td>
-          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url fantasy-competitor-list series.pk %}';" /></td>
-          <td><input type="button" value="Team List" onclick="location.href='{% url fantasy-team-list series.pk %}';" /></td>
-          <td><input type="button" value="Edit Series" onclick="location.href='{% url fantasy-series-edit series.pk %}';" /></td>
-          <td><input type="button" value="Email Players" onclick="location.href='{% url fantasy-series-email series.pk %}';" /></td>
+          <td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url 'fantasy-event-add' series.pk %}';" /></td>
+          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url 'fantasy-competitor-list' series.pk %}';" /></td>
+          <td><input type="button" value="Team List" onclick="location.href='{% url 'fantasy-team-list' series.pk %}';" /></td>
+          <td><input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy-series-edit' series.pk %}';" /></td>
+          <td><input type="button" value="Email Players" onclick="location.href='{% url 'fantasy-series-email' series.pk %}';" /></td>
         </tr>
       </tbody>
       </table>
     </div>
     {% endif %}
-    
+
   </div>
 </div>
 
 <br />
-<p><a href="{% url fantasy-series-add %}">Create new Series</a></p>   
+<p><a href="{% url 'fantasy-series-add' %}">Create new Series</a></p>
 {% endblock %}

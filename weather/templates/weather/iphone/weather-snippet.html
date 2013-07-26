@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <div class="panel" selected="true">
     <a name="current"></a>
     <span id="curr_timestamp" class="fieldset_timestamp">{{ timestamp }}</span><h2>Crested Butte, CO</h2>
@@ -28,7 +29,7 @@
                 </div>
             </div>
             <div class="yui-gb">
-                <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url(/static/img/{{ wind_dir }}) no-repeat top"{% endif %}>
+                <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url({% static "img/{{ wind_dir }}" %}) no-repeat top"{% endif %}>
                     <span class="speed_value">{{ wind_val }}</span>
                     <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}">{{ speed_unit }}</span></div>
                 </div>
@@ -63,7 +64,7 @@
                 <button id="refresh-button">Refresh Weather</button>
             </div>
         </div>
-    
+
         <div class="row">
             <label>Show Units:</label>
             <div class="toggle" onclick="toggleUnits(this)" toggled="{{ unit_state }}">
@@ -71,7 +72,7 @@
             <span class="toggleOn">Yes</span>
             <span class="toggleOff">No</span>
             </div>
-        </div>            
+        </div>
         <div class="row">
             <label>Show Labels:</label>
             <div class="toggle" onclick="toggleLabels(this)" toggled="{{ title_state }}">
@@ -90,7 +91,7 @@
         {% endif %}
         {% endcomment %}
     </fieldset>
-    
+
     {% if cbac %}
     <a name="cbac"></a>
     <span class="fieldset_timestamp">{{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbac.stale %}<span class="warning">{% endif %}{{ cbac.timestamp|date:"D M j" }}{% if cbac.stale %}</span>{% endif %}</span><h2>CBAC Forecast</h2>
@@ -112,7 +113,7 @@
     </div>
     </fieldset>
     {% endif %}
-    
+
     {% if noaa %}
     <a name="noaa"></a>
     <span class="fieldset_timestamp">{{ noaa.timestamp|date:"H:i \M\T D M j" }}</span><h2>NOAA Forecast</h2>
@@ -136,7 +137,7 @@
     </div>
     </fieldset>
     {% endif %}
-    
+
     {% if cbtv %}
     <a name="cbtv"></a>
     <span class="fieldset_timestamp">{{ cbtv.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbtv.stale %}<span class="warning">{% endif %}{{ cbtv.timestamp|date:"D M j" }}{% if cbtv.stale %}</span>{% endif %}</span><h2>CBTV-10 Forecast</h2>

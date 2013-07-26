@@ -12,7 +12,7 @@
         <div class="bd">
         {% for recipe in all_recipes %}
             <div class="yui-gd">
-                <div class="yui-u first"><a href="{% url food-recipe-detail recipe_type=recipe_type,slug=recipe.slug %}">{{ recipe.title }}</a></div>
+                <div class="yui-u first"><a href="{% url 'food-recipe-detail' recipe_type=recipe_type slug=recipe.slug %}">{{ recipe.title }}</a></div>
                 <div class="yui-u">{{ recipe.teaser }}</div>
             </div>
         {% endfor %}
@@ -21,9 +21,9 @@
         <p>No {{ recipe_type }} recipes in the database.</p>
     {% endif %}
     </div>
-    
+
     <div class="box">
-        <a href="{% url food-ingredient-list recipe_type=recipe_type %}">All {{ recipe_type|capfirst }} Ingredients</a>
+        <a href="{% url 'food-ingredient-list' recipe_type=recipe_type %}">All {{ recipe_type|capfirst }} Ingredients</a>
     </div>
 </div>
 {% endblock %}

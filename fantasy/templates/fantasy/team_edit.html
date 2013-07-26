@@ -13,7 +13,7 @@ Enter a team name and select {{ series.competitor_label }}s for {{ series }}. Cl
     </form>
 </div>
 {% if team.pk and is_admin %}
-<a href="{% url fantasy-team-delete team.pk %}">Delete this team</a>
+<a href="{% url 'fantasy-team-delete' team.pk %}">Delete this team</a>
 {% endif %}
-{% if is_admin %}<br /><a href="{% url fantasy-team-list series.pk %}">Team List</a><br />{% endif %}
+{% if is_admin %}<br /><a href="{% url 'fantasy-team-list' series.pk %}">Team List</a><br />{% endif %}
 {% endblock %}

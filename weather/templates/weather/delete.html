@@ -3,7 +3,7 @@
 
 {% block body %}
 <h1>Delete Weather records</h1>
-<form action="{% url delete-weather %}" method="POST">{% csrf_token %}
+<form action="{% url 'delete-weather' %}" method="POST">{% csrf_token %}
 {% if form.non_field_errors %}
 <ul>
 {% for error in form.non_field_errors %}

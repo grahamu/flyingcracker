@@ -1,29 +1,29 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"> 
-<head> 
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
 	<title>CracklyFinger {% block extra_title %}{% endblock %}</title>
     <meta name="keywords" content="cracklyfinger, weather, forecast, current conditions, cocktail, webcam" />
 	{% block viewport %}
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>
 	{% endblock viewport %}
-<!--	<link href="favicon.ico" type="/static/img/vnd.microsoft.icon" rel="shortcut icon" /> -->
-	<link rel="apple-touch-icon" href={% block favicon %}"/static/img/cocktail-icon.png"{% endblock %} />
-    
+	<link rel="apple-touch-icon" href={% block favicon %}"{% static "img/cocktail-icon.png" %}"{% endblock %} />
+
     <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/reset-fonts-grids/reset-fonts-grids.css">
     <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/base/base-min.css">
     <link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/assets/skins/sam/skin.css">
-    
-	<link rel="stylesheet" type="text/css" href="/static/css/iphone/fc3.iui.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/css/iphone/weather.iui.css"/>
-    
+
+	<link rel="stylesheet" type="text/css" href="{% static "css/iphone/fc3.iui.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/iphone/weather.iui.css" %}"/>
+
 	{% block extrastyle %}
     {% endblock extrastyle %}
-    
+
     {% block extrahead %}
     {% endblock %}
-    
+
     {% block javascript %}
-    <script type="text/javascript" src="{{ yui_path }}/build/yuiloader/yuiloader-min.js"></script> 
+    <script type="text/javascript" src="{{ yui_path }}/build/yuiloader/yuiloader-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/yahoo-dom-event/yahoo-dom-event.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/element/element-beta-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/layout/layout-min.js"></script>
@@ -34,14 +34,14 @@
     <script type="text/javascript" src="{{ yui_path }}/build/json/json-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/menu/menu-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/button/button-min.js"></script>
-    
-    <script src="http://js.bubbling-library.com/1.5.0/build/bubbling/bubbling.js"></script> 
+
+    <script src="http://js.bubbling-library.com/1.5.0/build/bubbling/bubbling.js"></script>
     <script src="http://js.bubbling-library.com/1.5.0/build/dispatcher/dispatcher.js"></script>
     {% endblock javascript %}
-    
+
     <!-- My source - always after standard javascript block -->
     {% block my_source %}
-    <script type="text/javascript" src="/static/js/doc_utils.js"></script>
+    <script type="text/javascript" src="{% static "js/doc_utils.js" %}"></script>
     {% endblock my_source %}
 
 <style>
@@ -156,7 +156,7 @@ function snippet_navigation ( url ) {
     else {
         url = url + '&snippet&iphone';
     }
-    
+
     YAHOO.plugin.Dispatcher.fetch ( 'bd', url );
 }
 
@@ -164,7 +164,7 @@ function snippet_navigation ( url ) {
 
 <script type="text/javascript">
 (function() {
-    
+
     // behavior specific to MENU: this method will be executed every time you click on the page...
     var toggleMenu = function (layer, args) {
       var e = args[0],
@@ -178,9 +178,9 @@ function snippet_navigation ( url ) {
           }
       }
     };
-    
+
     YAHOO.Bubbling.on('god', toggleMenu);
-    
+
     var closeMenu = function (layer, args) {
       var e = args[0],
     	  el = args[1].anchor;
@@ -194,14 +194,14 @@ function snippet_navigation ( url ) {
           }
       }
     };
-    
+
     YAHOO.Bubbling.on('god', closeMenu);
 })();
 </script>
 
 <script type="text/javascript">
 (function() {
-    
+
     // default behavior: this method will be executed every time you click on the page...
     var dynamicNav = function (layer, args) {
       var e = args[0],
@@ -228,10 +228,10 @@ function snippet_navigation ( url ) {
           }
       }
     };
-    
+
     // initialization: subscribing the lowlevel behavior
     YAHOO.Bubbling.on('god', dynamicNav);
-    
+
 })();
 </script>
 
@@ -267,16 +267,16 @@ function snippet_navigation ( url ) {
 	</div>
 
 	<div id="menuBar" class="toolBar closed">
-		<div id="toolBarLoad">Loading <img src="/static/img/iphone/spinner.gif" /></div>
+		<div id="toolBarLoad">Loading <img src="{% static "img/iphone/spinner.gif" %}" /></div>
         <ul id="toolul">
-        	<li><a href="{% url weather-root %}?iphone&iui" title="Weather" class="toolBarLink" type="toolBarLink"><img src="/static/img/iphone/icons/weather.png" /><br/>Weather</a></li>
-        	<li><a href="{% url cam-root %}?iphone&iui" title="WebCams" class="toolBarLink" type="toolBarLink"><img src="/static/img/iphone/icons/cam.png" /><br/>WebCams</a></li>
-    		<li><a href="{% url food-recipe-list recipe_type="cocktail" %}?iphone&iui" title="Cocktails" class="toolBarLink" type="toolBarLink"><img src="/static/img/iphone/icons/cocktail.png" /><br/>Cocktails</a></li>
-            <li><a href="{% url grill %}?iphone&iui" title="Grill" class="toolBarLink" type="toolBarLink"><img src="/static/img/iphone/icons/grill.png" /><br/>Grill</a></li>
-        	<li class="arrow" style="border-left:1px solid #333;" onclick="document.getElementById('toolul').setAttribute('style','left:-320px');"><img src="/static/img/iphone/toolarrow.png" /></li>
-        	<li class="arrow" style="border-right:1px solid #333;" onclick="document.getElementById('toolul').setAttribute('style','left:0px');"><img src="/static/img/iphone/toolarrow2.png" /></li>
-    		<li><a href="{% url food-recipe-list recipe_type="food" %}?iphone&iui" title="Food" class="toolBarLink" type="toolBarLink"><img src="/static/img/iphone/icons/food.png" /><br/>Food</a></li>
-    		<li><a href="{% url miniblog-special %}?iphone&iui" title="MiniBlog" class="toolBarLink" type="toolBarLink"><img src="/static/img/iphone/icons/miniblog.png" /><br/>MiniBlog</a></li>
+        	<li><a href="{% url 'weather-root' %}?iphone&iui" title="Weather" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/weather.png" %}" /><br/>Weather</a></li>
+        	<li><a href="{% url 'cam-root' %}?iphone&iui" title="WebCams" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/cam.png" %}" /><br/>WebCams</a></li>
+    		<li><a href="{% url 'food-recipe-list' recipe_type="cocktail" %}?iphone&iui" title="Cocktails" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/cocktail.png" %}" /><br/>Cocktails</a></li>
+            <li><a href="{% url 'grill' %}?iphone&iui" title="Grill" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/grill.png" %}" /><br/>Grill</a></li>
+        	<li class="arrow" style="border-left:1px solid #333;" onclick="document.getElementById('toolul').setAttribute('style','left:-320px');"><img src="{% static "img/iphone/toolarrow.png" %}" /></li>
+        	<li class="arrow" style="border-right:1px solid #333;" onclick="document.getElementById('toolul').setAttribute('style','left:0px');"><img src="{% static "img/iphone/toolarrow2.png" %}" /></li>
+    		<li><a href="{% url 'food-recipe-list' recipe_type="food" %}?iphone&iui" title="Food" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/food.png" %}" /><br/>Food</a></li>
+    		<li><a href="{% url 'miniblog-special' %}?iphone&iui" title="MiniBlog" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/miniblog.png" %}" /><br/>MiniBlog</a></li>
         </ul>
     </div>
 	<div class="content yui-dispatchable" id="content">
@@ -284,9 +284,9 @@ function snippet_navigation ( url ) {
         content
         {% endblock content %}
     </div>
-    
-<script type="text/javascript" src="/static/js/iphone/functions.js"></script>
-<!-- <script type="text/javascript" src="/static/js/iphone/history.js"></script> -->
-    
-</body> 
+
+<script type="text/javascript" src="{% static "js/iphone/functions.js" %}"></script>
+<!-- <script type="text/javascript" src="{% static "js/iphone/history.js" %}"></script> -->
+
+</body>
 </html>

@@ -13,7 +13,7 @@
                     </select>
                 </form>
             </div>
-        
+
             <div class="yui-u" id="category-select">
                 <form action="." method="post">{% csrf_token %}
                     <select id="id-category" class="selectLink">
@@ -29,7 +29,7 @@
         </div>
     </div>
 </div>
-    
+
 <script type="text/javascript">
 
 function loadSelect(type, args) {
@@ -42,7 +42,7 @@ function loadSelect(type, args) {
     } else {
         alert('unknown select');
     }
-    
+
     // onchange=reDir(this.options[this.selectedIndex].value);
 };
 
@@ -55,7 +55,7 @@ function initSelects() {
 
 function newSelect(e) {
     var t = YAHOO.util.Event.getTarget(e);
-    
+
     if (t.selectedIndex != 0) {
         selectChange.fire(t);
         YAHOO.util.Event.preventDefault(e);
@@ -67,15 +67,15 @@ YAHOO.util.Event.onAvailable('id-image', initSelects);
 
 
 var webcam = {
-    
+
     request_list: function(select) {
         // POST a request for new data
-        var post_url = '{% url cam-list %}';
+        var post_url = '{% url 'cam-list' %}';
         var post_data = 'cat=' + select.value;
         var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, webcam.request_list_callback, post_data);
         Set_Cookie("cam_category", ''+select.value, 7, '/', '', '');
     },
-    
+
     request_list_callback: {
         success: function(o) {
             // This turns the JSON string into a JavaScript object.
@@ -85,7 +85,7 @@ var webcam = {
             catch (e) {
                 alert("Invalid server response in webcam.js ["+o.responseText+"], please inform CracklyFinger")
             }
-            
+
 			var image_select = document.getElementById('id-image');
             // remove existing options
             image_select.options.length = 0;
@@ -96,21 +96,21 @@ var webcam = {
                 webcam.add_option(image_select.options, objs[i].id, objs[i].title)
             }
         },
-    
+
         failure: function(o) {
             var a = 1; // alert('An error has occurred');
         }
-    
+
     },
 
     request_image: function(select) {
         // POST a request for new data
-        var post_url = '{% url cam-image %}';
+        var post_url = '{% url 'cam-image' %}';
         var post_data = 'id=' + select.value;
         var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, webcam.request_image_callback, post_data);
         Set_Cookie("cam_id", ''+select.value, 7, '/', '', '');
     },
-    
+
     request_image_callback: {
         success: function(o) {
             // This turns the JSON string into a JavaScript object.
@@ -129,13 +129,13 @@ var webcam = {
                 el.innerHTML = image.title;
             }
         },
-    
+
         failure: function(o) {
             var a = 1; // alert('An error has occurred');
         }
-    
+
     },
-    
+
     add_option: function(sel,id,title) {
         var newElem = document.createElement("option");
         newElem.text = title;

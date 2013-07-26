@@ -9,6 +9,9 @@ ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_ROOT = "/home2/graham/webapps/static_media/"
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
 
 ADMINS = (
     ('Graham Ullrich', 'graham@flyingcracker.com'),
@@ -132,7 +135,8 @@ SYSTEM_NAME = "cracklyfinger.com"
 
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
-ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com']
+ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
+
 # import local settings overriding the defaults
 try:
     from settings_local import *

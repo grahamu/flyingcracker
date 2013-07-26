@@ -1,5 +1,5 @@
 Thanks for registering with {{ site }}. Click on the link below to complete registration.
 
-http://{{ site.domain }}{% url registration_activate activation_key %}
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
 
 If you have no idea why you received this email, please ignore this message.

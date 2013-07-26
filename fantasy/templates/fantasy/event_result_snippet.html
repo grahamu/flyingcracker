@@ -5,7 +5,7 @@
 <div class="section-header">
   <div class="fantasy-guess-deadline">
     {% if is_admin %}
-    <input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url fantasy-event-edit event.pk %}';" />
+    <input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url 'fantasy-event-edit' event.pk %}';" />
     {% endif %}
   </div>
   <div class="section-title">{{ event }}</div>
@@ -64,7 +64,7 @@
 
 <div class="section-header">
   {% if is_admin or not event.result_locked and user.is_authenticated %}
-  <input type="button" value="{% if result_list %}Edit{% else %}Enter{% endif %} {{ series.event_label|lower }} results" onclick="location.href='{% url fantasy-result-edit event.pk %}';" />
+  <input type="button" value="{% if result_list %}Edit{% else %}Enter{% endif %} {{ series.event_label|lower }} results" onclick="location.href='{% url 'fantasy-result-edit' event.pk %}';" />
   {% endif %}
 </div>
 
@@ -148,6 +148,6 @@
 {% endif %}
 </div>
 
-{% if is_admin and not wrapper.result_list %}<br /><a href="{% url fantasy-event-delete event.pk %}">Delete {{ series.event_label|lower }}</a>{% endif %}
+{% if is_admin and not wrapper.result_list %}<br /><a href="{% url 'fantasy-event-delete' event.pk %}">Delete {{ series.event_label|lower }}</a>{% endif %}
 {% endwith %}
 {% endwith %}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from django.contrib import admin
 import blog.models as blog
-from fc3.settings import YUI_VERSION
+from fc3.settings import YUI_VERSION, STATIC_URL
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -9,9 +9,9 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'pub_date']
     search_fields = ['title', 'body']
     date_hierarchy = 'pub_date'
-    
+
     class Media:
-#        js = ['/static/js/tiny_mce/tiny_mce.js', '/static/js/textareas.js']      
+#        js = [STATIC_URL+'js/tiny_mce/tiny_mce.js', STATIC_URL+'js/textareas.js']
         js = (
             # Utility dependencies
             'http://yui.yahooapis.com/'+YUI_VERSION+'/build/yahoo-dom-event/yahoo-dom-event.js',
@@ -24,15 +24,15 @@ class PostAdmin(admin.ModelAdmin):
             'http://yui.yahooapis.com/'+YUI_VERSION+'/build/editor/editor-beta-min.js',
             # Source file for Connection Manager
 #            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/connection/connection-min.js',
-            '/static/js/yui/connection-debug.js',
+            STATIC_URL+'js/yui/connection-debug.js',
             # Required for YUI Logger
             'http://yui.yahooapis.com/'+YUI_VERSION+'/build/logger/logger-min.js',
             # Enable console logging
-            '/static/js/console-logger.js',
+            STATIC_URL+'js/console-logger.js',
             # Image uploader code
-            '/static/js/yui-image-uploader.js',
+            STATIC_URL+'js/yui-image-uploader.js',
             # Invoke the RTE
-            '/static/js/yuitextareas.js',
+            STATIC_URL+'js/yuitextareas.js',
             )
 
 admin.site.register(blog.Post, PostAdmin)

@@ -12,8 +12,8 @@ Enter information about a {{ series.event_label }} for {{ series }}. Click Submi
     </form>
 </div>
 {% if event.pk and is_admin %}
-<a href="{% url fantasy-event-delete event.pk %}">Delete this {{ series.event_label|lower }}</a><br />
-<a href="{% url fantasy-result-edit event.pk %}">Edit {{ series.event_label|lower }} results</a>
+<a href="{% url 'fantasy-event-delete' event.pk %}">Delete this {{ series.event_label|lower }}</a><br />
+<a href="{% url 'fantasy-result-edit' event.pk %}">Edit {{ series.event_label|lower }} results</a>
 {% endif %}
 
 {% endblock %}

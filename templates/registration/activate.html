@@ -7,8 +7,8 @@ Welcome {{ account }}, your registration is now complete.<br />
 <br />
 Nice job!<br />
 <br />
-<p>Please <a href="{% url auth_login %}?next={% url fc-home %}">log in</a> to access the advanced features of this site.</p>
+<p>Please <a href="{% url 'auth_login' %}?next={% url 'fc-home' %}">log in</a> to access the advanced features of this site.</p>
 {% else %}
-Sorry, you must register within {{ expiration_days }} days. Please <a href="{% url registration_register %}">try again</a>.
+Sorry, you must register within {{ expiration_days }} days. Please <a href="{% url 'registration_register' %}">try again</a>.
 {% endif %}</div>
 {% endblock %}

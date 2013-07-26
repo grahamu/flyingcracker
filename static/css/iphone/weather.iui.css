@@ -79,7 +79,7 @@
     text-align: center;
 }
 .barMenu {
-    background:#6D84A2 url(/static/img/iphone/toolbar.png) repeat-x scroll 0%;
+    background:#6D84A2 url(../img/iphone/toolbar.png) repeat-x scroll 0%;
     margin: 10px 0pt 5px;
     text-align: center;
 }
