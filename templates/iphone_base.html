@@ -35,8 +35,8 @@
     <script type="text/javascript" src="{{ yui_path }}/build/menu/menu-min.js"></script>
     <script type="text/javascript" src="{{ yui_path }}/build/button/button-min.js"></script>
 
-    <script src="http://js.bubbling-library.com/1.5.0/build/bubbling/bubbling.js"></script>
-    <script src="http://js.bubbling-library.com/1.5.0/build/dispatcher/dispatcher.js"></script>
+    <script src="{% static 'js/bubbling/bubbling-min.js' %}"></script>
+    <script src="{% static 'js/bubbling/dispatcher-min.js' %}"></script>
     {% endblock javascript %}
 
     <!-- My source - always after standard javascript block -->
