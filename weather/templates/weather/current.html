@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="yui-gb">
-                        <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url({{ MEDIA_URL }}img/{{ wind_dir }}) no-repeat top"{% endif %}>
+                        <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url({% static "img/"+wind_dir %}) no-repeat top"{% endif %}>
                             <span class="speed_value">{{ wind_val }}</span>
                             <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}">{{ speed_unit }}</span></div>
                         </div>
@@ -109,12 +109,12 @@
             <div class="title">
                 NOAA Forecast
             </div> <!-- title -->
-    
+
             <div class="date">
                 {{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}
             </div> <!-- date -->
         </div> <!-- header -->
-        
+
         <div class="forecast">
             {% if noaa.warning %}
             <div class="warning">
@@ -141,12 +141,12 @@
             <div class="title">
                 CBTV-10 Forecast
             </div> <!-- title -->
-    
+
             <div class="date">
                 {{ cbtv.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbtv.stale %}<span class="warning">{% endif %}{{ cbtv.timestamp|date:"D M j" }}{% if cbtv.stale %}</span>{% endif %}{{ cbtv.timestamp|date:", Y" }}
             </div> <!-- date -->
         </div> <!-- header -->
-        
+
         <div class="forecast">
             {% if cbtv.warning %}
             <div class="warning">
@@ -172,12 +172,12 @@
             <div class="title">
                 CBAC Forecast
             </div> <!-- title -->
-    
+
             <div class="date">
                 {{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbac.stale %}<span class="warning">{% endif %}{{ cbac.timestamp|date:"D M j" }}{% if cbac.stale %}</span>{% endif %}{{ cbac.timestamp|date:", Y" }}
             </div> <!-- date -->
         </div> <!-- header -->
-        
+
         <div class="forecast">
             {% if cbac.warning %}
             <div class="warning">
