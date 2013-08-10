@@ -76,7 +76,7 @@ function weather_loading_init() {
                                             );
 
         YAHOO.weather.current.wait.setHeader("Loading, please wait...");
-        YAHOO.weather.current.wait.setBody("<img src=\"/static/img/rel_interstitial_loading.gif\"/>");
+        YAHOO.weather.current.wait.setBody("<img src=\"{% static 'img/rel_interstitial_loading.gif' %}\"/>");
         YAHOO.weather.current.wait.render(document.body);
     }
 }
