@@ -1,7 +1,7 @@
 <div id="hd">
     <div class="select-bar">
         <div class="yui-g">
-            <div class="yui-u first" id="id-image">
+            <div class="yui-u first" id="image-select">
                 <form action="." method="post">{% csrf_token %}
                     <select id="id-image" class="selectLink">
                         <option value="">--Select webcam--</option>
@@ -14,7 +14,7 @@
                 </form>
             </div>
 
-            <div class="yui-u" id="id-category">
+            <div class="yui-u" id="category-select">
                 <form action="." method="post">{% csrf_token %}
                     <select id="id-category" class="selectLink">
                         <option value="">--Select category--</option>
