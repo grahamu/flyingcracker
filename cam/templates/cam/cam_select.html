@@ -1,7 +1,7 @@
 <div id="hd">
     <div class="select-bar">
         <div class="yui-g">
-            <div class="yui-u first" id="image-select">
+            <div class="yui-u first" id="id-image">
                 <form action="." method="post">{% csrf_token %}
                     <select id="id-image" class="selectLink">
                         <option value="">--Select webcam--</option>
@@ -14,7 +14,7 @@
                 </form>
             </div>
 
-            <div class="yui-u" id="category-select">
+            <div class="yui-u" id="id-category">
                 <form action="." method="post">{% csrf_token %}
                     <select id="id-category" class="selectLink">
                         <option value="">--Select category--</option>
@@ -62,8 +62,8 @@ function newSelect(e) {
     }
 };
 
-YAHOO.util.Event.onAvailable('category-select', initSelects);
-YAHOO.util.Event.onAvailable('image-select', initSelects);
+YAHOO.util.Event.onAvailable('id-category', initSelects);
+YAHOO.util.Event.onAvailable('id-image', initSelects);
 
 
 var webcam = {
