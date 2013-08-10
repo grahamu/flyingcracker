@@ -35,7 +35,7 @@ body > div#content > form > ul > li {
 /* titleBar */
 body > div.titleBar {
 	background-color: #000;
-	background-image: url(../img/iphone/toolBarOverlay.png);
+	background-image: url(../../img/iphone/toolBarOverlay.png);
 	background-position: left center;
 	background-repeat: repeat-x;
 	border-bottom: 1px solid #333;
@@ -81,7 +81,7 @@ body > div.titleBar > div.titleButton > a {
 	width: 85px;
 }
 body > div.titleBar > div.titleButton > a:hover {
-	background-image: url(../img/iphone/toolBarOverlay.png);
+	background-image: url(../../img/iphone/toolBarOverlay.png);
 	background-position: left center;
 	background-repeat: repeat-x;
 }
@@ -207,7 +207,7 @@ form input[type=password]:focus {
 /* toolBar */
 body > div.toolBar {
 	background-color: #4D4F53;
-	background-image: url(../img/iphone/menuBar.gif);
+	background-image: url(../../img/iphone/menuBar.gif);
 	background-position: top left;
 	background-repeat: repeat-x;
 	height: 60px;
@@ -276,7 +276,7 @@ a.is-favourite img.fav-done {
 /* Preload */
 #preloader {
     display: none;
-    background-image: url(../img/iphone/load.gif), url(../img/iphone/loading.gif), url(../img/iphone/favspinner.gif), url(../img/iphone/selection.png), url(../img/iphone/button.png), url(../img/iphone/shadow.png), url(../img/iphone/fav.gif), url(../img/iphone/select_bg.png), url(../img/iphone/input.png), url(../img/iphone/menuBar.gif), url(../img/iphone/update_bg.png), url(../img/iphone/titleOverlay.png), url(../img/iphone/arrow.gif);
+    background-image: url(../img/iphone/load.gif), url(../img/iphone/loading.gif), url(../img/iphone/favspinner.gif), url(../img/iphone/selection.png), url(../img/iphone/button.png), url(../img/iphone/shadow.png), url(../img/iphone/fav.gif), url(../img/iphone/select_bg.png), url(../img/iphone/input.png), url(../../img/iphone/menuBar.gif), url(../img/iphone/update_bg.png), url(../img/iphone/titleOverlay.png), url(../img/iphone/arrow.gif);
 }
 
 
