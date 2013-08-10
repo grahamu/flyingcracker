@@ -2,8 +2,8 @@
     <div class="yui-gb">
         <div class="yui-u first">
             <span class="select-title">Recipes</span>
-            <form action="." method="post">{% csrf_token %}
-                <select id="id-cocktail" class="selectLink">
+            <form id="recipe-form" action="." method="post">{% csrf_token %}
+                <select id="id-recipe" class="selectLink">
                     <option value="">Select a recipe</option>
                     {% for item in recipe_list %}
                     <option value="{% url 'food-recipe-detail' recipe_type=recipe_type slug=item.slug %}">
@@ -44,13 +44,6 @@
 
 <script type="text/javascript">
 
-function loadSelect(type, args) {
-    snippet_navigation (args[0]);
-};
-
-selectChange = new YAHOO.util.CustomEvent('select change');
-selectChange.subscribe(loadSelect);
-
 function initSelects() {
     YAHOO.util.Event.addListener(this, "change", newSelect);
 };
@@ -59,12 +52,13 @@ function newSelect(e) {
     var t = YAHOO.util.Event.getTarget(e);
 
     if (t.selectedIndex != 0) {
-        selectChange.fire(t.value);
+        t.parentElement.submit();
         YAHOO.util.Event.preventDefault(e);
     }
 };
 
-YAHOO.util.Event.onAvailable('id-cocktail', initSelects);
+YAHOO.util.Event.onAvailable('id-recipe', initSelects);
 YAHOO.util.Event.onAvailable('id-foodstuff', initSelects);
+YAHOO.util.Event.onAvailable('id-category', initSelects);
 
 </script>
