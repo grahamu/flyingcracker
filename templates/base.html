@@ -1,4 +1,4 @@
-{% load markup staticfiles %}
+{% load markup static %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -29,7 +29,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/reset-fonts-grids/reset-fonts-grids.css">
 	<link rel="stylesheet" type="text/css" href="{{ yui_path }}/build/assets/skins/sam/skin.css">
 
-	<link href="{{ STATIC_URL }}css/uni-form.css" rel="stylesheet" type="text/css" />
+	<link href="{% static 'css/uni-form.css' %}" rel="stylesheet" type="text/css" />
 
     {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static "css/f3.css" %}" title="stylesheet" />
