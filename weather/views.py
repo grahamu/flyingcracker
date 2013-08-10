@@ -21,7 +21,7 @@ from weather.models import ChartUrl
 def weather(request):
     from django.utils import simplejson
     from django.core.serializers.json import DjangoJSONEncoder
-    
+
     et = ElapsedTime()
 
     show_titles = request.COOKIES.get("curr_weather_show_titles")
@@ -42,7 +42,7 @@ def weather(request):
     # Get time in MT for forecast timestamp comparison
     mountain_tz = timezone('US/Mountain')
     now = datetime.now(mountain_tz)
-    
+
     cbac = CBAC()
     if cbac:
         # Don't display CBAC stuff if older than 36 hours.
@@ -51,7 +51,7 @@ def weather(request):
             cbac = None
 
     noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
-    
+
     cbtv = CBTV()
     if cbtv:
         # Don't display CBTV stuff if older than 36 hours.
@@ -100,17 +100,17 @@ def get_current_weather(request):
     along with the latest Weather record.
     If no Weather record is found, returns an empty
     dictionary.
-    
+
     '''
     from fc3.templatetags.as_timezone import as_timezone
     from django.template.defaultfilters import date as date_filter
-    
+
     # get latest weather reading
     try:
         current = Weather.objects.latest('timestamp')
     except Weather.DoesNotExist:
         return {}, None
-    
+
     # Force this timestamp to be Mountain Time
     timestamp = as_timezone(current.timestamp, "US/Mountain")
     timestamp = date_filter(timestamp, "H:i \M\T D M j")
@@ -118,20 +118,20 @@ def get_current_weather(request):
     temp_unit = request.COOKIES.get("temp_unit")
     if temp_unit is None:
         temp_unit = utils.TEMP_F
-        
+
     baro_unit = request.COOKIES.get("baro_unit")
     if baro_unit is None:
         baro_unit = utils.PRESS_IN
-    
+
     if int(float(current.wind_speed)) < 1:
         wind = 0
         wind_dir = None
     else:
         wind = current.wind_speed
-        wind_dir = "wind-%s.png" % utils.wind_dir_to_english(wind)
+        wind_dir = "img/wind-%s.png" % utils.wind_dir_to_english(wind)
         wind_dir = wind_dir.lower()
     wind_list = utils.calc_speeds(wind)
-        
+
     if wind == 0:
         speed_unit = ""
         wind_units = [""]
@@ -140,19 +140,19 @@ def get_current_weather(request):
         wind_units = utils.speed_units
         if speed_unit is None:
             speed_unit = utils.SPEED_MPH
-    
+
     wind_val = wind_list[wind_units.index(speed_unit)]
-    
+
     windchill_list = utils.calc_temp_strings(current.windchill)
     windchill_val = windchill_list[wind_units.index(speed_unit)]
-    
+
     temp_list = utils.calc_temp_strings(current.temp)
     temp_val = temp_list[utils.temp_units.index(temp_unit)]
     baro_list = utils.calc_baro_strings(current.barometer)
     baro_val = baro_list[utils.baro_units.index(baro_unit)]
     trend_list = utils.calc_trend_strings(current.baro_trend)
     trend_val = trend_list[utils.baro_units.index(baro_unit)]
-    
+
     today = utils.get_today_timestamp(request)
     if today.hour < 12:
         morning = True
@@ -207,10 +207,10 @@ def unit_change(request):
     '''
     type = request.POST.get('type')
     unit = request.POST.get('unit')
-    
+
     # set unit preference in user profile
     # ...
-    
+
     # return same data, just for grins
     response_dict = {}
     response_dict.update({'type': type})
@@ -230,10 +230,10 @@ def get_chart(date, data_type, size, plots, unit, force_create=False):
     '''
     if force_create:
         return utils.create_chart_url(date, data_type, size, plots, unit)
-    
+
     mountain_timezone = timezone('US/Mountain')
     now = datetime.now(mountain_timezone)
-    
+
     try:
         chart = ChartUrl.objects.get(date=date, data_type=data_type, size=size, plots=plots, unit=unit)
     except ChartUrl.DoesNotExist:
@@ -269,7 +269,7 @@ class WeatherForm(ModelForm):
 class GenerateWeatherForm(WeatherForm):
     start_date = forms.DateTimeField()
     end_date = forms.DateTimeField()
-    
+
     def clean(self):
         start = self.cleaned_data.get('start_date')
         end = self.cleaned_data.get('end_date')
@@ -277,7 +277,7 @@ class GenerateWeatherForm(WeatherForm):
             if end < start:
                 raise forms.ValidationError('Start date/time (%s) must be prior to end date/time (%s)' % (str(start), str(end)))
         return self.cleaned_data
-            
+
     class Meta(WeatherForm.Meta):
         exclude = ('station_id', 'timestamp', 'temp_inside', 'rain', 'wind_peak', 'dewpoint', 'windchill')
 
@@ -316,7 +316,7 @@ def generate(request):
                     inserted += 1
                 curr += interval
                 attempts += 1
-                
+
             et.mark_time('insertions')
             c = RequestContext(request, {
                     'elapsed': et.list(),
@@ -334,7 +334,7 @@ def generate(request):
 class DeleteWeatherForm(forms.Form):
     start_date = forms.DateTimeField()
     end_date = forms.DateTimeField()
-    
+
     def clean(self):
         start = self.cleaned_data.get('start_date')
         end = self.cleaned_data.get('end_date')
@@ -363,7 +363,7 @@ def delete(request):
                 else:
                     deleted += 1
                 attempts += 1
-                
+
             et.mark_time('deletions')
             c = RequestContext(request, {
                     'elapsed': et.list(),
@@ -386,14 +386,14 @@ def output_data(request):
     `type` - type of data collection: average, highlow, hourly, etc.
     `start` - date (and optional time) for the start of data collection
     `end` - date (and optional time) for the end of data collection
-    
+
     Returns a CSV file. The first line contains column titles.
     Subsequent lines contain data values.
-    
+
     '''
     import csv
     from dateutil.parser import parse as dateparse
-    
+
     item = request.GET.get('item')
     if item == 'pressure':
         attr = 'barometer'
@@ -403,7 +403,7 @@ def output_data(request):
         attr = item
     else:
         return HttpResponse(content='Unsupported data item: "%s". Valid data items: "temp", "pressure", "humidity", "windchill" and "wind".' % str(item))
-    
+
     today_str = date.today().strftime('%Y-%m-%d')
     start_str = request.GET.get('start', today_str)
     end_str = request.GET.get('end', today_str)
@@ -413,30 +413,30 @@ def output_data(request):
         start = dateparse(str(start_str))
     except ValueError, e:
         return HttpResponse(content='start date error: %s' % e)
-        
+
     try:
         end = dateparse(str(end_str))
     except ValueError, e:
         return HttpResponse(content='end date error: %s' % e)
-    
+
     target = date(start.year, start.month, start.day)
     end = date(end.year, end.month, end.day)
     interval = timedelta(days=1)
 
     if target > end:
         return HttpResponse(content='start date cannot be later than end date' % (str(target), str(end)))
-    
+
     type = request.GET.get('type')
-    
+
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename=fc3weather_%s_%s_%s-%s.csv' % (item, type, start_str, end_str)
     writer = csv.writer(response)
-    
+
     if item == 'temp':
         if type == 'average':
             writer.writerow(['date', '%s:low (F)'%attr, '%s:high (F)'%attr, '%s:average (F)'%attr])
-            
+
             # Get the high and low temp for each date.
             while target <= end:
                 qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
@@ -468,7 +468,7 @@ def output_data(request):
             output = ['date']
             output.extend([time(n).strftime("%H:%M") for n in range(0,24)])
             writer.writerow(output)
-            
+
             while target <= end:
                 qs = weather_on_date(target)
                 start = datetime(target.year, target.month, target.day)
@@ -489,7 +489,7 @@ def output_data(request):
     elif item == 'wind':
         if type == 'average':
             writer.writerow(['date', '%s:average (mph)'%attr, '%s:peak (mph)'%attr])
-            
+
             # Get the average and peak windspeed for each date.
             while target <= end:
                 qs = Weather.objects.filter(timestamp__year=target.year, timestamp__month=target.month, timestamp__day=target.day)
@@ -509,7 +509,7 @@ def output_data(request):
                                      'N/A',
                                      'N/A',
                                     ])
-                    
+
                 target += interval
             return response
         else:
@@ -522,55 +522,55 @@ def chart(request):
     `type` - chart type: multiday
     `units` - Units for the requested data item. Temp: 'F', 'C'. Pressure: 'in', 'mb'.
     `force` - indicates desire to force creation of a URL and not use saved URL
-    
+
     Returns a URL for a chart of the specified type.
-    
+
     '''
     force_create = request.GET.get('force', False)
-    
+
     item_list = ['temp', 'pressure', 'humidity', 'wind']
-    
+
     item = request.GET.get('item')
     if item not in item_list:
         return HttpResponse(content='Unsupported data item: "%s". Valid data items are: %s.' % (str(item), ', '.join(item_list)))
-        
+
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         size = ChartUrl.SIZE_IPHONE
     else:
         size = ChartUrl.SIZE_NORMAL
-    
+
     type = request.GET.get('type', None)
     units = request.GET.get('units', None)
     date = request.GET.get('date', None)
-    
+
     chart_date = utils.get_date(request, date)
-        
+
     if item == 'temp':
         if units not in utils.temp_units:
             return HttpResponse(content='Unsupported temp units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.temp_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
-        
+
         chart = get_chart(chart_date, ChartUrl.DATA_TEMP, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units, force_create=force_create)
     elif item == 'pressure':
         if units not in utils.baro_units:
             return HttpResponse(content='Unsupported pressure units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.baro_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
-        
+
         chart = get_chart(chart_date, ChartUrl.DATA_PRESS, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units, force_create=force_create)
     elif item == 'humidity':
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
-        
+
         chart = get_chart(chart_date, ChartUrl.DATA_HUMIDITY, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, '%', force_create=force_create)
     elif item == 'wind':
         if units not in utils.speed_units:
             return HttpResponse(content='Unsupported speed units: "%s". Valid units: %s.' % (str(units), ', '.join(utils.speed_units)))
         if type != 'multiday':
             return HttpResponse(content='Unsupported chart type: "%s". Valid chart types: "multiday".' % str(type))
-        
+
         chart = get_chart(chart_date, ChartUrl.DATA_WIND, size, ChartUrl.PLOT_TODAY+ChartUrl.PLOT_YESTERDAY+ChartUrl.PLOT_YEAR_AGO, units, force_create=force_create)
     else:
         chart = 'none'

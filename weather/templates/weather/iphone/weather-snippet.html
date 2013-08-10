@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="yui-gb">
-                <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url({% static "img/"+wind_dir %}) no-repeat top"{% endif %}>
+                <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url({% static wind_dir %}) no-repeat top"{% endif %}>
                     <span class="speed_value">{{ wind_val }}</span>
                     <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}">{{ speed_unit }}</span></div>
                 </div>
