@@ -15,13 +15,13 @@ class PostAdmin(admin.ModelAdmin):
         js = (
             # Utility dependencies
             'http://yui.yahooapis.com/'+YUI_VERSION+'/build/yahoo-dom-event/yahoo-dom-event.js',
-            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/element/element-beta-min.js',
+            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/element/element-min.js',
             # Needed for Menus, Buttons and Overlays used in the RTE Toolbar
             'http://yui.yahooapis.com/'+YUI_VERSION+'/build/container/container_core-min.js',
             'http://yui.yahooapis.com/'+YUI_VERSION+'/build/menu/menu-min.js',
-            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/button/button-beta-min.js',
+            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/button/button-min.js',
             # Source file for Rich Text Editor
-            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/editor/editor-beta-min.js',
+            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/editor/editor-min.js',
             # Source file for Connection Manager
 #            'http://yui.yahooapis.com/'+YUI_VERSION+'/build/connection/connection-min.js',
             STATIC_URL+'js/yui/connection-debug.js',

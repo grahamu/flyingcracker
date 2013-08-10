@@ -10,10 +10,10 @@ class Post(models.Model):
     pub_date = models.DateTimeField('Date this post will get published')
     body = models.TextField()
     enable_comments = models.BooleanField(default=True)
-    
+
     def __unicode__(self):
         return self.title
-   
+
     def get_absolute_url(self):
         return "/blog/%s/%s/" % (self.pub_date.strftime("%Y/%m/%d").lower(), self.slug)
 
@@ -27,11 +27,11 @@ class Post(models.Model):
             '/static/js/yui/yahoo-debug.js',
             'http://yui.yahooapis.com/2.3.1/build/yahoo-dom-event/yahoo-dom-event.js',
             'http://yui.yahooapis.com/2.3.1/build/dragdrop/dragdrop-min.js',
-            '/static/js/yui/element-beta-debug.js',
+            '/static/js/yui/element-debug.js',
             # Needed for Menus, Buttons and Overlays used in the RTE Toolbar
             '/static/js/yui/container_core-debug.js',
             '/static/js/yui/menu-debug.js',
-            '/static/js/yui/button-beta-debug.js',
+            '/static/js/yui/button-debug.js',
             # Source file for Rich Text Editor
-            '/static/js/yui/editor-beta-min.js',
+            '/static/js/yui/editor-min.js',
       )
