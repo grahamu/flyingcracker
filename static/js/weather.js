@@ -303,7 +303,7 @@ var current_weather = {
         el = document.getElementById('curr_wind');
         if (el) {
             if (current_weather.current.wind_dir != null) {
-                YAHOO.util.Dom.setStyle(el, 'background', "url(/static/img/"+current_weather.current.wind_dir+") no-repeat top");
+                YAHOO.util.Dom.setStyle(el, 'background', "url({% static current_weather.current.wind_dir %}) no-repeat top");
             }
             else {
                 YAHOO.util.Dom.setStyle(el, 'background', "none");
