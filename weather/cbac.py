@@ -21,38 +21,38 @@ class CBAC(Forecast):
         xml_text = get_URL_data(CBAC.url, CBAC.filename, max_file_age=10)
         if not xml_text:
             return None
-        
+
         try:
             xml = XML(xml_text)
         except ExpatError, info:
             return None;    # fail silently
-        
+
         rss = xml
         channel = rss.find('channel')
-        if not channel:
+        if channel is None:
             return None
         item = channel.find('item')
-        if not item:
+        if item is None:
             return None
-        
+
         # Get the data we want
         pubdate = item.findtext('pubdate')
         if not pubdate:
             return None
-        
+
         report_el = item.find('report')
-        if not report_el:
+        if report_el is None:
             return None
         synopsis = report_el.findtext("weathersynopsis")
         reportedby = report_el.findtext("reportedby")
-        
+
         forecast_el = report_el.find('forecast')
-        if not forecast_el:
+        if forecast_el is None:
             return None
         today = forecast_el.findtext('today')
         tonight = forecast_el.findtext('tonight')
         tomorrow = forecast_el.findtext('tomorrow')
-    
+
         self.pubdate = pubdate
         self.set_timestamp()
         self.add_section('Synopsis', synopsis.strip())
@@ -63,20 +63,19 @@ class CBAC(Forecast):
 
 def save_data():
     save_URL_data(CBAC.url, CBAC.filename)
-        
+
 def test():
     cbac = CBAC()
     print repr(cbac)
-    
+
 if __name__ == '__main__':
     import optparse
     p = optparse.OptionParser()
     options, arguments = p.parse_args()
-    
+
     if not arguments:
         test()
     else:
         for cmd in arguments:
             if cmd.lower() == 'save':
                 save_data()
-   
