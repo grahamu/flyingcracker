@@ -1,7 +1,10 @@
-#!/usr/bin/env python
-from base import *
+import sys
+
 from unipath import Path
 import json
+#!/usr/bin/env python
+from base import *
+
 
 DEBUG=True
 
@@ -44,3 +47,5 @@ except:
 
  
 INTERNAL_IPS = '127.0.0.1'
+
+sys.path.insert(0, '/Users/johnevans/venv/flyingcracker/src')
