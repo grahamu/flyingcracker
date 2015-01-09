@@ -1,9 +1,10 @@
 import sys
+from __future__ import absolute_import
 
 from unipath import Path
 import json
 #!/usr/bin/env python
-from base import *
+from .base import *
 
 
 DEBUG=True
