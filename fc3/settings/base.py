@@ -110,7 +110,7 @@ ROOT_URLCONF = 'urls'
 
 APPEND_SLASH = True
 
-INSTALLED_APPS = (
+PREREQ_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -132,7 +132,9 @@ INSTALLED_APPS = (
 #    'profiles',
     'sms',
     'timezones',
+    ]
 
+PROJECT_APPS[
     'scoresys',
     'home',
     'fcprofile',
@@ -144,7 +146,9 @@ INSTALLED_APPS = (
     'miniblog',
     'grill',
     'fantasy',
-)
+]
+
+INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
 
 AUTHENTICATION_BACKENDS = (
     "fc3.email-auth.EmailBackend",
