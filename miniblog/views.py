@@ -1,6 +1,8 @@
+from __future__ import absolute_import
+
 from django.template import RequestContext
-from fc3.miniblog.models import Post
 from django.shortcuts import render_to_response, get_object_or_404
+from miniblog.models import Post
 
 def special(request, page=[]):
 

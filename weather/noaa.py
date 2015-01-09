@@ -1,7 +1,7 @@
 from urllib import urlopen
 from forecast import Forecast
 from dateutil import parser as dateutilparser
-from fc3.settings import WEATHER_ROOT
+from fc3.settings.local import WEATHER_ROOT
 
 
 class NOAAForecastPreamble(object):

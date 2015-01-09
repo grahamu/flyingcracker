@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('fc3.fantasy.views',
+urlpatterns = patterns('fantasy.views',
     url(r'^$',                                      'root', name='fantasy-root'),
     url(r'^series/add/$',                           'series_edit', name='fantasy-series-add'),
     url(r'^series/(?P<id>[0-9]+)/$',                'series_dashboard', name='fantasy-series-home'),

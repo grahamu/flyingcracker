@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
 
-from fc3.weatherstation.models import Weather
+from weatherstation.models import Weather
 
 def upload_data(request):
     """

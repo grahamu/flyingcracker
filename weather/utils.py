@@ -2,8 +2,8 @@
 import datetime
 import pytz
 from decimal import Decimal
-from fc3.weatherstation.models import Weather
-from fc3.weather.models import ChartUrl
+from weatherstation.models import Weather
+from weather.models import ChartUrl
 import fc3.gchart as gchart
 
 TEMP_F = 'F'

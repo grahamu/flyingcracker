@@ -107,7 +107,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'fc3.urls'
 
 APPEND_SLASH = True
 
@@ -147,6 +147,7 @@ PROJECT_APPS = [
     'miniblog',
     'grill',
     'fantasy',
+    'home',
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS

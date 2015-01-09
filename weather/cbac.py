@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
-from fc3.settings import WEATHER_ROOT
 from forecast import Forecast
 from utils import get_URL_data, save_URL_data
+from fc3.settings.local import WEATHER_ROOT
 
 
 class CBAC(Forecast):

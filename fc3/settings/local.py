@@ -26,10 +26,10 @@ DATABASES = {
 
 LOCAL_URL = 'local'
 
-BASE_DIR = Path(__file__).ancestor(3)
+BASE_DIR = Path(__file__).ancestor(5)
 
 LOCAL_ROOT = BASE_DIR.child("media")
-WEATHER_ROOT = LOCAL_ROOT + 'weather/'
+WEATHER_ROOT = LOCAL_ROOT + '/weather/'
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -48,5 +48,3 @@ except:
 
 
 INTERNAL_IPS = '127.0.0.1'
-
-sys.path.insert(0, '/Users/johnevans/venv/flyingcracker/src')

@@ -185,7 +185,7 @@ def float_ceil(vals, prev):
 
 def test(date=datetime.datetime.now()):
     from fc3.utils import ElapsedTime
-    from fc3.weatherstation.models import Weather
+    from weatherstation.models import Weather
 
     def get_and_process(et, date):
         qs = Weather.objects.filter(timestamp__year=date.year,

@@ -1,7 +1,7 @@
 from django.template import RequestContext
-from fc3.food.models import Recipe, Foodstuff, Category
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.defaultfilters import random
+from food.models import Recipe, Foodstuff, Category
 
 def category_list(request, recipe_type, slug):
     try:

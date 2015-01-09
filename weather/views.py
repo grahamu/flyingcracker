@@ -102,7 +102,7 @@ def get_current_weather(request):
     dictionary.
 
     '''
-    from fc3.templatetags.as_timezone import as_timezone
+    from templatetags.as_timezone import as_timezone
     from django.template.defaultfilters import date as date_filter
 
     # get latest weather reading
@@ -219,7 +219,7 @@ def unit_change(request):
     return response
 
 
-from fc3.weather.models import ChartUrl
+from weather.models import ChartUrl
 
 def get_chart(date, data_type, size, plots, unit, force_create=False):
     '''
