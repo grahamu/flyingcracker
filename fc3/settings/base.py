@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # Django settings for fc3 project.
 import os
 from unipath import Path
@@ -6,7 +7,7 @@ import json
 # normally do not import from django into settings!! improperly configured is the one exception
 from django.core.exceptions import ImproperlyConfigured
 
-with open(os.path.relpath("fc4/settings/secrets.json")) as f:
+with open("fc3/settings/secrets.json") as f:
     secrets = json.loads(f.read())
 
 def get_secret(setting, secrets=secrets):
@@ -19,15 +20,15 @@ def get_secret(setting, secrets=secrets):
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = get_secret("SECRET_KEY")
 
-with open("fc4/settings/config.json") as f1:
-    config = json.loads(f1.read())
-
-def get_config(setting, config=config):
-    try:
-        return config[setting]
-    except KeyError:
-        error_msg = "set the {0} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+##with open("./settings/config.json") as f1:
+##    config = json.loads(f1.read())
+##
+##def get_config(setting, config=config):
+##    try:
+##        return config[setting]
+##    except KeyError:
+##        error_msg = "set the {0} environment variable".format(setting)
+##        raise ImproperlyConfigured(error_msg)
 
 BASE_DIR = Path(__file__).ancestor(3)
 
@@ -134,7 +135,7 @@ PREREQ_APPS = [
     'timezones',
     ]
 
-PROJECT_APPS[
+PROJECT_APPS = [
     'scoresys',
     'home',
     'fcprofile',

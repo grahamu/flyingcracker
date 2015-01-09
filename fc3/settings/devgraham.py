@@ -4,7 +4,7 @@ import sys
 from unipath import Path
 import json
 #!/usr/bin/env python
-from .base import *
+from .local import *
 
 
 DEBUG=True
@@ -13,7 +13,7 @@ DATABASES = {
     'default': {
         'NAME': 'flyingcracker',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'USER': 'johnevans',
+        'USER': 'graham',
         'PASSWORD': '',
         'HOST': 'localhost',
     }
@@ -34,12 +34,12 @@ WEATHER_ROOT = LOCAL_ROOT + 'weather/'
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
-DEFAULT_FROM_EMAIL = "John Evans <johnevanswebbot@gmail.com>"
+DEFAULT_FROM_EMAIL = "Graham Ullrich <graham@flyingcracker.com>"
 
 try:
     EMAIL_USE_TLS = True
     EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_USER = 'johnevanswebbot@gmail.com'
+    EMAIL_HOST_USER = 'graham@flyingcracker.com'
     EMAIL_HOST_PASSWORD = ''
     EMAIL_PORT = 587
 except:
@@ -48,5 +48,3 @@ except:
 
 
 INTERNAL_IPS = '127.0.0.1'
-
-sys.path.insert(0, '/Users/johnevans/venv/flyingcracker/src')

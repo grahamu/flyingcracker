@@ -1,5 +1,5 @@
-import sys
 from __future__ import absolute_import
+import sys
 
 from unipath import Path
 import json
@@ -18,22 +18,22 @@ DATABASES = {
         'HOST': 'localhost',
     }
 }
- 
+
 # This setting describes the URL path where static content originates.
 # If in a Django development server environment, this should be 'static'.
 # If in a production environment the value will look like 'http://domainname/appname/static'.
 
- 
+
 LOCAL_URL = 'local'
 
 BASE_DIR = Path(__file__).ancestor(3)
 
 LOCAL_ROOT = BASE_DIR.child("media")
 WEATHER_ROOT = LOCAL_ROOT + 'weather/'
- 
+
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
- 
+
 DEFAULT_FROM_EMAIL = "John Evans <johnevanswebbot@gmail.com>"
 
 try:
@@ -46,7 +46,7 @@ except:
     print "email not working"
 
 
- 
+
 INTERNAL_IPS = '127.0.0.1'
 
 sys.path.insert(0, '/Users/johnevans/venv/flyingcracker/src')
