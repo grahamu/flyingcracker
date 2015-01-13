@@ -2,8 +2,9 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings 
+
 from cam.models import Cam, Category
-from fc3 import settings
 from fc3.myjson import JsonResponse
 
 CAM_CATEGORY = "cam_category"

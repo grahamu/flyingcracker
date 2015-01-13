@@ -3,7 +3,9 @@ from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 from forecast import Forecast
 from utils import get_URL_data, save_URL_data
-from fc3.settings.local import WEATHER_ROOT
+from django.conf import settings 
+
+WEATHER_ROOT = settings.WEATHER_ROOT
 
 
 class CBAC(Forecast):

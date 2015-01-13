@@ -1,7 +1,9 @@
 from urllib import urlopen
 from forecast import Forecast
 from dateutil import parser as dateutilparser
-from fc3.settings.local import WEATHER_ROOT
+from django.conf import settings 
+
+WEATHER_ROOT = settings.WEATHER_ROOT
 
 
 class NOAAForecastPreamble(object):

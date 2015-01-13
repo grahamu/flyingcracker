@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 from django.contrib import admin
 import blog.models as blog
-from fc3.settings.base import YUI_VERSION, STATIC_URL
+from django.conf import settings 
+
+YUI_VERSION = settings.YUI_VERSION
+STATIC_URL = settings.STATIC_URL
 
 
 class PostAdmin(admin.ModelAdmin):
