@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+import datetime
 from fcprofile.models import FCProfile
 
 attrs_dict = { 'class': 'required' }

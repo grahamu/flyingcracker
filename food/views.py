@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.defaultfilters import random
-from food.models import Recipe, Foodstuff, Category
+from .models import Recipe, Foodstuff, Category
 
 def category_list(request, recipe_type, slug):
     try:

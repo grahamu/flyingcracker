@@ -1,6 +1,6 @@
 from django.db import models
-from datetime import datetime
 from django.template.defaultfilters import truncatewords_html
+from datetime import datetime
 
 #class Blog(models.Model):
 #    title = models.CharField(max_length=50, index=True)

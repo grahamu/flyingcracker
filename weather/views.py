@@ -1,22 +1,25 @@
+from __future__ import absolute_import
 #!/usr/bin/env python
-from datetime import *
-from decimal import *
-from dateutil.tz import tzlocal
-from pytz import timezone
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.serializers.json import DjangoJSONEncoder
+
+from datetime import *
+from decimal import *
+from dateutil.tz import tzlocal
+from pytz import timezone
+
 from fc3.myjson import JsonResponse
 from fc3.utils import ElapsedTime
 from weatherstation.models import Weather
-from noaa import get_NOAA_forecast
-from cbac import CBAC
-from cbtv import CBTV
+from .noaa import get_NOAA_forecast
+from .cbac import CBAC
+from .cbtv import CBTV
 import weather.utils as utils
-from weather.models import ChartUrl
+from .models import ChartUrl
 
 def weather(request):
     from django.utils import simplejson
