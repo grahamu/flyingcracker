@@ -1,10 +1,11 @@
+from __future__ import absolute_import
 #!/usr/bin/env python
-import datetime
 from django import forms
 from django.forms import formsets
 from django.forms.models import ModelMultipleChoiceField
 from django.utils.translation import ugettext_lazy as _
-from fc3.fantasy.models import Series, Event, Competitor, Guess, Result, Team
+import datetime
+from .models import Series, Event, Competitor, Guess, Result, Team
 
 
 attrs_dict = { 'class': 'required' }

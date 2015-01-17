@@ -1,7 +1,9 @@
+from __future__ import absolute_import
+
 from django.conf.urls.defaults import *
 from django.views.generic import dates
 
-from fc3.miniblog.models import Post
+from .models import Post
 
 urlpatterns = patterns('',
     url(r'^(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/(?P<slug>[-\w]+)/$',
@@ -16,6 +18,6 @@ urlpatterns = patterns('',
         dates.ArchiveIndexView.as_view(model=Post, date_field='pub_date'), name='miniblog-archive'),
 )
 
-urlpatterns += patterns('fc3.miniblog.views',
+urlpatterns += patterns('miniblog.views',
     url(r'^special/$',       'special',  name='miniblog-special')
 )

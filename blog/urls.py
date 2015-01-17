@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from django.conf.urls.defaults import *
 from django.views.generic import dates
 
-from blog.models import Post
+from .models import Post
 
 urlpatterns = patterns('',
     (r'^(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\w{1,2})/(?P<slug>[0-9A-Za-z-]+)/$',

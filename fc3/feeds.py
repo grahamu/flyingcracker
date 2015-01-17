@@ -1,7 +1,7 @@
 from django.contrib.syndication.feeds import Feed
 from django.utils.feedgenerator import Atom1Feed
 from django.core.urlresolvers import reverse
-from fc3.miniblog.models import Post
+from miniblog.models import Post
 
 class RssSiteNewsFeed(Feed):
     title = "CracklyFinger.com"

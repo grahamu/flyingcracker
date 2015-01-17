@@ -1,5 +1,5 @@
-import datetime
 from django.utils.encoding import smart_str
+import datetime
 from dateutil import parser as dateutilparser
 from dateutil.tz import tzlocal
 from pytz import timezone

@@ -1,7 +1,7 @@
+from django.conf import settings 
 from urllib import urlopen
 from forecast import Forecast
 from dateutil import parser as dateutilparser
-from fc3.settings import WEATHER_ROOT
 
 
 class NOAAForecastPreamble(object):
@@ -181,7 +181,7 @@ import datetime
 
 def get_NOAA_data(state, zname):
     # get data from disk file first, but ignore the data if it is more than 4 hours old.
-    filename = WEATHER_ROOT + 'noaa-' + zname + '.txt'
+    filename = settings.WEATHER_ROOT + 'noaa-' + zname + '.txt'
     if not os.path.isfile(filename):
         return save_NOAA_data(state, zname)
     
@@ -210,7 +210,7 @@ def save_NOAA_data(state, zname):
         return None
     else:
         # save the retrieved data
-        filename = WEATHER_ROOT + 'noaa-' + zname + '.txt'
+        filename = settings.WEATHER_ROOT + 'noaa-' + zname + '.txt'
         f = open(filename, "w")
         f.writelines(lines)
         f.close()

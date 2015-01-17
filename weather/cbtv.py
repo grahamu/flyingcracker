@@ -1,7 +1,7 @@
 #!/usr/bin/env python
+from django.conf import settings 
 from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
-from fc3.settings import WEATHER_ROOT
 from forecast import Forecast
 from utils import get_URL_data, save_URL_data
 
@@ -9,7 +9,7 @@ from utils import get_URL_data, save_URL_data
 class CBTV(Forecast):
 
     url = 'http://www.cbtv.tv/RSS/CrestedButteCurrentWeatherReport.xml'
-    filename = WEATHER_ROOT + 'cbtv.txt'
+    filename = settings.WEATHER_ROOT + 'cbtv.txt'
 
     def __init__(self, **kwargs):
         '''

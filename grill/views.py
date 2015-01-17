@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from django.template import RequestContext
-from fc3.grill.models import Food, Doneness, Grilling, Hardware
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
+from .models import Food, Doneness, Grilling, Hardware
 
 def grill(request):
     '''

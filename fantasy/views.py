@@ -1,4 +1,4 @@
-import datetime
+from __future__ import absolute_import
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect, HttpResponse
@@ -8,7 +8,8 @@ from django.contrib.auth.models import User
 from django.db.models import Q, F
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from fantasy.models import Series, Event, Competitor, Guess, Result, Team
+import datetime
+from .models import Series, Event, Competitor, Guess, Result, Team
 
 def root(request):
     active_queryset = Series.objects.filter(
@@ -42,7 +43,7 @@ def series_edit(request, id=None):
     Create a new Series or edit an existing Series.
 
     '''
-    from fc3.fantasy.forms import SeriesForm
+    from .forms import SeriesForm
 
     if id:
         series = get_object_or_404(Series, pk=id)
@@ -291,7 +292,7 @@ def competitor_list(request, id):
     List all competitors associated with this Series.
     
     '''
-    from fc3.fantasy.forms import CompetitorForm
+    from .forms import CompetitorForm
     
     series = get_object_or_404(Series, pk=id)
     competitor = Competitor(series=series)
@@ -330,7 +331,7 @@ def competitor_edit(request, id):
     Edit the specified Competitor.
     
     '''
-    from fc3.fantasy.forms import CompetitorForm
+    from .forms import CompetitorForm
 
     competitor = get_object_or_404(Competitor, pk=id)
     series = competitor.series
@@ -423,7 +424,7 @@ def competitor_import(request, id):
     Import Competitors from other Series into the specified Series.
     
     '''
-    from fc3.fantasy.forms import CompetitorImportForm
+    from .forms import CompetitorImportForm
 
     series = get_object_or_404(Series, pk=id)
     if not series.is_admin(request.user):
@@ -478,7 +479,7 @@ def event_add(request, series_id):
     Add a new event to the specified Series.
     
     '''
-    from fc3.fantasy.forms import EventForm
+    from .forms import EventForm
 
     series = get_object_or_404(Series, pk=series_id)
     if not series.is_admin(request.user):
@@ -516,7 +517,7 @@ def event_edit(request, id):
     Edit the specified Event.
     
     '''
-    from fc3.fantasy.forms import EventForm
+    from .forms import EventForm
 
     event = get_object_or_404(Event, pk=id)
     series = event.series
@@ -659,11 +660,11 @@ def event_guess_context(request, event, user):
     '''
     Returns a dictionary of context variables for event guess.
     '''
-    from fantasy.forms import GuessForm, GuessAndResultBaseFormset, \
-         TeamGuessForm, PickOptionsForm
     from django.forms.formsets import formset_factory
     from django.utils.encoding import smart_str
-    
+    from .forms import GuessForm, GuessAndResultBaseFormset, \
+         TeamGuessForm, PickOptionsForm
+
     series = event.series
     # Create un-saved instance for adding a new Competitor
     competitor = Competitor(series=series)
@@ -885,7 +886,7 @@ def result_edit(request, id):
     Edit the results for a event.
     
     '''
-    from fc3.fantasy.forms import ResultForm, GuessAndResultBaseFormset, \
+    from .forms import ResultForm, GuessAndResultBaseFormset, \
          EventOptionsForm
     from django.forms.formsets import formset_factory
     
@@ -984,7 +985,7 @@ def team_add(request, series_id):
     Enter a new Team.
     
     '''
-    from fc3.fantasy.forms import TeamEditForm
+    from .forms import TeamEditForm
 
     series = get_object_or_404(Series, pk=series_id)
     if not series.is_admin(request.user):
@@ -1024,7 +1025,7 @@ def team_edit(request, id):
     Edit a Team.
     
     '''
-    from fc3.fantasy.forms import TeamEditForm
+    from .forms import TeamEditForm
 
     team = get_object_or_404(Team, pk=id)
     series = team.series
@@ -1125,7 +1126,7 @@ def series_email(request, id):
     Email all users associated with a Series.
     
     '''
-    from fc3.fantasy.forms import EmailSeriesForm
+    from .forms import EmailSeriesForm
     from django.conf import settings
     from django.core.mail import EmailMessage
 

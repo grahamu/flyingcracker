@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 import food.models as food

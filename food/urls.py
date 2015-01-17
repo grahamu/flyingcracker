@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('fc3.food.views',
+urlpatterns = patterns('food.views',
     url(r'^i/(?P<slug>[\w_-]+)/$',         'foodstuff_detail', name='food-ingredient-detail'),
     url(r'^i/$',                           'foodstuff_list', name='food-ingredient-list'),
     url(r'^c/(?P<slug>[\w_-]+)/$',         'category_list', name='food-category-list'),
