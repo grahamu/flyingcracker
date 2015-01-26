@@ -64,7 +64,7 @@ def setup():
     run("git pull origin staging")
 
     """copy secrets.json files, and static files (eventually) into fc3/settings"""
-    put("fc3/settings/secrets.json","%(remote_app_dir)s/fc3/settings")
+    put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
 
     """need something to sync fc3.dump to the pstgres db"""
 
@@ -72,10 +72,12 @@ def setup():
 
 def deploy():
     require('hosts', provided_by = ['localhost',])
+    run("%(remote_apache_dir)s/bin/stop;" % env)
     """Deploy the site."""
-    update()
-    migrate()
-    restart()
+    run("cd %(remote_app_dir)s/src/fc3" % env)
+    run('git fetch --all; git reset --hard origin/master')
+    put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
+    run("%(remote_apache_dir)s/bin/start" % env)
 
 def update():
     run("cd %(remote_app_dir)s; git pull origin master" % env)
