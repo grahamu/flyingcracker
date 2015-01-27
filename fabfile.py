@@ -8,6 +8,7 @@ staging_server = 'graham.webfactional.com'
 server_owner = 'graham'
 local_user = 'johnevans'
 user = 'jake'
+branch_name = 'master'
 
 # environments
 def localhost():
@@ -37,6 +38,7 @@ def staging():
     env.remote_lib_dir = '/home/%s/.vertualenvs/%(project_name)s/lib' % (server_owner, env)
     env.hg_libs = []
     env.git_libs = ['django-mailer-2', 'django-notification']
+    branch_name = "staging"
 
 def prod():
     """Use the production webserver"""
@@ -48,6 +50,7 @@ def prod():
     env.remote_lib_dir = '/home2/%(user)s/lib' % env
     env.hg_libs = []
     env.git_libs = ['django-mailer-2', 'django-notification']
+    branch_name = "master"
 
 def setup():
     """Start with a webfaction server setup up with basic shells of apps (one main app, one static)
@@ -75,7 +78,7 @@ def deploy():
     run("%(remote_apache_dir)s/bin/stop;" % env)
     """Deploy the site."""
     run("cd %(remote_app_dir)s/src/fc3" % env)
-    run('git fetch --all; git reset --hard origin/master')
+    run('git fetch --all; git reset --hard origin/%s' % branch_name)
     put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
     run("%(remote_apache_dir)s/bin/start" % env)
 
