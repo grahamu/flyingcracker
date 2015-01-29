@@ -9,6 +9,8 @@ server_owner = 'graham'
 local_user = 'johnevans'
 user = 'jake'
 branch_name = 'master'
+prompts = []
+prompts += expect("Enter passphrase for key '/home2/jake/.ssh/id_rsa': ", "factionknockout")
 
 # environments
 def localhost():
@@ -29,14 +31,14 @@ def provision_production():
     run("cd %(remote_app_dir)s; pip install requirements/production.txt")
 
 def staging():
+    """get info"""
+    env.user = prompt("what is your user name as in: <user>@example.webfactional.com?")
     """use staging server"""
     env.project_name = 'fc3staging'
-    env.user = user
     env.hosts = ['%(user)s@%s.webfactional.com' % (env, server_owner)]
     env.remote_app_dir = '/home/%s/.virtualenvs/%(project_name)s' % (server_owner, env)
     env.remote_apache_dir = '/home/%s/webapps/%(project_name)s/apache2' % (server_owner, env)
     env.remote_lib_dir = '/home/%s/.vertualenvs/%(project_name)s/lib' % (server_owner, env)
-    env.hg_libs = []
     env.git_libs = ['django-mailer-2', 'django-notification']
     branch_name = "staging"
 
@@ -48,7 +50,6 @@ def prod():
     env.remote_app_dir = '/home/%(user)s/webapps/django/%(project_name)s' % env
     env.remote_apache_dir = '/home2/%(user)s/webapps/django/apache2' % env
     env.remote_lib_dir = '/home2/%(user)s/lib' % env
-    env.hg_libs = []
     env.git_libs = ['django-mailer-2', 'django-notification']
     branch_name = "master"
 
