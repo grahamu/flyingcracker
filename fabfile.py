@@ -1,11 +1,10 @@
 from __future__ import with_statement
 import contextlib
-from fabric.api import env, run, cd, sudo, put, require, settings, hide, puts
+from fabric.api import env, run, cd, sudo, put, require, settings, hide, puts, prompt
 from fabric.contrib import project, files
 
 # globals
 staging_server = 'graham.webfactional.com'
-server_owner = 'graham'
 local_user = 'johnevans'
 user = 'jake'
 branch_name = 'master'
@@ -30,13 +29,13 @@ def provision_production():
 
 def staging():
     """get info"""
-    env.user = prompt("what is your user name as in: <user>@example.webfactional.com?")
+    env.user = prompt("what is your user name as in <user>@example.webfactional.com?:")
     """use staging server"""
     env.project_name = 'fc3staging'
-    env.hosts = ['%(user)s@%s.webfactional.com' % (env, server_owner)]
-    env.remote_app_dir = '/home/%s/.virtualenvs/%(project_name)s' % (server_owner, env)
-    env.remote_apache_dir = '/home/%s/webapps/%(project_name)s/apache2' % (server_owner, env)
-    env.remote_lib_dir = '/home/%s/.vertualenvs/%(project_name)s/lib' % (server_owner, env)
+    env.hosts = ['%(user)s@graham.webfactional.com' % (env)]
+    env.remote_app_dir = '/home/graham/.virtualenvs/%(project_name)s' % (env)
+    env.remote_apache_dir = '/home/graham/webapps/%(project_name)s/apache2' % (env)
+    env.remote_lib_dir = '/home/graham/.vertualenvs/%(project_name)s/lib' % (env)
     env.git_libs = ['django-mailer-2', 'django-notification']
     branch_name = "staging"
 
@@ -71,7 +70,7 @@ def setup():
     """need something to sync fc3.dump to the pstgres db"""
 
     run("python manage.py collectstatic --noinput")
-    run("pip install requirements/staging.txt")
+    run("pip install -U -r requirements/staging.txt")
 
 def deploy():
     require('hosts', provided_by = ['localhost',])
