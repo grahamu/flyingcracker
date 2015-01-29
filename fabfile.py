@@ -4,6 +4,8 @@ from fabric.api import *
 from contextlib import contextmanager as _contextmanager
 from fabric.contrib import project, files
 
+"""if this comment shows up in the server, then the deploy function works"""
+
 # globals
 staging_server = 'graham.webfactional.com'
 local_user = 'johnevans'
