@@ -1,6 +1,7 @@
 from __future__ import with_statement
-import contextlib
-from fabric.api import env, run, cd, sudo, put, require, settings, hide, puts, prompt
+
+from fabric.api import *
+from contextlib import contextmanager as _contextmanager
 from fabric.contrib import project, files
 
 # globals
@@ -35,9 +36,10 @@ def staging():
     env.hosts = ['%(user)s@graham.webfactional.com' % (env)]
     env.remote_app_dir = '/home/graham/.virtualenvs/%(project_name)s' % (env)
     env.remote_apache_dir = '/home/graham/webapps/%(project_name)s/apache2' % (env)
-    env.remote_lib_dir = '/home/graham/.vertualenvs/%(project_name)s/lib' % (env)
+    env.remote_lib_dir = '/home/graham/.virtualenvs/%(project_name)s/lib' % (env)
     env.git_libs = ['django-mailer-2', 'django-notification']
-    branch_name = "staging"
+    env.activate = 'source /home/graham/.virtualenvs/%(project_name)s/bin/activate' % (env)
+    env.branch_name = "staging"
 
 def prod():
     """Use the production webserver"""
@@ -48,7 +50,7 @@ def prod():
     env.remote_apache_dir = '/home2/%(user)s/webapps/django/apache2' % env
     env.remote_lib_dir = '/home2/%(user)s/lib' % env
     env.git_libs = ['django-mailer-2', 'django-notification']
-    branch_name = "master"
+    env.branch_name = "master"
 
 def setup():
     """Start with a webfaction server setup up with basic shells of apps (one main app, one static)
@@ -72,13 +74,20 @@ def setup():
     run("python manage.py collectstatic --noinput")
     run("pip install -U -r requirements/staging.txt")
 
+@_contextmanager
+def virtualenv():
+    with cd(env.remote_app_dir+"/src/fc3"):
+        with prefix(env.activate):
+            yield
+
 def deploy():
-    require('hosts', provided_by = ['localhost',])
-    run("%(remote_apache_dir)s/bin/stop;" % env)
+    run("%(remote_apache_dir)s/bin/stop" % env)
     """Deploy the site."""
-    run("cd %(remote_app_dir)s/src/fc3" % env)
-    run('git fetch --all; git reset --hard origin/%s' % branch_name)
-    put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
+    with virtualenv():
+        run("ls")
+        run("git status")
+        run('git fetch --all; git reset --hard origin/%(branch_name)s' % env)
+        put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
     run("%(remote_apache_dir)s/bin/start" % env)
 
 def update():
