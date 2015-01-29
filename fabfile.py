@@ -73,6 +73,7 @@ def setup():
     """need something to sync fc3.dump to the pstgres db"""
 
     run("python manage.py collectstatic --noinput")
+    run("pip install requirements/staging.txt")
 
 def deploy():
     require('hosts', provided_by = ['localhost',])
