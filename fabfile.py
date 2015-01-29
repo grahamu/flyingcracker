@@ -9,8 +9,6 @@ server_owner = 'graham'
 local_user = 'johnevans'
 user = 'jake'
 branch_name = 'master'
-prompts = []
-prompts += expect("Enter passphrase for key '/home2/jake/.ssh/id_rsa': ", "factionknockout")
 
 # environments
 def localhost():
