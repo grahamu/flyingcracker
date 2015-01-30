@@ -7,6 +7,10 @@ import json
 from .base import *
 
 
+import json
+secrets = json.load(file("secrets.json"))
+SECRET_KEY = secrets['SECRET_KEY']
+
 DEBUG=True
 
 DATABASES = {
