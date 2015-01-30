@@ -13,7 +13,7 @@ DATABASES = {
     'default': {
         'NAME': 'fc3staging',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'USER': 'johnevans',
+        'USER': 'graham_fc3',
         'PASSWORD': '',
         'HOST': 'localhost',
     }
