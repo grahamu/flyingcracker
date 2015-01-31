@@ -83,14 +83,13 @@ def virtualenv():
             yield
 
 def deploy():
-    run("%(remote_apache_dir)s/bin/stop" % env)
     """Deploy the site."""
     with virtualenv():
         run("ls")
         run("git status")
         run('git fetch --all; git reset --hard origin/%(branch_name)s' % env)
         put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
-    run("%(remote_apache_dir)s/bin/start" % env)
+    run("%(remote_apache_dir)s/bin/restart" % env)
 
 def update():
     run("cd %(remote_app_dir)s; git pull origin master" % env)
