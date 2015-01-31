@@ -86,6 +86,7 @@ def deploy():
     with virtualenv():
         run('git fetch --all; git reset --hard origin/%(branch_name)s' % env)
         put("fc3/settings/secrets.py","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
+        provision()
         run("python manage.py collectstatic --settings=fc3.settings.%(settings_name)s" % env)
     run("%(remote_apache_dir)s/bin/restart" % env)
 
