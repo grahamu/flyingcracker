@@ -105,7 +105,6 @@ PREREQ_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'django.contrib.markup',
     'django.contrib.humanize',
     'django.contrib.comments',
     'django_extensions',
@@ -113,6 +112,7 @@ PREREQ_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'markup_deprecated'
     'south',
     'uni_form',
     'registration',
