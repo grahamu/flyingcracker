@@ -112,7 +112,7 @@ PREREQ_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'markup_deprecated'
+    'markup_deprecated',
     'south',
     'uni_form',
     'registration',
