@@ -4,11 +4,7 @@ import sys
 from unipath import Path
 #!/usr/bin/env python
 from .base import *
-
-
-import json
-secrets = json.load(file("fc3/settings/secrets.json"))
-SECRET_KEY = secrets['SECRET_KEY']
+from .secrets import *
 
 DEBUG=True
 

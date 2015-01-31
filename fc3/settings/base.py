@@ -6,15 +6,6 @@ from unipath import Path
 # normally do not import from django into settings!! improperly configured is the one exception
 from django.core.exceptions import ImproperlyConfigured
 
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "set the {0} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = get_secret("SECRET_KEY")
 
 ##with open("./settings/config.json") as f1:
 ##    config = json.loads(f1.read())
