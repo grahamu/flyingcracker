@@ -24,11 +24,9 @@ def run_local_server():
 def provision_local():
     local("pip install requirements/local.txt")
 
-def provision_staging():
-    run("cd %(remote_app_dir)s; pip install requirements/staging.txt")
-
-def provision_production():
-    run("cd %(remote_app_dir)s; pip install requirements/production.txt")
+def provision():
+    with virtualenv():
+        run("pip install requirements/%(settings_name)s.txt" % env)
 
 def staging():
     """get info"""
@@ -37,22 +35,24 @@ def staging():
     env.project_name = 'fc3staging'
     env.settings_name = 'staging'
     env.hosts = ['%(user)s@graham.webfactional.com' % (env)]
-    env.remote_app_dir = '/home/graham/.virtualenvs/%(project_name)s' % (env)
+    env.remote_app_dir = '/home/graham/webapps/%(project_name)s' % (env)
     env.remote_apache_dir = '/home/graham/webapps/%(project_name)s/apache2' % (env)
-    env.remote_lib_dir = '/home/graham/.virtualenvs/%(project_name)s/lib' % (env)
+    env.remote_lib_dir = '/home/graham/webapps/%(project_name)s/lib' % (env)
     env.git_libs = ['django-mailer-2', 'django-notification']
-    env.activate = 'source /home/graham/.virtualenvs/%(project_name)s/bin/activate' % (env)
+    env.activate = 'source /home/graham/webapps/%(project_name)s/bin/activate' % (env)
     env.branch_name = "staging"
 
 def prod():
+    """get info"""
+    env.user = prompt("what is your user name as in <user>@example.webfactional.com?:")
     """Use the production webserver"""
     env.project_name = 'fc3'
-    env.hosts = ['%s@graham.webfactional.com' %(env.user)]
-    env.user = 'graham'
-    env.remote_app_dir = '/home/%(user)s/webapps/django/%(project_name)s' % env
-    env.remote_apache_dir = '/home2/%(user)s/webapps/django/apache2' % env
-    env.remote_lib_dir = '/home2/%(user)s/lib' % env
+    env.settings_name = 'prod'
+    env.remote_app_dir = '/home/graham/webapps/%(project_name)s' % (env)
+    env.remote_apache_dir = '/home/graham/webapps/%(project_name)s/apache2' % (env)
+    env.remote_lib_dir = '/home/graham/webapps/%(project_name)s/lib' % (env)
     env.git_libs = ['django-mailer-2', 'django-notification']
+    env.activate = 'source /home/graham/webapps/%(project_name)s/bin/activate' % (env)
     env.branch_name = "master"
 
 def setup():
@@ -62,15 +62,13 @@ def setup():
         also, please set up the ssh with no password, otherwise this script wont work
     """
     run("easy_install-2.7 pip")
-    run("pip install virtualenv; pip install virtualenvwrapper")
-    run("mkvirtualenv fc3staging")
-    run("workon fc3staging; cdvirtualenv")
+    run("pip install virtualenv")
     run("pip install -e git+ssh://git@github.com/grahamu/flyingcracker.git#egg=fc3")
     run("cd src/fc3")
-    run("git pull origin staging")
+    run("git pull origin %(branch_name)s" % env) 
 
-    """copy secrets.json files, and static files (eventually) into fc3/settings"""
-    put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
+    """copy secrets.py files, and static files (eventually) into fc3/settings"""
+    put("fc3/settings/secrets.py","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
 
     """need something to sync fc3.dump to the pstgres db"""
 

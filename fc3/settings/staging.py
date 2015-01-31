@@ -64,3 +64,4 @@ SYSTEM_NAME = "ullrichsoftware.com"
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
 ALLOWED_HOSTS = ['www.ullrichsoftware.com', 'ullrichsoftware.com', '*']
+
