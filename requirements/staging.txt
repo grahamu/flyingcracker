@@ -1,3 +1,2 @@
 -r base.txt
 
-django-markup-deprecated==0.0.3
