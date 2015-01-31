@@ -22,11 +22,11 @@ def run_local_server():
     local("python manage.py runserver --settings=fc3.settings.dev%(user)s" %env)
 
 def provision_local():
-    local("pip install requirements/local.txt")
+    local("pip install -U -r requirements/local.txt")
 
 def provision():
     with virtualenv():
-        run("pip install requirements/%(settings_name)s.txt" % env)
+        run("pip install -U -r requirements/%(settings_name)s.txt" % env)
 
 def staging():
     """get info"""
