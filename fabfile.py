@@ -35,6 +35,7 @@ def staging():
     env.user = prompt("what is your user name as in <user>@example.webfactional.com?:")
     """use staging server"""
     env.project_name = 'fc3staging'
+    env.settings_name = 'staging'
     env.hosts = ['%(user)s@graham.webfactional.com' % (env)]
     env.remote_app_dir = '/home/graham/.virtualenvs/%(project_name)s' % (env)
     env.remote_apache_dir = '/home/graham/webapps/%(project_name)s/apache2' % (env)
@@ -85,10 +86,9 @@ def virtualenv():
 def deploy():
     """Deploy the site."""
     with virtualenv():
-        run("ls")
-        run("git status")
         run('git fetch --all; git reset --hard origin/%(branch_name)s' % env)
-        put("fc3/settings/secrets.json","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
+        put("fc3/settings/secrets.py","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
+        run("python manage.py collectstatic --settings=fc3.settings.%(settings_name)s" % env)
     run("%(remote_apache_dir)s/bin/restart" % env)
 
 def update():
