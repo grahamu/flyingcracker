@@ -2,7 +2,6 @@ from __future__ import absolute_import
 import sys
 
 from unipath import Path
-import json
 #!/usr/bin/env python
 from .base import *
 

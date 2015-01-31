@@ -2,13 +2,9 @@ from __future__ import absolute_import
 # Django settings for fc3 project.
 import os
 from unipath import Path
-import json
 
 # normally do not import from django into settings!! improperly configured is the one exception
 from django.core.exceptions import ImproperlyConfigured
-
-with open("fc3/settings/secrets.json") as f:
-    secrets = json.loads(f.read())
 
 def get_secret(setting, secrets=secrets):
     try:
