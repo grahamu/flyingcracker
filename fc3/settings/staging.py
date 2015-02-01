@@ -4,7 +4,10 @@ import sys
 from unipath import Path
 #!/usr/bin/env python
 from .base import *
-from .secrets import *
+from .secrets import SECRET_KEY
+
+# normally do not import from django into settings!! improperly configured is the one exception
+from django.core.exceptions import ImproperlyConfigured
 
 DEBUG=True
 
