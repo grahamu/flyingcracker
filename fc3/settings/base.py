@@ -2,7 +2,7 @@ from __future__ import absolute_import
 # Django settings for fc3 project.
 import os
 from unipath import Path
-
+from .secrets import SECRET_KEY
 
 ##with open("./settings/config.json") as f1:
 ##    config = json.loads(f1.read())
