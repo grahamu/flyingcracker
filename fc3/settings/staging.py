@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import os
 import sys
 
 from unipath import Path
@@ -6,8 +7,6 @@ from unipath import Path
 from .base import *
 from .secrets import SECRET_KEY
 
-# normally do not import from django into settings!! improperly configured is the one exception
-from django.core.exceptions import ImproperlyConfigured
 
 DEBUG=True
 
