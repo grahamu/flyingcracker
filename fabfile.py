@@ -88,7 +88,8 @@ def deploy():
         put("fc3/settings/secrets.py","%(remote_app_dir)s/src/fc3/fc3/settings" % env)
         provision()
         run("python manage.py collectstatic --settings=fc3.settings.%(settings_name)s" % env)
-    run("%(remote_apache_dir)s/bin/restart" % env)
+    with prefix(env.activate):
+        run("%(remote_apache_dir)s/bin/restart" % env)
 
 def update():
     run("cd %(remote_app_dir)s; git pull origin master" % env)
