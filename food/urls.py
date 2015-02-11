@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('food.views',
     url(r'^i/(?P<slug>[\w_-]+)/$',         'foodstuff_detail', name='food-ingredient-detail'),

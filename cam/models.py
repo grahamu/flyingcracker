@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.localflavor.us.models import USStateField, PhoneNumberField
+# from localflavor import USStateField, PhoneNumberField
 
 
 class Category(models.Model):
@@ -33,7 +33,7 @@ class Cam(models.Model):
     url = models.URLField()
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category)
-    state = USStateField(default="CO")
+    # state = USStateField(default="CO")
     objects = CamManager()
 
     def __unicode__(self):

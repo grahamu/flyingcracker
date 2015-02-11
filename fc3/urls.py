@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from django.conf import settings
 from fc3 import views
@@ -9,8 +9,6 @@ try:
     from fc3 import pattern_views
 except ImportError:
     pattern_views = None
-
-admin.autodiscover()
 
 urlpatterns = patterns('',
     # Admin URLs

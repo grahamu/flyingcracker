@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('fantasy.views',
     url(r'^$',                                      'root', name='fantasy-root'),

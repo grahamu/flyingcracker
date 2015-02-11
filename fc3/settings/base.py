@@ -96,6 +96,7 @@ ROOT_URLCONF = 'fc3.urls'
 APPEND_SLASH = True
 
 PREREQ_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -107,6 +108,7 @@ PREREQ_APPS = [
     'django_extensions',
     'django.contrib.flatpages',
     'django.contrib.messages',
+    'django.contrib.sessions',
     'django.contrib.staticfiles',
 
     'markup_deprecated',
