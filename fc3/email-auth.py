@@ -1,15 +1,10 @@
 from django.contrib.auth.backends import ModelBackend
-try:
-    # Django version <= 1.1
-    from django.forms.fields import email_re
-except ImportError:
-    # Django version >= 1.2
-    from django.core.validators import email_re
+from django.core.validators import validate_email
 from django.contrib.auth.models import User
 
 class EmailBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
-        if email_re.search(username):
+        if validate_email(username):
             try:
                 user = User.objects.get(email=username)
                 if user.check_password(password):
