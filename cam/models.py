@@ -4,18 +4,17 @@ from localflavor.us.models import USStateField
 
 class Category(models.Model):
     title = models.CharField(max_length=30)
-    
+
     def __unicode__(self):
         return self.title
-    
+
     class Meta:
         ordering = ['title']
         verbose_name_plural = "categories"
 
 
-
 class CamManager(models.Manager):
-    
+
     def belongs_to_category(self, cat=None):
         '''
         Returns a queryset of all Cams associated with specified Category.
@@ -40,4 +39,4 @@ class Cam(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['title','url',]
+        ordering = ['title', 'url']
