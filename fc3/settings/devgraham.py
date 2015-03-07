@@ -11,7 +11,7 @@ DEBUG=True
 
 DATABASES = {
     'default': {
-        'NAME': 'flyingcracker',
+        'NAME': 'fc3',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': 'graham',
         'PASSWORD': '',
