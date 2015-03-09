@@ -4,6 +4,8 @@ from django.views.generic import dates
 
 from .models import Post
 
+
+
 urlpatterns = patterns('',
     (r'^(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\w{1,2})/(?P<slug>[0-9A-Za-z-]+)/$',
      dates.DateDetailView.as_view(model=Post, date_field='pub_date')),

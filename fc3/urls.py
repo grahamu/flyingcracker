@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.conf import settings
 from fc3 import views
 
+admin.autodiscover()
 
 try:
     from fc3 import pattern_views
@@ -31,8 +32,6 @@ urlpatterns = patterns('',
     (r'^fantasy/',                          include('fantasy.urls')),
     (r'^',                                  include('home.urls')),
 )
-
-admin.autodiscover()
 
 if pattern_views and settings.DEBUG:
     urlpatterns += patterns('',

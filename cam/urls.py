@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, url, include
+from django.contrib import admin
+
 
 urlpatterns = patterns('cam.views',
     url(r'^list/$',            'cam_list', name='cam-list'),
