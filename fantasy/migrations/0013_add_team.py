@@ -1,12 +1,12 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding model 'Team'
         db.create_table('fantasy_team', (
             ('id', orm['fantasy.team:id']),
@@ -14,26 +14,26 @@ class Migration:
             ('name', orm['fantasy.team:name']),
         ))
         db.send_create_signal('fantasy', ['Team'])
-        
+
         # Adding ManyToManyField 'Team.competitors'
         db.create_table('fantasy_team_competitors', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('team', models.ForeignKey(orm.Team, null=False)),
             ('competitor', models.ForeignKey(orm.Competitor, null=False))
         ))
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting model 'Team'
         db.delete_table('fantasy_team')
-        
+
         # Dropping ManyToManyField 'Team.competitors'
         db.delete_table('fantasy_team_competitors')
-        
-    
-    
+
+
+
     models = {
         'auth.group': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -152,5 +152,5 @@ class Migration:
             'user_type': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1'})
         }
     }
-    
+
     complete_apps = ['fantasy']

@@ -1,36 +1,36 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Series.allow_late_guesses'
         db.add_column('fantasy_series', 'allow_late_guesses', orm['fantasy.series:allow_late_guesses'])
-        
+
         # Adding field 'Guess.timestamp'
         db.add_column('fantasy_guess', 'timestamp', orm['fantasy.guess:timestamp'])
-        
+
         # Adding field 'Guess.late_entry'
         db.add_column('fantasy_guess', 'late_entry', orm['fantasy.guess:late_entry'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Series.allow_late_guesses'
         db.delete_column('fantasy_series', 'allow_late_guesses')
-        
+
         # Deleting field 'Guess.timestamp'
         db.delete_column('fantasy_guess', 'timestamp')
-        
+
         # Deleting field 'Guess.late_entry'
         db.delete_column('fantasy_guess', 'late_entry')
-        
-    
-    
+
+
+
     models = {
         'serviceclient.serviceclient': {
             'date_joined': ('django.db.models.fields.DateField', [], {'default': 'datetime.date(2009, 7, 7)'}),
@@ -142,5 +142,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['serviceclient.ServiceClientUserProfile']"})
         }
     }
-    
+
     complete_apps = ['fantasy']

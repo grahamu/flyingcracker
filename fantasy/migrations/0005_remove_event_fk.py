@@ -1,24 +1,24 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Deleting field 'Guess.event'
         db.delete_column('fantasy_guess', 'event_id')
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Adding field 'Guess.event'
         db.add_column('fantasy_guess', 'event', orm['fantasy.guess:event'])
-        
-    
-    
+
+
+
     models = {
         'serviceclient.serviceclient': {
             'date_joined': ('django.db.models.fields.DateField', [], {'default': 'datetime.date(2009, 7, 2)'}),
@@ -124,5 +124,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['serviceclient.ServiceClientUserProfile']"})
         }
     }
-    
+
     complete_apps = ['fantasy']

@@ -1,20 +1,20 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 from django.contrib.contenttypes.models import ContentType
 
 class Migration:
     no_dry_run = True
-    
+
     def forwards(self, orm):
         ctype = orm['contenttypes.contenttype'].objects.get(app_label='fantasy', name='event', model='event')
         for guess in orm.Guess.objects.all():
             guess.content_type = ctype
             guess.object_id = guess.event.pk
             guess.save()
-    
-    
+
+
     def backwards(self, orm):
         ctype = orm['contenttypes.contenttype'].objects.get(app_label='fantasy', name='event', model='event')
         for guess in orm.Guess.objects.all():
@@ -26,7 +26,7 @@ class Migration:
                 else:
                     guess.event = event
                     guess.save()
-    
+
     models = {
         'serviceclient.serviceclient': {
             'date_joined': ('django.db.models.fields.DateField', [], {'default': 'datetime.date(2009, 7, 1)'}),
@@ -133,5 +133,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['serviceclient.ServiceClientUserProfile']"})
         }
     }
-    
+
     complete_apps = ['fantasy']

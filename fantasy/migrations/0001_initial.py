@@ -1,12 +1,12 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding model 'Competitor'
         db.create_table('fantasy_competitor', (
             ('series', orm['fantasy.Competitor:series']),
@@ -14,7 +14,7 @@ class Migration:
             ('name', orm['fantasy.Competitor:name']),
         ))
         db.send_create_signal('fantasy', ['Competitor'])
-        
+
         # Adding model 'Event'
         db.create_table('fantasy_event', (
             ('result_locked', orm['fantasy.Event:result_locked']),
@@ -28,7 +28,7 @@ class Migration:
             ('name', orm['fantasy.Event:name']),
         ))
         db.send_create_signal('fantasy', ['Event'])
-        
+
         # Adding model 'Series'
         db.create_table('fantasy_series', (
             ('status', orm['fantasy.Series:status']),
@@ -47,7 +47,7 @@ class Migration:
             ('name', orm['fantasy.Series:name']),
         ))
         db.send_create_signal('fantasy', ['Series'])
-        
+
         # Adding model 'Guess'
         db.create_table('fantasy_guess', (
             ('event', orm['fantasy.Guess:event']),
@@ -56,7 +56,7 @@ class Migration:
             ('user', orm['fantasy.Guess:user']),
         ))
         db.send_create_signal('fantasy', ['Guess'])
-        
+
         # Adding model 'Result'
         db.create_table('fantasy_result', (
             ('place', orm['fantasy.Result:place']),
@@ -65,46 +65,46 @@ class Migration:
             ('event', orm['fantasy.Result:event']),
         ))
         db.send_create_signal('fantasy', ['Result'])
-        
+
         # Creating unique_together for [name, series] on Competitor.
         db.create_unique('fantasy_competitor', ['name', 'series_id'])
-        
+
         # Creating unique_together for [competitor, event] on Result.
         db.create_unique('fantasy_result', ['competitor_id', 'event_id'])
-        
+
         # Creating unique_together for [name, series] on Event.
         db.create_unique('fantasy_event', ['name', 'series_id'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting model 'Competitor'
         db.delete_table('fantasy_competitor')
-        
+
         # Deleting model 'Event'
         db.delete_table('fantasy_event')
-        
+
         # Deleting model 'Series'
         db.delete_table('fantasy_series')
-        
+
         # Deleting model 'Guess'
         db.delete_table('fantasy_guess')
-        
+
         # Deleting model 'Result'
         db.delete_table('fantasy_result')
-        
+
         # Deleting unique_together for [name, series] on Competitor.
         db.delete_unique('fantasy_competitor', ['name', 'series_id'])
-        
+
         # Deleting unique_together for [competitor, event] on Result.
         db.delete_unique('fantasy_result', ['competitor_id', 'event_id'])
-        
+
         # Deleting unique_together for [name, series] on Event.
         db.delete_unique('fantasy_event', ['name', 'series_id'])
-        
-    
-    
+
+
+
     models = {
         'serviceclient.serviceclient': {
             'date_joined': ('django.db.models.fields.DateField', [], {'default': 'datetime.date(2009, 7, 1)'}),
@@ -223,5 +223,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['serviceclient.ServiceClientUserProfile']"})
         }
     }
-    
+
     complete_apps = ['serviceclient', 'fantasy']
