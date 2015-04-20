@@ -1,0 +1,15 @@
+---
+
+- name: Fetch the Git repo
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ project_path }}"
+    accept_hostkey: yes
+    version: "{{ branch }}"
+  tags: git
+
+- name: Delete all .pyc files
+  command: find . -name '*.pyc' -delete
+  args:
+    chdir: "{{ project_path }}"
+  tags: git

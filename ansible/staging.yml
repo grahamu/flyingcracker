@@ -1,0 +1,9 @@
+---
+
+- name: Update an {{ application_name }} server
+  hosts: all
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+  roles:
+    - web

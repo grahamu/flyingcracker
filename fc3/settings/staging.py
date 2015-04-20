@@ -5,8 +5,6 @@ import sys
 from unipath import Path
 #!/usr/bin/env python
 from .base import *
-from .secrets import SECRET_KEY
-
 
 DEBUG=True
 
