@@ -1,30 +1,30 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Creating unique_together for [competitor, event, result] on Result.
         db.create_unique('fantasy_result', ['competitor_id', 'event_id', 'result'])
-        
+
         # Deleting unique_together for [competitor, event] on result.
         db.delete_unique('fantasy_result', ['competitor_id', 'event_id'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting unique_together for [competitor, event, result] on Result.
         db.delete_unique('fantasy_result', ['competitor_id', 'event_id', 'result'])
-        
+
         # Creating unique_together for [competitor, event] on result.
         db.create_unique('fantasy_result', ['competitor_id', 'event_id'])
-        
-    
-    
+
+
+
     models = {
         'serviceclient.serviceclient': {
             'date_joined': ('django.db.models.fields.DateField', [], {'default': 'datetime.date(2009, 7, 6)'}),
@@ -132,5 +132,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['serviceclient.ServiceClientUserProfile']"})
         }
     }
-    
+
     complete_apps = ['fantasy']

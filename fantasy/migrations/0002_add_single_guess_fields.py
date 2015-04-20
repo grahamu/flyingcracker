@@ -1,32 +1,32 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Series.guess_once_per_series'
         db.add_column('fantasy_series', 'guess_once_per_series', orm['fantasy.series:guess_once_per_series'])
-        
+
         # Changing field 'Event.guess_deadline'
         # (to signature: django.db.models.fields.DateTimeField(null=True, blank=True))
         db.alter_column('fantasy_event', 'guess_deadline', orm['fantasy.event:guess_deadline'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Series.guess_once_per_series'
         db.delete_column('fantasy_series', 'guess_once_per_series')
-        
+
         # Changing field 'Event.guess_deadline'
         # (to signature: django.db.models.fields.DateTimeField())
         db.alter_column('fantasy_event', 'guess_deadline', orm['fantasy.event:guess_deadline'])
-        
-    
-    
+
+
+
     models = {
         'serviceclient.serviceclient': {
             'date_joined': ('django.db.models.fields.DateField', [], {'default': 'datetime.date(2009, 7, 1)'}),
@@ -131,5 +131,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['serviceclient.ServiceClientUserProfile']"})
         }
     }
-    
+
     complete_apps = ['fantasy']

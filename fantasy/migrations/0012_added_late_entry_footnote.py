@@ -1,32 +1,32 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Series.late_entry_footnote'
         db.add_column('fantasy_series', 'late_entry_footnote', orm['fantasy.series:late_entry_footnote'])
-        
+
         # Changing field 'Guess.timestamp'
         # (to signature: django.db.models.fields.DateTimeField(auto_now_add=True, blank=True))
         db.alter_column('fantasy_guess', 'timestamp', orm['fantasy.guess:timestamp'])
-        
-    
-    
+
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Series.late_entry_footnote'
         db.delete_column('fantasy_series', 'late_entry_footnote')
-        
+
         # Changing field 'Guess.timestamp'
         # (to signature: django.db.models.fields.DateTimeField(default=datetime.datetime(2009, 7, 7, 17, 34, 32, 328000)))
         db.alter_column('fantasy_guess', 'timestamp', orm['fantasy.guess:timestamp'])
-        
-    
-    
+
+
+
     models = {
         'auth.group': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -139,5 +139,5 @@ class Migration:
             'user_type': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1'})
         }
     }
-    
+
     complete_apps = ['fantasy']

@@ -1,17 +1,17 @@
 
 from south.db import db
 from django.db import models
-from fc3.fantasy.models import *
+from fantasy.models import *
 
 class Migration:
     no_dry_run = True
-    
+
     def forwards(self, orm):
         for r in orm.Result.objects.all():
             r.result = str(r.place)
             r.save()
-    
-    
+
+
     def backwards(self, orm):
         for r in orm.Result.objects.all():
             try:
@@ -21,8 +21,8 @@ class Migration:
             else:
                 r.place = result
                 r.save()
-    
-    
+
+
     models = {
         'serviceclient.serviceclient': {
             'date_joined': ('django.db.models.fields.DateField', [], {'default': 'datetime.date(2009, 7, 3)'}),
@@ -131,5 +131,5 @@ class Migration:
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['serviceclient.ServiceClientUserProfile']"})
         }
     }
-    
+
     complete_apps = ['fantasy']
