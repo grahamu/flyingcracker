@@ -22,18 +22,16 @@ DATABASES = {
 # If in a Django development server environment, this should be 'static'.
 # If in a production environment the value will look like 'http://domainname/appname/static'.
 
-BASE_DIR = Path(__file__).ancestor(4)
+BASE_DIR = Path('/home/graham/webapps')
 
-LOCAL_ROOT = BASE_DIR.child("media")
-WEATHER_ROOT = LOCAL_ROOT + '/weather/'
+MEDIA_ROOT = BASE_DIR.child("media")
+STATIC_ROOT = BASE_DIR.child('staging_static')
+WEATHER_ROOT = MEDIA_ROOT + '/weather/'
 
 ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
 
 STATIC_URL = 'http://ullrichsoftware.com/static/'
 MEDIA_URL = 'http://ullrichsoftware.com/media/'
-
-MEDIA_ROOT = BASE_DIR.ancestor(2).child('staging_media')
-STATIC_ROOT = BASE_DIR.ancestor(2).child('staging_static')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR.child('fc3'), 'static'),
