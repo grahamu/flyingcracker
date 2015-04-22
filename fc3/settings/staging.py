@@ -39,17 +39,9 @@ STATICFILES_DIRS = (
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = "John Evans <johnevanswebbot@gmail.com>"
-
-try:
-    EMAIL_USE_TLS = True
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_USER = 'johnevanswebbot@gmail.com'
-    EMAIL_HOST_PASSWORD = ''
-    EMAIL_PORT = 587
-except:
-    print "email not working"
-
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 

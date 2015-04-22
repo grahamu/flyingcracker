@@ -1,18 +1,10 @@
 from __future__ import absolute_import
-# Django settings for fc3 project.
 import os
 from unipath import Path
-from .secrets import SECRET_KEY
 
-##with open("./settings/config.json") as f1:
-##    config = json.loads(f1.read())
-##
-##def get_config(setting, config=config):
-##    try:
-##        return config[setting]
-##    except KeyError:
-##        error_msg = "set the {0} environment variable".format(setting)
-##        raise ImproperlyConfigured(error_msg)
+from .secrets import get_secret
+
+SECRET_KEY = get_secret('SECRET_KEY')
 
 BASE_DIR = Path(__file__).ancestor(3)
 
@@ -154,3 +146,13 @@ SYSTEM_NAME = "cracklyfinger.com"
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
 ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
+
+# Email service credentials are secret.
+EMAIL_HOST = get_secret('EMAIL_HOST')
+EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
+
+EMAIL_PORT = 25
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'cracklyfinger@flyingcracker.com'
+SERVER_EMAIL = 'graham@flyingcracker.com'
