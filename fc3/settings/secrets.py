@@ -4,7 +4,7 @@ from unipath import Path
 
 from django.core.exceptions import ImproperlyConfigured
 
-SECRETS_DIR = Path(__file__)
+SECRETS_DIR = Path(__file__).parent()
 
 
 with open(SECRETS_DIR.child("secrets.json")) as f:
