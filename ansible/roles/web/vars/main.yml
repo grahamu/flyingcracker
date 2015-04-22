@@ -1,7 +1,8 @@
 ---
 
 # Application settings.
-virtualenv_path: "/home/graham/.virtualenvs/{{ application_name }}"
+application_path: "~/webapps/{{ application_name }}"
+virtualenv_path: "~/.virtualenvs/{{ application_name }}"
 project_path: "{{ virtualenv_path }}/src/{{ project_name }}"
-requirements_file: "{{ project_path }}/requirements/{{ build }}.txt"
-django_settings_file: "fc3.settings.{{ build }}"
+requirements_file: "{{ project_path }}/requirements/{{ settings }}.txt"
+django_settings_file: "fc3.settings.{{ settings }}"
