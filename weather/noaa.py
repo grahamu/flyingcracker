@@ -1,14 +1,14 @@
-from django.conf import settings 
+from django.conf import settings
 from urllib import urlopen
 from forecast import Forecast
 from dateutil import parser as dateutilparser
 
 
 class NOAAForecastPreamble(object):
-    
+
     def __init__(self, zname):
         self.zname = zname
-        
+
     def parse_line(self, line, forecast):
         if line.startswith(self.zname):
             return NOAAForecastArea, False
@@ -17,10 +17,10 @@ class NOAAForecastPreamble(object):
 
 
 class NOAAForecastArea(object):
-    
+
     def __init__(self):
         self.area = []
-        
+
     def parse_line(self, line, forecast):
         if line.startswith('.'):
             self.parse_area(forecast)
@@ -44,11 +44,11 @@ class NOAAForecastArea(object):
         pubdate = ' '.join([tod, remainder])
         forecast.pubdate = pubdate
         forecast.timestamp = dateutilparser.parse(forecast.pubdate)
-        
+
         area = self.area.pop(0).capitalize()    # first item is area
         if area.endswith('-'):
             area = area[:-1]
-            
+
         if len(self.area) > 0:              # middle is cities of interest
             interest = ''.join(self.area)
             interest = interest.split('...')
@@ -60,37 +60,37 @@ class NOAAForecastArea(object):
             area_list.append(interest[0].lower())
             area_list.append(cities)
             area = ' '.join(area_list)
-            
+
         forecast.area = area
-        
-        
+
+
 def capitalize_all(str):
     l = str.split(' ')
     l = [word.capitalize() for word in l]
     return ' '.join(l)
-        
+
 
 class NOAAForecastBody(object):
-    
+
     def __init__(self):
         self.title = ''
         self.body = []
-    
+
     def parse_line(self, line, forecast):
         if len(line) == 0:     # ignore this line
             return False, False
-        
+
         if line.startswith('...'):
             return NOAAForecastWarning, True    # recycle this line, it starts a warning
-        
+
         if line == '$$':    # end of the forecast sections
             self.add_section(forecast)
             return False, False
-        
+
         if line == '&&':    # indicates some extra NOAA data, ignore all subsequent lines
             self.add_section(forecast)
             return NOAAForecastIgnore, False
-        
+
         if line[0] == '.' and line[1] != ' ':   # start of a new section
             self.add_section(forecast)
             title, body = line.split('...', 1)
@@ -99,7 +99,7 @@ class NOAAForecastBody(object):
         else:
             self.body.append(line)
         return False, False
-            
+
     def add_section(self, forecast):
         if self.title != '':
             body_str = ' '.join(self.body)
@@ -113,11 +113,11 @@ class NOAAForecastBody(object):
 
 
 class NOAAForecastWarning(object):
-    
+
     def __init__(self):
         self.warning = []
         pass
-    
+
     def parse_line(self, line, forecast):
         self.warning.append(line)
         if line.endswith('...'):
@@ -130,20 +130,20 @@ class NOAAForecastWarning(object):
 
 
 class NOAAForecastIgnore(object):
-        
+
     def parse_line(self, line, forecast):
         return False, False
 
 
 class NOAAForecast(Forecast):
-    
+
     def __init__(self, zname):
         super(NOAAForecast, self).__init__()
         self.state = NOAAForecastPreamble(zname)
-        
+
     def set_state(self, state):
         self.state = state
-        
+
     def parse_line(self, line):
         '''
         Calls the state class' parseLine method.
@@ -157,7 +157,7 @@ class NOAAForecast(Forecast):
             self.set_state(newState())
             if recycle_line:
                 self.parse_line(line)
-    
+
 def get_NOAA_forecast(state, zone):
     '''
     Obtain NOAA textual forecast.
@@ -168,7 +168,7 @@ def get_NOAA_forecast(state, zone):
     lines = get_NOAA_data(state, zname)
     if not lines:
         return None
-    
+
     forecast = NOAAForecast(zname)
     for line in lines:
         forecast.parse_line(line.strip())
@@ -181,16 +181,16 @@ import datetime
 
 def get_NOAA_data(state, zname):
     # get data from disk file first, but ignore the data if it is more than 4 hours old.
-    filename = settings.WEATHER_ROOT + 'noaa-' + zname + '.txt'
+    filename = settings.WEATHER_ROOT.child('noaa-' + zname + '.txt')
     if not os.path.isfile(filename):
         return save_NOAA_data(state, zname)
-    
+
     filetime_t = os.path.getmtime(filename)
     filestamp = datetime.datetime.fromtimestamp(filetime_t)
     now = datetime.datetime.now()
     if (now - filestamp) > datetime.timedelta(hours=3) or (now < filestamp):
         return save_NOAA_data(state, zname)
-    
+
     try:
         f = open(filename, 'r')
     except:
@@ -210,7 +210,7 @@ def save_NOAA_data(state, zname):
         return None
     else:
         # save the retrieved data
-        filename = settings.WEATHER_ROOT + 'noaa-' + zname + '.txt'
+        filename = settings.WEATHER_ROOT.child('noaa-' + zname + '.txt')
         f = open(filename, "w")
         f.writelines(lines)
         f.close()
@@ -223,14 +223,14 @@ def test():
     print repr(forecast)
     forecast = get_NOAA_forecast('OR', 1)
     print repr(forecast)
-    
+
 if __name__ == '__main__':
     import optparse
     p = optparse.OptionParser()
     p.add_option('--zone', '-z', type="int", default=12)
     p.add_option('--state', '-s', default='CO')
     options, arguments = p.parse_args()
-    
+
     if not arguments:
         test()
     else:
@@ -241,6 +241,5 @@ if __name__ == '__main__':
             elif cmd.lower() == 'get':
                 state = options.state.upper()
                 print get_NOAA_data(state, state+"Z%03d" % options.zone)
-                
-            
-    
+
+
