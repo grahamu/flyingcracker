@@ -3,3 +3,5 @@
 - include: fetch_git_repo.yml
 
 - include: setup_django_app.yml
+  notify:
+    - restart apache
