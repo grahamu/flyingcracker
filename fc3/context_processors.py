@@ -20,10 +20,13 @@ def miniblog(request):
 
 def system_version(request):
     from django.conf import settings
-    from fc3 import get_version
+    from fc3 import get_git_tag
+    from django import get_version
+
     system = {}
     system['system_name'] = settings.SYSTEM_NAME
-    system['system_version'] = get_version()
+    system['system_version'] = get_git_tag()
+    system['django_version'] = get_version()
     return system
 
 
@@ -31,7 +34,7 @@ def login_url_with_redirect(request):
     from django.utils.http import urlquote
     from django.contrib.auth import REDIRECT_FIELD_NAME
     from django.core.urlresolvers import reverse
-    
+
     login_url = settings.LOGIN_URL
     path = urlquote(request.get_full_path())
     if path == reverse('auth_logout'):
