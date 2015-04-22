@@ -13,8 +13,7 @@
     - web
 
   tasks:
-    - shell: echo "almost done"
+    - shell: echo "Restarting Apache..."
 
   post_tasks:
-    notify:
-    - restart apache
+    notify: restart apache
