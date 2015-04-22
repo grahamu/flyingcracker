@@ -7,3 +7,6 @@
     - env_vars/staging.yml
   roles:
     - web
+  post_tasks:
+    notify:
+    - restart apache
