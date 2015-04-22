@@ -1,7 +1,13 @@
+from __future__ import absolute_import
 import json
+from unipath import Path
+
 from django.core.exceptions import ImproperlyConfigured
 
-with open("secrets.json") as f:
+SECRETS_DIR = Path(__file__)
+
+
+with open(SECRETS_DIR.child("secrets.json")) as f:
     secrets = json.loads(f.read())
 
 
