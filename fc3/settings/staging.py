@@ -19,7 +19,7 @@ DATABASES = {
 # Where are media and weather files?
 MEDIA_DIR = STATIC_DIR = Path("/home/graham/webapps")
 MEDIA_ROOT = MEDIA_DIR.child("media")
-WEATHER_ROOT = MEDIA_DIR.child('/weather/')
+WEATHER_ROOT = MEDIA_DIR.child('weather')
 STATIC_ROOT = STATIC_DIR.child('staging_static')
 
 STATICFILES_DIRS = (
