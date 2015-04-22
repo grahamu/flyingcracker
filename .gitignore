@@ -3,5 +3,5 @@ dist
 MANIFEST
 .DS_Store
 cron_mail*.*
-secrets.py
+secrets.json
 static_media/
