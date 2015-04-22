@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from django.conf import settings 
+from django.conf import settings
 from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 from forecast import Forecast
@@ -9,7 +9,7 @@ from utils import get_URL_data, save_URL_data
 class CBTV(Forecast):
 
     url = 'http://www.cbtv.tv/RSS/CrestedButteCurrentWeatherReport.xml'
-    filename = settings.WEATHER_ROOT + 'cbtv.txt'
+    filename = settings.WEATHER_ROOT.child('cbtv.txt')
 
     def __init__(self, **kwargs):
         '''
@@ -21,24 +21,24 @@ class CBTV(Forecast):
         xml_text = get_URL_data(CBTV.url, CBTV.filename, max_file_age=10)
         if not xml_text:
             return None
-        
+
         try:
             xml = XML(xml_text)
         except ExpatError, info:
             return None;    # fail silently
-        
+
         rss = xml
         channel = rss.find('channel')
         item = channel.find('item')
-        
+
         # Get the data we want
         pubdate = item.findtext('pubDate')
         synopsis = item.findtext("description")
-    
+
         self.pubdate = pubdate
         self.set_timestamp()
         self.add_section('Synopsis', synopsis.strip())
-    
+
 def save_data():
     save_URL_data(CBTV.url, CBTV.filename)
 
@@ -46,12 +46,12 @@ def save_data():
 def test():
     cbtv = CBTV()
     print repr(cbtv)
-    
+
 if __name__ == '__main__':
     import optparse
     p = optparse.OptionParser()
     options, arguments = p.parse_args()
-    
+
     if not arguments:
         test()
     else:

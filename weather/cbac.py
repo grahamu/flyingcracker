@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from django.conf import settings 
+from django.conf import settings
 from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 from forecast import Forecast
@@ -9,7 +9,7 @@ from utils import get_URL_data, save_URL_data
 class CBAC(Forecast):
 
     url = 'http://cbavalanchecenter.org/rss/'
-    filename = settings.WEATHER_ROOT + 'cbac.txt'
+    filename = settings.WEATHER_ROOT.child('cbac.txt')
 
     def __init__(self, **kwargs):
         '''
@@ -25,7 +25,7 @@ class CBAC(Forecast):
         try:
             xml = XML(xml_text)
         except ExpatError, info:
-            return None;    # fail silently
+            return None    # fail silently
 
         rss = xml
         channel = rss.find('channel')
@@ -61,8 +61,10 @@ class CBAC(Forecast):
         self.add_section('Tomorrow', tomorrow.strip())
         self.reported_by = reportedby.strip()
 
+
 def save_data():
     save_URL_data(CBAC.url, CBAC.filename)
+
 
 def test():
     cbac = CBAC()
