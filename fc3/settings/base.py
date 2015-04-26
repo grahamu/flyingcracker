@@ -29,7 +29,6 @@ ADMINS = (
     ('Graham Ullrich', 'graham@flyingcracker.com'),
     # ('Your Name', 'your_email@domain.com'),
 )
-
 MANAGERS = ADMINS
 
 # Local time zone for this installation. All choices can be found here:

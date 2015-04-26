@@ -8,7 +8,7 @@
 -e git://github.com/schinckel/django-timezones.git#egg=django-timezones # Fork of 'brosner' with South 0.7 support
 -e git://github.com/SmileyChris/django-mailer-2.git#egg=django-mailer
 
-Django==1.6.10
+Django==1.7.7
 south==0.8.1
 docutils==0.6
 django-debug-toolbar==0.9.4
