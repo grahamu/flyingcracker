@@ -92,14 +92,12 @@ PREREQ_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.humanize',
     'django.contrib.comments',
     'django_extensions',
     'django.contrib.flatpages',
     'django.contrib.messages',
-    'django.contrib.sessions',
     'django.contrib.staticfiles',
 
     'markup_deprecated',
@@ -124,7 +122,6 @@ PROJECT_APPS = [
     'miniblog',
     'grill',
     'fantasy',
-    'home',
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
