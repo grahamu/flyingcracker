@@ -56,7 +56,6 @@ ADMIN_MEDIA_PREFIX = '/media/'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.load_template_source',
 )
 
 # List of context processors, with some custom ones at the top.
@@ -94,21 +93,18 @@ PREREQ_APPS = [
     'django.contrib.sites',
     'django.contrib.admindocs',
     'django.contrib.humanize',
-    'django.contrib.comments',
     'django_extensions',
     'django.contrib.flatpages',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
     'markup_deprecated',
-    'south',
     'uni_form',
     'registration',
     'django_mailer',
-#    'profiles',
     'sms',
     'timezones',
-    ]
+]
 
 PROJECT_APPS = [
     'scoresys',
@@ -134,6 +130,7 @@ AUTHENTICATION_BACKENDS = (
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 ACCOUNT_ACTIVATION_DAYS = 10
+REGISTRATION_AUTO_LOGIN = True
 
 YUI_VERSION = "2.9.0"
 
@@ -142,6 +139,8 @@ SYSTEM_NAME = "cracklyfinger.com"
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
 ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Email service credentials are secret.
 EMAIL_HOST = get_secret('EMAIL_HOST')
