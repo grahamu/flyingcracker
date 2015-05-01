@@ -141,6 +141,10 @@ AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--logging-filter=-django.request',
+    '--with-progressive',
+]
 
 # Email service credentials are secret.
 EMAIL_HOST = get_secret('EMAIL_HOST')

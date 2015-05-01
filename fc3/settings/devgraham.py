@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from unipath import Path
+
 from .local import *
 
 DATABASES = {
@@ -11,7 +13,7 @@ DATABASES = {
     }
 }
 
-LOCAL_ROOT = "/Users/graham/Documents/fc3/testing/web/media"
+LOCAL_ROOT = Path("/Users/graham/Documents/fc3/testing/web/media")
 WEATHER_ROOT = LOCAL_ROOT + '/weather/'
 
 # Just dump emails to the console.
