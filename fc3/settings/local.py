@@ -8,8 +8,8 @@ DEBUG=True
 LOCAL_URL = 'local'
 
 BASE_DIR = Path(__file__).ancestor(3)
-LOCAL_ROOT = BASE_DIR.child("media")
-WEATHER_ROOT = LOCAL_ROOT + '/weather/'
+LOCAL_ROOT = BASE_DIR.ancestor(2).child("media")
+WEATHER_ROOT = LOCAL_ROOT.child("weather")
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'

@@ -4,8 +4,6 @@ from django.conf.urls import patterns, include
 from django.contrib import admin
 from django.conf import settings
 
-admin.autodiscover()
-
 try:
     from fc3 import pattern_views
 except ImportError:
@@ -17,7 +15,6 @@ urlpatterns = patterns(
     # Admin URLs
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     (r'^admin/', include(admin.site.urls)),
-    (r'^comments/', include('django.contrib.comments.urls')),
 
     # Application URLs
     (r'^accounts/', include('registration.urls')),

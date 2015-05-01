@@ -1,55 +1,45 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-from south.db import db
-from django.db import models
-from scoresys.models import *
+from django.db import models, migrations
 
-class Migration:
-    
-    def forwards(self, orm):
-        
-        # Adding model 'ResultPoints'
-        db.create_table('scoresys_resultpoints', (
-            ('system', orm['scoresys.ResultPoints:system']),
-            ('points', orm['scoresys.ResultPoints:points']),
-            ('id', orm['scoresys.ResultPoints:id']),
-            ('result', orm['scoresys.ResultPoints:result']),
-        ))
-        db.send_create_signal('scoresys', ['ResultPoints'])
-        
-        # Adding model 'ScoringSystem'
-        db.create_table('scoresys_scoringsystem', (
-            ('description', orm['scoresys.ScoringSystem:description']),
-            ('num_places', orm['scoresys.ScoringSystem:num_places']),
-            ('id', orm['scoresys.ScoringSystem:id']),
-            ('name', orm['scoresys.ScoringSystem:name']),
-        ))
-        db.send_create_signal('scoresys', ['ScoringSystem'])
-        
-    
-    
-    def backwards(self, orm):
-        
-        # Deleting model 'ResultPoints'
-        db.delete_table('scoresys_resultpoints')
-        
-        # Deleting model 'ScoringSystem'
-        db.delete_table('scoresys_scoringsystem')
-        
-    
-    
-    models = {
-        'scoresys.resultpoints': {
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'points': ('django.db.models.fields.IntegerField', [], {}),
-            'result': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'system': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['scoresys.ScoringSystem']"})
-        },
-        'scoresys.scoringsystem': {
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True'}),
-            'num_places': ('django.db.models.fields.PositiveIntegerField', [], {})
-        }
-    }
-    
-    complete_apps = ['scoresys']
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='ResultPoints',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('result', models.CharField(max_length=50)),
+                ('points', models.IntegerField()),
+                ('rank', models.PositiveIntegerField(default=1)),
+            ],
+            options={
+                'ordering': ['rank'],
+                'verbose_name_plural': 'Result points',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ScoringSystem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=100, verbose_name=b'Scoring system name')),
+                ('num_places', models.PositiveIntegerField()),
+                ('description', models.TextField(null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='resultpoints',
+            name='system',
+            field=models.ForeignKey(to='scoresys.ScoringSystem'),
+            preserve_default=True,
+        ),
+    ]

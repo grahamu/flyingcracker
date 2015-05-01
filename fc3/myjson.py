@@ -1,26 +1,28 @@
+from decimal import Decimal
+import json
+
+from django.core.serializers.json import DateTimeAwareJSONEncoder
+from django.db import models
 from django.http import HttpResponse
+from django.utils.encoding import force_unicode
+from django.utils.functional import Promise
+
 
 class JsonResponse(HttpResponse):
     def __init__(self, data):
         HttpResponse.__init__(self, json_encode2(data), mimetype='text/javascript')
 
-from django.core.serializers.json import DateTimeAwareJSONEncoder
-from django.db import models
-from django.utils.functional import Promise
-from django.utils.encoding import force_unicode
-from django.utils import simplejson as json
-from decimal import *
 
 def json_encode2(data):
     """
     The main issues with django's default json serializer is that properties that
-    had been added to an object dynamically are being ignored (and it also has 
+    had been added to an object dynamically are being ignored (and it also has
     problems with some models).
     """
 
     def _any(data):
         ret = None
-        # Oops, we used to check if it is of type list, but that fails 
+        # Oops, we used to check if it is of type list, but that fails
         # i.e. in the case of django.newforms.utils.ErrorList, which extends
         # the type "list". Oh man, that was a dumb mistake!
         if isinstance(data, list):
@@ -45,7 +47,7 @@ def json_encode2(data):
         else:
             ret = data
         return ret
-    
+
     def _model(data):
         ret = {}
         # If we only have a model, we only want to encode the fields.
@@ -58,19 +60,19 @@ def json_encode2(data):
             if k[0] != '_':
                 ret[k] = _any(getattr(data, k))
         return ret
-    
+
     def _list(data):
         ret = []
         for v in data:
             ret.append(_any(v))
         return ret
-    
+
     def _dict(data):
         ret = {}
-        for k,v in data.items():
+        for k, v in data.items():
             ret[k] = _any(v)
         return ret
-    
+
     ret = _any(data)
-    
+
     return json.dumps(ret, cls=DateTimeAwareJSONEncoder)
