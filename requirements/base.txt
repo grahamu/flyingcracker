@@ -24,3 +24,4 @@ psycopg2==2.5.4
 fabric==1.10.1
 django-markup-deprecated==0.0.3
 django-localflavor==1.1
+ansible==1.9.0.1
