@@ -4,7 +4,7 @@ user_root: "/home/graham"
 
 # Application settings.
 application_path: "{{ user_root }}/webapps/{{ application_name }}"
-virtualenv_path: "{{ application_path }}"
+virtualenv_path: "{{ user_root }}/.virtualenvs/{{ application_name }}"
 project_path: "{{ virtualenv_path }}/src/{{ project_name }}"
 requirements_file: "{{ project_path }}/requirements/{{ settings }}.txt"
 django_settings_file: "fc3.settings.{{ settings }}"
