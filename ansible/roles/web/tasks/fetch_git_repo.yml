@@ -13,3 +13,12 @@
   args:
     chdir: "{{ project_path }}"
   tags: git
+
+- name: Determine existence of secrets.json
+  stat: path={{ project_path }}/fc3/settings/secrets.json
+  register: p
+
+- name: Create secrets.json file if it does not exist
+  template: src=secrets_json.j2
+            dest={{ project_path }}/fc3/settings/secrets.json
+  when: p.stat.exists == false

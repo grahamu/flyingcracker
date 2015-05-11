@@ -1,0 +1,16 @@
+---
+
+- name: Create the Apache configuration file
+  template: src=httpd_conf.j2
+            dest={{ application_path }}/apache2/conf/httpd.conf
+            backup=yes
+  notify: reload apache
+
+- name: Create the mod_wsgi file
+  template: src=wsgi_py.j2
+            dest={{ application_path }}/wsgi.py
+            backup=yes
+  notify: reload apache
+
+- name: Ensure Apache service is started
+  service: name=httpd state=started enabled=yes

@@ -2,4 +2,4 @@
 
 application_name: "fc3staging"
 branch: "staging"
-build: "staging"
+settings: "staging"

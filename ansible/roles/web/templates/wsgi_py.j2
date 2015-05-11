@@ -1,0 +1,15 @@
+
+import os, sys, site
+
+site.addsitedir('{{ virtualenv_path }}/lib/python2.7/site-packages')
+
+os.environ['DJANGO_SETTINGS_MODULE'] = '{{ django_settings_file }}'
+
+activate_this = os.path.expanduser("{{ virtualenv_path }}/bin/activate_this.py")
+execfile(activate_this, dict(__file__=activate_this))
+
+workspace = os.path.dirname("{{ project_path }}")
+sys.path.append(workspace)
+
+from django.core.handlers.wsgi import WSGIHandler
+application = WSGIHandler()

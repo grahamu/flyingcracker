@@ -3,8 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.db.models import permalink
-from datetime import date, datetime
-from django.utils.translation import ugettext_lazy as _
+from datetime import datetime
 from scoresys.models import ScoringSystem
 from fantasy import managers
 
@@ -14,20 +13,20 @@ class Series(models.Model):
     A series of one or more events, i.e. Formula One 2009.
 
     '''
-    name                    = models.CharField(max_length=100, unique=True)
-    description             = models.CharField(max_length=100, blank=True, null=True)
-    start_date              = models.DateField()
-    end_date                = models.DateField()
-    competitor_label        = models.CharField(help_text='How competitors are referred to, i.e. "Driver" or "Rider".', max_length=50, default='Driver')
-    event_label             = models.CharField(help_text='How series events are referred to, i.e. "Race" or "Stage".', max_length=50, default='Race')
-    num_guesses             = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each event.', default=1)
-    guess_once_per_series   = models.BooleanField('Pick competitors once for entire series', default=False)
-    allow_late_guesses      = models.BooleanField('Allow late guesses', help_text='Late guesses will not count in Series standings', default=False)
-    late_entry_footnote     = models.CharField(max_length=100, default="player entered late picks", blank=True)
-    invite_only             = models.BooleanField('Users must be invited', default=False)
-    only_members_can_view   = models.BooleanField('Only members can view results')
+    name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    competitor_label = models.CharField(help_text='How competitors are referred to, i.e. "Driver" or "Rider".', max_length=50, default='Driver')
+    event_label = models.CharField(help_text='How series events are referred to, i.e. "Race" or "Stage".', max_length=50, default='Race')
+    num_guesses = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each event.', default=1)
+    guess_once_per_series = models.BooleanField('Pick competitors once for entire series', default=False)
+    allow_late_guesses = models.BooleanField('Allow late guesses', help_text='Late guesses will not count in Series standings', default=False)
+    late_entry_footnote = models.CharField(max_length=100, default="player entered late picks", blank=True)
+    invite_only = models.BooleanField('Users must be invited', default=False)
+    only_members_can_view = models.BooleanField('Only members can view results', default=False)
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
-    scoring_system          = models.ForeignKey(ScoringSystem, blank=True, null=True)
+    scoring_system = models.ForeignKey(ScoringSystem, blank=True, null=True)
     HIDDEN_STATUS = 'H'
     ACTIVE_STATUS = 'A'
     COMPLETE_STATUS = 'C'
@@ -36,9 +35,9 @@ class Series(models.Model):
         (ACTIVE_STATUS, 'ACTIVE - ready for use'),
         (COMPLETE_STATUS, 'COMPLETE - series is finished'),
     )
-    status                  = models.CharField(max_length=1, choices=STATUS_TYPES, default=HIDDEN_STATUS, blank=False)
-    owner                   = models.ForeignKey(User)
-    guesses                 = generic.GenericRelation('Guess')
+    status = models.CharField(max_length=1, choices=STATUS_TYPES, default=HIDDEN_STATUS, blank=False)
+    owner = models.ForeignKey(User)
+    guesses = generic.GenericRelation('Guess')
 
     class Meta:
         verbose_name = 'series'
@@ -71,7 +70,7 @@ class Series(models.Model):
         if not self.guess_once_per_series:
             return None
         else:
-            guesses = [{'timestamp': g.timestamp, 'player':g.user}
+            guesses = [{'timestamp': g.timestamp, 'player': g.user}
                        for g in self.guesses.all().order_by('timestamp')]
         return guesses
 
@@ -100,15 +99,15 @@ class Event(models.Model):
     An event in a series, i.e. Monaco Grand Prix.
 
     '''
-    name            = models.CharField(max_length=100)
-    short_name      = models.CharField(max_length=20, blank=True)
-    description     = models.CharField(max_length=100, blank=True, null=True)
-    guess_deadline  = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
-    start           = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
-    location        = models.CharField(max_length=100, blank=True, null=True)
-    series          = models.ForeignKey(Series)
-    result_locked   = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
-    guesses         = generic.GenericRelation('Guess')
+    name = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=20, blank=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    guess_deadline = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
+    start = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
+    location = models.CharField(max_length=100, blank=True, null=True)
+    series = models.ForeignKey(Series)
+    result_locked = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
+    guesses = generic.GenericRelation('Guess')
 
     objects = managers.EventManager()
 
@@ -159,7 +158,7 @@ class Event(models.Model):
         if self.series.guess_once_per_series:
             return self.series.guess_list()
         else:
-            guesses = [{'timestamp': g.timestamp, 'player':g.user}
+            guesses = [{'timestamp': g.timestamp, 'player': g.user}
                        for g in self.guesses.all().order_by('timestamp')]
         return guesses
 
@@ -172,10 +171,10 @@ class Event(models.Model):
 
 
 class Competitor(models.Model):
-    name        = models.CharField(max_length=100)
-    series      = models.ForeignKey(Series)
-    team        = models.ForeignKey('Team', blank=True, null=True)
-    active      = models.BooleanField(default=True, help_text='Players may only pick "active" competitors.')
+    name = models.CharField(max_length=100)
+    series = models.ForeignKey(Series)
+    team = models.ForeignKey('Team', blank=True, null=True)
+    active = models.BooleanField(default=True, help_text='Players may only pick "active" competitors.')
 
     class Meta:
         unique_together = ('name', 'series')
@@ -192,9 +191,9 @@ class Competitor(models.Model):
 
 
 class Team(models.Model):
-    series          = models.ForeignKey(Series)
-    name            = models.CharField(max_length=100)
-    short_name      = models.CharField(max_length=50, blank=True)
+    series = models.ForeignKey(Series)
+    name = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=50, blank=True)
 
     class Meta:
         ordering = ['name']
@@ -210,14 +209,14 @@ class Team(models.Model):
 
 
 class Result(models.Model):
-    competitor  = models.ForeignKey(Competitor)
-    event       = models.ForeignKey(Event)
-    result      = models.CharField(max_length=50)
-    entered_by  = models.ForeignKey(User, blank=True, null=True)
+    competitor = models.ForeignKey(Competitor)
+    event = models.ForeignKey(Event)
+    result = models.CharField(max_length=50)
+    entered_by = models.ForeignKey(User, blank=True, null=True)
 
     class Meta:
         ordering = ['result']
-        unique_together = ('competitor','event', 'result')
+        unique_together = ('competitor', 'event', 'result')
 
     def __unicode__(self):
         return u'%s: %s: %s' % (self.event, self.result, self.competitor)
@@ -232,13 +231,13 @@ class Result(models.Model):
 
 
 class Guess(models.Model):
-    user            = models.ForeignKey(User)
-    competitor      = models.ForeignKey(Competitor)
-    content_type    = models.ForeignKey(ContentType)
-    object_id       = models.PositiveIntegerField()
-    guess_for       = generic.GenericForeignKey()
-    late_entry      = models.BooleanField(default=False)
-    timestamp       = models.DateTimeField()
+    user = models.ForeignKey(User)
+    competitor = models.ForeignKey(Competitor)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    guess_for = generic.GenericForeignKey()
+    late_entry = models.BooleanField(default=False)
+    timestamp = models.DateTimeField()
 
     class Meta:
         verbose_name_plural = 'guesses'

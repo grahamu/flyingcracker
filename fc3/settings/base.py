@@ -29,7 +29,6 @@ ADMINS = (
     ('Graham Ullrich', 'graham@flyingcracker.com'),
     # ('Your Name', 'your_email@domain.com'),
 )
-
 MANAGERS = ADMINS
 
 # Local time zone for this installation. All choices can be found here:
@@ -57,7 +56,6 @@ ADMIN_MEDIA_PREFIX = '/media/'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.load_template_source',
 )
 
 # List of context processors, with some custom ones at the top.
@@ -93,25 +91,20 @@ PREREQ_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.humanize',
-    'django.contrib.comments',
     'django_extensions',
     'django.contrib.flatpages',
     'django.contrib.messages',
-    'django.contrib.sessions',
     'django.contrib.staticfiles',
 
     'markup_deprecated',
-    'south',
     'uni_form',
     'registration',
     'django_mailer',
-#    'profiles',
     'sms',
     'timezones',
-    ]
+]
 
 PROJECT_APPS = [
     'scoresys',
@@ -125,7 +118,6 @@ PROJECT_APPS = [
     'miniblog',
     'grill',
     'fantasy',
-    'home',
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
@@ -138,6 +130,7 @@ AUTHENTICATION_BACKENDS = (
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 ACCOUNT_ACTIVATION_DAYS = 10
+REGISTRATION_AUTO_LOGIN = True
 
 YUI_VERSION = "2.9.0"
 
@@ -146,6 +139,12 @@ SYSTEM_NAME = "cracklyfinger.com"
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
 ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--logging-filter=-django.request',
+    '--with-progressive',
+]
 
 # Email service credentials are secret.
 EMAIL_HOST = get_secret('EMAIL_HOST')

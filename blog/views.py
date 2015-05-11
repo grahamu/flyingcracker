@@ -1,7 +1,9 @@
+import json
+
 from django.http import HttpResponse
-from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from django.conf import settings
+
 
 def upload_file(request):
     if request.is_ajax():
@@ -12,7 +14,7 @@ def upload_file(request):
             filetype = file['content-type']
             filename = file['filename']
 
-            filepath ='%s/%s' % (settings.STATIC_ROOT, filename)
+            filepath = '%s/%s' % (settings.STATIC_ROOT, filename)
             fd = open(filepath, 'wb')
             fd.write(file['content'])
             fd.close()
@@ -21,7 +23,7 @@ def upload_file(request):
         else:
             result = {"status": "upload failed"}
 
-        json = simplejson.dumps(result, cls=DjangoJSONEncoder)
-        return HttpResponse(json, mimetype='text/html')  # try mimetype='application/javascript'
+        json_data = json.dumps(result, cls=DjangoJSONEncoder)
+        return HttpResponse(json_data, mimetype='text/html')  # try mimetype='application/javascript'
     else:
         return HttpResponse('sorry')
