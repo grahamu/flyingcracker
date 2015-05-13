@@ -2,4 +2,4 @@
 
 application_name: "fc3test"
 branch: "ansible"
-settings: "production"
+settings: "staging"

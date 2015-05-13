@@ -1,5 +1,5 @@
 ---
 
-- name: Create the virtualenv
-  command: virtualenv {{ virtualenv_path }} --no-site-packages
-           creates={{ virtualenv_path }}/bin/activate
+- name: create virtualenv
+  command: virtualenv {{ virtualenv_path }}
+    creates={{ virtualenv_path }}/bin/activate
