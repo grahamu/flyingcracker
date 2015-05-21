@@ -5,6 +5,7 @@ import json
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404, HttpResponse
+from django.views.decorators.cache import cache_page
 
 from decimal import (
     Decimal,
@@ -21,7 +22,7 @@ from .cbac import CBAC
 from .cbtv import CBTV
 import weather.utils as utils
 
-
+@cache_page(60 * 5) # cache for 5 minutes
 def weather(request):
     from django.core.serializers.json import DjangoJSONEncoder
 

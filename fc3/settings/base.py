@@ -79,6 +79,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+            
+    # caching middleware:
+    'django.middleware.cache.UpdateCacheMiddleware',    
+    'django.middleware.cache.FetchFromCacheMiddleware',       
 )
 
 ROOT_URLCONF = 'fc3.urls'
@@ -121,6 +125,17 @@ PROJECT_APPS = [
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+        'TIMEOUT': '300',
+        'OPTIONS': {
+            'MAX_ENTRIES': 100
+        }        
+    }
+}
 
 AUTHENTICATION_BACKENDS = (
     "fc3.email-auth.EmailBackend",
