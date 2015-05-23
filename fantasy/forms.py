@@ -4,11 +4,10 @@ from django import forms
 from django.forms import formsets
 from django.forms.models import ModelMultipleChoiceField
 from django.utils.translation import ugettext_lazy as _
-import datetime
-from .models import Series, Event, Competitor, Guess, Result, Team
+from .models import Series, Event, Competitor, Team
 
 
-attrs_dict = { 'class': 'required' }
+attrs_dict = {'class': 'required'}
 
 
 class SeriesForm(forms.ModelForm):
@@ -18,11 +17,12 @@ class SeriesForm(forms.ModelForm):
 
 
 class CompetitorForm(forms.ModelForm):
-    series = forms.ModelChoiceField(queryset=Series.objects.all(), widget=forms.HiddenInput)
-    
+    series = forms.ModelChoiceField(queryset=Series.objects.all(),
+                                    widget=forms.HiddenInput)
+
     class Meta:
         model = Competitor
-        fields = ('name','series', 'team', 'active')
+        fields = ('name', 'series', 'team', 'active')
 
     def __init__(self, *args, **kwargs):
         team_qs = kwargs.pop('team_qs', [])
@@ -64,7 +64,7 @@ class CompetitorImportForm(forms.Form):
 class TeamChoiceForm(forms.Form):
     '''
     Form used to select a team to associate with a Competitor.
-    
+
     '''
     team = forms.ModelChoiceField(queryset=[], required=False)
 
@@ -83,7 +83,7 @@ class TeamGuessForm(forms.Form):
     Choices for this form are specified at creation,
     and typically have values different than the standard
     `team.pk`.
-    
+
     '''
     team = forms.ChoiceField(choices=[], required=False)
 
@@ -98,15 +98,16 @@ class PickOptionsForm(forms.Form):
     Form used to present options about the competitor selection
     for an event or series.
     '''
-    remaining_events = forms.BooleanField(label='Feeling lazy?',
-                                    help_text=
-                            'Save these picks for all remaining events')
+    remaining_events = forms.BooleanField(
+        label='Feeling lazy?',
+        help_text=
+        'Save these picks for all remaining events'
+    )
+
 
 class CompetitorModelMultipleChoiceField(ModelMultipleChoiceField):
 
     def label_from_instance(self, obj):
-        from django.utils.encoding import smart_unicode
-        
         """
         This method is used to convert objects into strings; it's used to
         generate the labels for the choices presented by this object. Subclasses
@@ -133,7 +134,7 @@ class TeamEditForm(forms.ModelForm):
             self['members'].field.queryset = competitor_qs
         else:
             del self.fields['members']
-            
+
     def save(self, commit=True):
         team = forms.ModelForm.save(self, commit)
         if 'members' in self.fields:
@@ -153,9 +154,10 @@ class TeamEditForm(forms.ModelForm):
 
 class EventForm(forms.ModelForm):
     series = forms.ModelChoiceField(queryset=Series.objects.all(), widget=forms.HiddenInput)
-    
+
     class Meta:
         model = Event
+        fields = '__all__'
 
     def clean(self):
         name = self.cleaned_data.get('name')
@@ -180,7 +182,7 @@ class GuessAndResultBaseFormset(formsets.BaseFormSet):
     def __init__(self, *args, **kwargs):
         self.competitors = kwargs.pop('competitors', None)
         super(GuessAndResultBaseFormset, self).__init__(*args, **kwargs)
-    
+
     def _construct_form(self, i, **kwargs):
         kwargs["competitors"] = self.competitors
         return super(GuessAndResultBaseFormset, self)._construct_form(i, **kwargs)
@@ -194,7 +196,7 @@ class GuessForm(forms.Form):
         super(GuessForm, self).__init__(*args, **kwargs)
         self['competitor'].field.choices = competitor_list
         self['competitor'].field.label = 'Choose'
- 
+
 
 class ResultForm(forms.Form):
     result = forms.CharField(required=False)
@@ -202,7 +204,6 @@ class ResultForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         competitor_list = kwargs.pop('competitors', None)
-        form_num = kwargs.pop('form_num', 0)
         super(ResultForm, self).__init__(*args, **kwargs)
         self['competitor'].field.choices = competitor_list
 
@@ -215,11 +216,11 @@ class ResultForm(forms.Form):
 
 
 class EventOptionsForm(forms.ModelForm):
-    
+
     class Meta:
         model = Event
         fields = ('result_locked',)
- 
+
 
 class EmailSeriesForm(forms.Form):
     subject = forms.CharField()
