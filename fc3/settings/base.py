@@ -59,17 +59,18 @@ TEMPLATE_LOADERS = (
 )
 
 # List of context processors, with some custom ones at the top.
-TEMPLATE_CONTEXT_PROCESSORS = ('fc3.context_processors.yui_version',
-                               'fc3.context_processors.miniblog',
-                               'fc3.context_processors.system_version',
-                               'fc3.context_processors.login_url_with_redirect',
-                               'django.contrib.messages.context_processors.messages',
-                               'django.contrib.auth.context_processors.auth',
-                               'django.core.context_processors.debug',
-                               'django.core.context_processors.i18n',
-                               'django.core.context_processors.media',
-                               'django.core.context_processors.request',
-                               )
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'fc3.context_processors.yui_version',
+    'fc3.context_processors.miniblog',
+    'fc3.context_processors.system_version',
+    'fc3.context_processors.login_url_with_redirect',
+    'django.contrib.messages.context_processors.messages',
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -79,10 +80,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-            
-    # caching middleware:
-    'django.middleware.cache.UpdateCacheMiddleware',    
-    'django.middleware.cache.FetchFromCacheMiddleware',       
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'fc3.urls'
@@ -133,7 +132,7 @@ CACHES = {
         'TIMEOUT': '300',
         'OPTIONS': {
             'MAX_ENTRIES': 100
-        }        
+        }
     }
 }
 

@@ -22,3 +22,9 @@ EMAIL_PORT = 587
 # Jake, please fix whatever path problem this solves in some other way.
 #
 # sys.path.insert(0, '/Users/johnevans/venv/flyingcracker/src')
+
+
+# Just dump emails to the console.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Set queue time to 0, so mail is sent instantly.
+NOTIFICATIONS_QUEUE_MINS = 0
