@@ -10,14 +10,15 @@ from django.utils.functional import Promise
 
 class JsonResponse(HttpResponse):
     def __init__(self, data):
-        HttpResponse.__init__(self, json_encode2(data), mimetype='text/javascript')
+        super(JsonResponse, self).__init__(json_encode2(data),
+                                           content_type='text/javascript')
 
 
 def json_encode2(data):
     """
-    The main issues with django's default json serializer is that properties that
-    had been added to an object dynamically are being ignored (and it also has
-    problems with some models).
+    The main issues with django's default json serializer is that
+    properties that had been added to an object dynamically are
+    being ignored (and it also has problems with some models).
     """
 
     def _any(data):
@@ -38,7 +39,8 @@ def json_encode2(data):
             ret = _list(data)
         elif isinstance(data, models.Model):
             ret = _model(data)
-        # here we need to encode the string as unicode (otherwise we get utf-16 in the json-response)
+        # here we need to encode the string as unicode
+        # (otherwise we get utf-16 in the json-response)
         elif isinstance(data, basestring):
             ret = unicode(data)
         # see http://code.djangoproject.com/ticket/5868
