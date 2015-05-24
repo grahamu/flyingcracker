@@ -1,7 +1,9 @@
 from django.conf import settings
 
+
 def media_url(request):
     return {'media_url': settings.MEDIA_URL}
+
 
 def yui_version(request):
     yui = {}
@@ -13,10 +15,12 @@ def yui_version(request):
         yui['yui_path'] = yui['yui_root'] + settings.YUI_VERSION
     return yui
 
+
 def miniblog(request):
-    from miniblog.models import Post
-    posts = Post.objects.all().order_by('-pub_date')[0:7]
-    return {'miniblog': posts}
+##    from miniblog.models import Post
+##    posts = Post.objects.all().order_by('-pub_date')[0:7]
+    return {'miniblog': None}
+
 
 def system_version(request):
     from django.conf import settings
