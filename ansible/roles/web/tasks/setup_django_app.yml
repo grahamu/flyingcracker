@@ -18,3 +18,11 @@
     app_path: "{{ project_path }}"
     virtualenv: "{{ virtualenv_path }}"
     settings: "{{ django_settings_file }}"
+
+- name: Create FILESYSTEM cache directory for Django
+  file:
+    path: "{{ application_path }}/django_cache"
+    state: directory
+    owner: graham
+    group: graham
+    mode: "u=rwx,g=rwx,o=rx"

@@ -17,24 +17,21 @@ DATABASES = {
     }
 }
 
-# This setting describes the URL path where static content originates.
-# If in a Django development server environment, this should be 'static'.
-# If in a production environment the value will look like 'http://domainname/appname/static'.
+# Where are media and weather files?
+MEDIA_DIR = STATIC_DIR = Path("/home/graham/webapps")
+MEDIA_ROOT = MEDIA_DIR.child("media")
+WEATHER_ROOT = MEDIA_ROOT.child('weather')
+STATIC_ROOT = STATIC_DIR.child('static')
 
-BASE_DIR = Path('/home/graham/webapps')
-
-MEDIA_ROOT = BASE_DIR.child("media")
-STATIC_ROOT = BASE_DIR.child('staging_static')
-WEATHER_ROOT = MEDIA_ROOT + '/weather/'
+STATICFILES_DIRS = (
+    BASE_DIR.child('static'),
+)
 
 ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
 
-STATIC_URL = 'http://ullrichsoftware.com/static/'
-MEDIA_URL = 'http://ullrichsoftware.com/media/'
+STATIC_URL = 'http://cracklyfinger.com/static/'
+MEDIA_URL = 'http://cracklyfinger.com/media/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR.child('fc3'), 'static'),
-    )
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
@@ -44,9 +41,9 @@ ACCOUNT_ACTIVATION_DAYS = 10
 
 YUI_VERSION = "2.9.0"
 
-SYSTEM_NAME = "ullrichsoftware.com"
+SYSTEM_NAME = "cracklyfinger.com"
 
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
-ALLOWED_HOSTS = ['www.ullrichsoftware.com', 'ullrichsoftware.com', '*']
+ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
 
