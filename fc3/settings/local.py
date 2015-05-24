@@ -3,7 +3,8 @@ from unipath import Path
 
 from .base import *
 
-DEBUG=True
+DEBUG = True
+TEMPLATE_DEBUG = True
 
 LOCAL_URL = 'local'
 

@@ -34,3 +34,8 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
 DEFAULT_FROM_EMAIL = "John Evans <johnevanswebbot@gmail.com>"
+
+# Just dump emails to the console.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Set queue time to 0, so mail is sent instantly.
+NOTIFICATIONS_QUEUE_MINS = 0
