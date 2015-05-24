@@ -1,11 +1,8 @@
-import os
-import sys
-
 from unipath import Path
 #!/usr/bin/env python
 from .base import *
 
-DEBUG=False
+DEBUG = False
 
 DATABASES = {
     'default': {
