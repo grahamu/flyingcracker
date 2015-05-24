@@ -1,9 +1,7 @@
 from __future__ import absolute_import
-import sys
 
 from unipath import Path
-import json
-#!/usr/bin/env python
+
 from .local import *
 
 
@@ -47,5 +45,3 @@ except:
 
 
 INTERNAL_IPS = '127.0.0.1'
-
-sys.path.insert(0, '/Users/johnevans/venv/flyingcracker/src')

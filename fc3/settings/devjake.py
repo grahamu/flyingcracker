@@ -1,5 +1,10 @@
 from __future__ import absolute_import
+
+from unipath import Path
+
 from .local import *
+
+DEBUG = True
 
 DATABASES = {
     'default': {
@@ -19,6 +24,13 @@ EMAIL_HOST_USER = 'johnevanswebbot@gmail.com'
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
-# Jake, please fix whatever path problem this solves in some other way.
-#
-# sys.path.insert(0, '/Users/johnevans/venv/flyingcracker/src')
+LOCAL_URL = 'local'
+
+BASE_DIR = Path(__file__).ancestor(3)
+
+LOCAL_ROOT = BASE_DIR.child("media")
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+
+DEFAULT_FROM_EMAIL = "John Evans <johnevanswebbot@gmail.com>"
