@@ -4,7 +4,6 @@
 #
 #     pip install -U -r requirements.pip
 
--e git+ssh://git@github.com/grahamu/django-sms-2.git#egg=sms
 -e git://github.com/schinckel/django-timezones.git#egg=django-timezones # Fork of 'brosner' with South 0.7 support
 -e git://github.com/SmileyChris/django-mailer-2.git#egg=django-mailer
 
