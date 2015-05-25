@@ -286,6 +286,7 @@ from django.forms import ModelForm
 class WeatherForm(ModelForm):
     class Meta:
         model = Weather
+        fields = "__all__"
 
 
 class GenerateWeatherForm(WeatherForm):

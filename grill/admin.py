@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from django.contrib import admin
-from django.contrib.contenttypes import generic
 import grill.models as grill
 
 
@@ -16,6 +15,7 @@ admin.site.register(grill.Cut)
 
 
 class GrillingAdmin(admin.ModelAdmin):
-    fields = ('food', 'cut', 'doneness', 'method', 'details', 'hardware', 'user')
+    fields = ('food', 'cut', 'doneness',
+              'method', 'details', 'hardware', 'user')
 
 admin.site.register(grill.Grilling, GrillingAdmin)

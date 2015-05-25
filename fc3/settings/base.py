@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import os
 from unipath import Path
 
 from .secrets import get_secret
@@ -78,7 +77,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.doc.XViewMiddleware',
+    'django.contrib.admindocs.middleware.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
@@ -99,12 +98,10 @@ PREREQ_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'django_comments',
     'django_extensions',
     'django_mailer',
     'markup_deprecated',
     'registration',
-    'sms',
     'timezones',
     'uni_form',
 ]

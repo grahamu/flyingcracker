@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import (
+    GenericForeignKey,
+    GenericRelation,
+)
 from django.contrib.auth.models import User
 from django.db.models import permalink
 from datetime import datetime
@@ -37,7 +40,7 @@ class Series(models.Model):
     )
     status = models.CharField(max_length=1, choices=STATUS_TYPES, default=HIDDEN_STATUS, blank=False)
     owner = models.ForeignKey(User)
-    guesses = generic.GenericRelation('Guess')
+    guesses = GenericRelation('Guess')
 
     class Meta:
         verbose_name = 'series'
@@ -107,7 +110,7 @@ class Event(models.Model):
     location = models.CharField(max_length=100, blank=True, null=True)
     series = models.ForeignKey(Series)
     result_locked = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
-    guesses = generic.GenericRelation('Guess')
+    guesses = GenericRelation('Guess')
 
     objects = managers.EventManager()
 
@@ -235,7 +238,7 @@ class Guess(models.Model):
     competitor = models.ForeignKey(Competitor)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    guess_for = generic.GenericForeignKey()
+    guess_for = GenericForeignKey()
     late_entry = models.BooleanField(default=False)
     timestamp = models.DateTimeField()
 
