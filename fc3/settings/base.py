@@ -98,7 +98,6 @@ PREREQ_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'django_comments',
     'django_extensions',
     'django_mailer',
     'markup_deprecated',
