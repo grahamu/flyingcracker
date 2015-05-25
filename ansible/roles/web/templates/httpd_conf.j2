@@ -18,12 +18,9 @@ MinSpareThreads 1
 ServerLimit 1
 SetEnvIf X-Forwarded-SSL on HTTPS=1
 ThreadsPerChild 5
-WSGIPythonPath {{ project_path }}:{{ application_path }}/lib/python2.7
-WSGIDaemonProcess {{ application_name }} processes=2 threads=12 python-path={{ project_path }}:{{ application_path }}/lib/python2.7
+WSGIPythonPath {{ project_path }}:{{ virtualenv_path }}/lib/python2.7
+WSGIDaemonProcess {{ application_name }} processes=2 threads=12 python-path={{ project_path }}:{{ virtualenv_path }}/lib/python2.7
 WSGIProcessGroup {{ application_name }}
 WSGIRestrictEmbedded On
 WSGILazyInitialization On
 WSGIScriptAlias / {{ application_path }}/wsgi.py
-
-#WSGIPythonPath /home/graham/webapps/fc3staging:/home/graham/.virtualenvs/fc3staging/src/fc3:/home/graham/webapps/fc3staging/lib/python2.7
-#WSGIDaemonProcess fc3staging processes=2 threads=12 python-path=/home/graham/webapps/fc3staging:/home/graham/.virtualenvs/fc3staging/src/fc3:/home/graham/webapps/fc3staging/lib/python2.7
