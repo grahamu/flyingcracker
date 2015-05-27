@@ -1,4 +1,7 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import (
+    patterns,
+    url,
+)
 
 urlpatterns = patterns('weather.views',
     url(r'^current/$',     'current', name='weather-current'),
