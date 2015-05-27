@@ -39,3 +39,7 @@ DEFAULT_FROM_EMAIL = "John Evans <johnevanswebbot@gmail.com>"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Set queue time to 0, so mail is sent instantly.
 NOTIFICATIONS_QUEUE_MINS = 0
+
+INSTALLED_APPS += [
+    test_plus,
+]
