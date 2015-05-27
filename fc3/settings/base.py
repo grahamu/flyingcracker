@@ -102,6 +102,7 @@ PREREQ_APPS = [
     'django_mailer',
     'markup_deprecated',
     'registration',
+    'test_plus',
     'timezones',
     'uni_form',
 ]

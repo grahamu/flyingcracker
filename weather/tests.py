@@ -1,54 +1,65 @@
-#!/usr/bin/env python
-from django.test import TestCase
-from django.core.urlresolvers import reverse
 import datetime
 
+from ..fc3.test import TestCase
+
+
 class PeriodicRecordsTestCase(TestCase):
-    fixtures = ['fc3',]
-    
+    """
+    Verify correct number of records from `periodic_samples` function.
+    """
+    fixtures = ['fc3']
+
     def setUp(self):
-        from weather.utils import weather_on_date, get_today_timestamp
-        
+        from weather.utils import (
+            weather_on_date,
+            get_today_timestamp,
+        )
+
         self.start = get_today_timestamp(None)
-        self.qs = weather_on_date(self.start)
-        
+        self.queryset = weather_on_date(self.start)
+
     def testPeriodicRecords2Hours(self):
-        from fc3.gchart import periodic_samples
-        
+        from ..fc3.gchart import periodic_samples
+
         fudge = datetime.timedelta(minutes=5)
         interval = datetime.timedelta(hours=2)
         periods = 12
-        d = periodic_samples(self.qs, self.start, fudge, interval, periods)
+        d = periodic_samples(self.queryset,
+                             self.start, fudge, interval, periods)
         #assertEqual(len(d), periods)
-        
+
     def testPeriodicRecords10Minutes(self):
-        from fc3.gchart import periodic_samples
+        from ..fc3.gchart import periodic_samples
 
         fudge = datetime.timedelta(minutes=5)
         interval = datetime.timedelta(minutes=10)
         periods = 24 * 6
-        d = periodic_samples(self.qs, self.start, fudge, interval, periods)
+        d = periodic_samples(self.queryset,
+                             self.start, fudge, interval, periods)
         #assertEqual(len(d), periods)
+
+
+class CurrentWeather(TestCase):
 
     def testXhrRequestForCurrent(self):
         '''
         Ensure that XHR request succeeds and
         GET and POST requests fail with 404.
-        
-        '''
-        from django.utils import simplejson
 
-        response = self.client.get(reverse('weather-current'))
-        self.assertEqual(response.status_code, 404)
-        
-        response = self.client.post(reverse('weather-current'))
-        self.assertEqual(response.status_code, 404)
-        
+        '''
+        import json
+
+        response = self.get('weather-current')
+        self.response_404(response)
+
+        response = self.post('weather-current')
+        self.response_404(response)
+
         # EXPENSE Account list
-        response = self.client.post(reverse('weather-current'),
-                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest',
-                                    )
-        self.assertEqual(response.status_code, 200)
-        
+        response = self.post('weather-current',
+                             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+                             )
+        self.response_200(response)
+
         # deserialize content
-        obj = simplejson.loads(response.content)
+        obj = json.loads(response.content)
