@@ -1,7 +1,12 @@
 from __future__ import absolute_import
 import datetime
 
+from fc3.gchart import periodic_samples
 from fc3.test import TestCase
+from weather.utils import (
+    weather_on_date,
+    get_today_timestamp,
+)
 
 
 class PeriodicRecordsTestCase(TestCase):
@@ -11,33 +16,24 @@ class PeriodicRecordsTestCase(TestCase):
     fixtures = ['fc3']
 
     def setUp(self):
-        from weather.utils import (
-            weather_on_date,
-            get_today_timestamp,
-        )
-
         self.start = get_today_timestamp(None)
         self.queryset = weather_on_date(self.start)
 
     def testPeriodicRecords2Hours(self):
-        from fc3.gchart import periodic_samples
-
         fudge = datetime.timedelta(minutes=5)
         interval = datetime.timedelta(hours=2)
         periods = 12
         d = periodic_samples(self.queryset,
                              self.start, fudge, interval, periods)
-        #assertEqual(len(d), periods)
+        self.assertEqual(len(d), periods)
 
     def testPeriodicRecords10Minutes(self):
-        from fc3.gchart import periodic_samples
-
         fudge = datetime.timedelta(minutes=5)
         interval = datetime.timedelta(minutes=10)
         periods = 24 * 6
         d = periodic_samples(self.queryset,
                              self.start, fudge, interval, periods)
-        #assertEqual(len(d), periods)
+        self.assertEqual(len(d), periods)
 
 
 class CurrentWeather(TestCase):
@@ -57,9 +53,9 @@ class CurrentWeather(TestCase):
         self.response_404(response)
 
         # EXPENSE Account list
-        response = self.post('weather-current',
-                             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
-                             )
+        response = self.post('weather-current', data={
+            'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest',
+        })
         self.response_200(response)
 
         # deserialize content

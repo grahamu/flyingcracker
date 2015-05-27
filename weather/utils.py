@@ -1,10 +1,9 @@
-#!/usr/bin/env python
 import datetime
 import pytz
 from decimal import Decimal
 from weatherstation.models import Weather
 from weather.models import ChartUrl
-import fc3.fc3.gchart as gchart
+import fc3.gchart as gchart
 
 TEMP_F = 'F'
 TEMP_C = 'C'
@@ -625,10 +624,10 @@ def save_URL_data(url, filename):
         f.write(xml_text)
         f.close()
         return xml_text
-
-
-if __name__ == '__main__':
-    today = get_today_timestamp(None)
-    today_wx = weather_on_date(today)
-    print gchart.hourly_data(today_wx, today)
-    print gchart.halfhour_data(today_wx, today)
+##
+##
+##if __name__ == '__main__':
+##    today = get_today_timestamp(None)
+##    today_wx = weather_on_date(today)
+##    print gchart.hourly_data(today_wx, today)
+##    print gchart.halfhour_data(today_wx, today)
