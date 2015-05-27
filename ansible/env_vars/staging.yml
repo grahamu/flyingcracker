@@ -3,3 +3,4 @@
 application_name: "fc3staging"
 branch: "staging"
 settings: "staging"
+requirements: "requirements-staging.txt"

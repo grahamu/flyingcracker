@@ -2,7 +2,7 @@
 # to run this project. Later you can install all these apps in a row
 # using pip. Example::
 #
-#     pip install -U -r requirements.pip
+#     pip install -U -r requirements.txt
 
 -e git://github.com/schinckel/django-timezones.git#egg=django-timezones # Fork of 'brosner' with South 0.7 support
 -e git://github.com/SmileyChris/django-mailer-2.git#egg=django-mailer

@@ -2,4 +2,5 @@
 
 application_name: "fc3"
 branch: "master"
-build: "production"
+settings: "production"
+requirements: "requirements-prod.txt"
