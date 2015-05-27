@@ -1,0 +1,2 @@
+flyingcracker was created as a PHP web application in 2000 by Graham Ullrich.
+This Django-based version is maintained by Graham Ullrich and Jake Evans.

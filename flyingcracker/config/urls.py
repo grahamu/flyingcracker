@@ -20,6 +20,7 @@ urlpatterns = patterns(
     (r'^accounts/', include('registration.urls')),
     (r'^blog/', include('blog.urls')),
     (r'^cam/', include('cam.urls')),
+    (r'^comments/', include('django_comments.urls')),
     (r'^(?P<recipe_type>cocktail|food)/', include('food.urls')),
     (r'^weatherstation/', include('weatherstation.urls')),
     (r'^weather/', include('weather.urls')),

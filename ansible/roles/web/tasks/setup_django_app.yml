@@ -8,16 +8,16 @@
 - name: Run migrations and synchronize database
   django_manage:
     command: migrate
-    app_path: "{{ project_path }}"
+    app_path: "{{ django_root }}"
     virtualenv: "{{ virtualenv_path }}"
-    settings: "{{ django_settings_file }}"
+    settings: "{{ django_settings_path }}/{{ settings }}"
 
 - name: Run Django collectstatic
   django_manage:
     command: collectstatic
-    app_path: "{{ project_path }}"
+    app_path: "{{ django_root }}"
     virtualenv: "{{ virtualenv_path }}"
-    settings: "{{ django_settings_file }}"
+    settings: "{{ django_settings_path }}/{{ settings }}"
 
 - name: Create FILESYSTEM cache directory for Django
   file:
