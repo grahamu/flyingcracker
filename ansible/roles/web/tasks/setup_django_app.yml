@@ -10,14 +10,14 @@
     command: migrate
     app_path: "{{ django_root }}"
     virtualenv: "{{ virtualenv_path }}"
-    settings: "{{ django_settings_path }}/{{ settings }}"
+    settings: "{{ django_settings }}"
 
 - name: Run Django collectstatic
   django_manage:
     command: collectstatic
     app_path: "{{ django_root }}"
     virtualenv: "{{ virtualenv_path }}"
-    settings: "{{ django_settings_path }}/{{ settings }}"
+    settings: "{{ django_settings }}"
 
 - name: Create FILESYSTEM cache directory for Django
   file:
