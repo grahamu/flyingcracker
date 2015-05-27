@@ -1,10 +1,12 @@
+from __future__ import absolute_import
+
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.conf import settings
 
 from .models import Cam, Category
-from ..fc3.myjson import JsonResponse
+from fc3.myjson import JsonResponse
 
 CAM_CATEGORY = "cam_category"
 CAM_ID = "cam_id"

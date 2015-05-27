@@ -1,6 +1,7 @@
+from __future__ import absolute_import
 import datetime
 
-from ..fc3.test import TestCase
+from fc3.test import TestCase
 
 
 class PeriodicRecordsTestCase(TestCase):
@@ -19,7 +20,7 @@ class PeriodicRecordsTestCase(TestCase):
         self.queryset = weather_on_date(self.start)
 
     def testPeriodicRecords2Hours(self):
-        from ..fc3.gchart import periodic_samples
+        from fc3.gchart import periodic_samples
 
         fudge = datetime.timedelta(minutes=5)
         interval = datetime.timedelta(hours=2)
@@ -29,7 +30,7 @@ class PeriodicRecordsTestCase(TestCase):
         #assertEqual(len(d), periods)
 
     def testPeriodicRecords10Minutes(self):
-        from ..fc3.gchart import periodic_samples
+        from fc3.gchart import periodic_samples
 
         fudge = datetime.timedelta(minutes=5)
         interval = datetime.timedelta(minutes=10)
