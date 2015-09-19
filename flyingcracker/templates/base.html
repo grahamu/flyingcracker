@@ -146,7 +146,7 @@
                 {% for post in miniblog %}
                 <div class="post">
                     <div class="date">{{ post.pub_date|date:"n/j/y - g:i A" }}</div>
-                    <div class="body">{{ post.body|textile }}</div>
+                    <div class="body">{{ post.body|markdown }}</div>
                 </div>
                 {% endfor %}
                 <div class="post">
@@ -167,7 +167,7 @@
         Nevertheless we feel that flyingcracker fans may appreciate some of the newer features found herein
         and enjoy watching the site development process. If you have a suggestion please email it to:
         fc3@flyingcracker.com. Thanks for participating!</p>
-		<p>[{{ system_name }} version {{ system_version }}]</p>
+		<p>[{{ system_name }} v{{ system_version }} Django v{{ django_version }}]</p>
 {% if debug %}
 <div id="debug">
   <h2>Queries</h2>

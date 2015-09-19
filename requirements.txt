@@ -24,5 +24,4 @@ psycopg2==2.6
 pygooglechart==0.4.0
 python-dateutil==1.5
 python-memcached==1.54
-textile==2.2.2
 unipath==1.1

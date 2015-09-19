@@ -1,5 +1,6 @@
+from __future__ import absolute_import
 from unipath import Path
-#!/usr/bin/env python
+
 from .base import *
 
 DEBUG = False
