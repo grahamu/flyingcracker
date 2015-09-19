@@ -24,16 +24,16 @@
 			</table>
 
 			<div class="directions">
-				{{ recipe.directions|textile }}
+				{{ recipe.directions|markdown }}
 			</div>
 			{% if recipe.description %}
 			<div class="description">
-				{{ recipe.description|textile }}
+				{{ recipe.description|markdown }}
 			</div>
 			{% endif %}
 			{% if recipe.credit %}
 			<div class="credit">
-				{{ recipe.credit|textile }}
+				{{ recipe.credit|markdown }}
 			</div>
 			{% endif %}
 			<div class="pubdate">
