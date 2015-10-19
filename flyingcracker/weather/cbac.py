@@ -1,14 +1,26 @@
 #!/usr/bin/env python
+import datetime
+
 from django.conf import settings
-from xml.etree.ElementTree import XML
+
+from dateutil.tz import tzlocal
+from pytz import timezone
+from xml.etree.ElementTree import (
+    ParseError,
+    XML,
+)
 from xml.parsers.expat import ExpatError
+
 from forecast import Forecast
-from utils import get_URL_data, save_URL_data
+from utils import (
+    get_URL_data,
+    save_URL_data,
+)
 
 
 class CBAC(Forecast):
 
-    url = 'http://cbavalanchecenter.org/rss/'
+    url = 'http://cbavalanchecenter.org/feed/'
     filename = settings.WEATHER_ROOT.child('cbac.txt')
 
     def __init__(self, **kwargs):
@@ -20,35 +32,48 @@ class CBAC(Forecast):
         super(CBAC, self).__init__(**kwargs)
         xml_text = get_URL_data(CBAC.url, CBAC.filename, max_file_age=10)
         if not xml_text:
-            return None
+            self.error = True
+            self.add_section('Origin Data Error', 'No XML text found')
+            return
 
         try:
             xml = XML(xml_text)
-        except ExpatError, info:
-            return None    # fail silently
+        except ExpatError:
+            self.report_error('Bad XML')
+            return
+        except ParseError:
+            self.report_error('Cannot parse XML')
+            return
 
         rss = xml
         channel = rss.find('channel')
         if channel is None:
-            return None
+            self.report_error('No "channel"')
+            return
         item = channel.find('item')
         if item is None:
-            return None
+            self.report_error('No "item"')
+            return
 
         # Get the data we want
         pubdate = item.findtext('pubdate')
         if not pubdate:
-            return None
+            self.report_error('No "pubdate"')
+            return
 
         report_el = item.find('report')
         if report_el is None:
-            return None
+            self.report_error('No "report"')
+            return
+
         synopsis = report_el.findtext("weathersynopsis")
         reportedby = report_el.findtext("reportedby")
 
         forecast_el = report_el.find('forecast')
         if forecast_el is None:
-            return None
+            self.report_error('No "forecast"')
+            return
+
         today = forecast_el.findtext('today')
         tonight = forecast_el.findtext('tonight')
         tomorrow = forecast_el.findtext('tomorrow')

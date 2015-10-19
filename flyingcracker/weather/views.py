@@ -47,13 +47,14 @@ def weather(request):
     mountain_tz = timezone('US/Mountain')
     now = datetime.datetime.now(mountain_tz)
 
-    cbac = CBAC()
-    if cbac:
-        # Don't display CBAC stuff if older than 36 hours.
-        # In this case they are probably closed for the season.
-        if not cbac.timestamp or \
-               (now - cbac.timestamp) > datetime.timedelta(hours=36):
-            cbac = None
+    cbac = none     # They are not providing a useful RSS feed!
+
+##    cbac = CBAC()
+##    if cbac:
+##        # Don't display CBAC stuff if older than 36 hours.
+##        # In this case they are probably closed for the season.
+##        if (now - cbac.timestamp) > datetime.timedelta(hours=36):
+##            cbac = None
 
     noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
 

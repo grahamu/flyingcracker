@@ -5,7 +5,7 @@ from dateutil.tz import tzlocal
 from pytz import timezone
 
 class Forecast(object):
-    
+
     def __init__(self):
         self.pubdate = None
         self.area = None
@@ -14,23 +14,31 @@ class Forecast(object):
         self.reported_by = None
         self.timestamp = None
         self.stale = False
-        
+        self.error = False
+
     def add_section(self, title, body):
         self.sections.append({'title': title, 'body': body})
 
-    def set_timestamp(self, pubdate = None):
+    def set_timestamp(self, pubdate=None):
         if pubdate == None:
             pubdate = self.pubdate
         if pubdate:
             self.timestamp = dateutilparser.parse(pubdate)
             mountain_tz = timezone('US/Mountain')
             self.timestamp = self.timestamp.astimezone(mountain_tz)
-            
+
             # figure out if the publication time is not today
             now = datetime.datetime.now(tzlocal()).astimezone(mountain_tz)
             if now.day != self.timestamp.day:
                 self.stale = True
-        
+
+    def report_error(self, error_str):
+        self.error = True
+        self.add_section('Problem obtaining valid data', error_str)
+        self.timestamp = datetime.datetime.now(tzlocal())
+        mountain_tz = timezone('US/Mountain')
+        self.timestamp = self.timestamp.astimezone(mountain_tz)
+
     def __repr__(self):
         s = ''
         if self.pubdate:
@@ -45,5 +53,7 @@ class Forecast(object):
             s += smart_str(sec['title']) + ": " + smart_str(sec['body']) + "\n"
         if self.reported_by:
             s += "Reported by: " + smart_str(self.reported_by) + "\n"
+        if self.error:
+            s += "Data Error\n"
         return s
 
