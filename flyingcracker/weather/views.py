@@ -47,7 +47,7 @@ def weather(request):
     mountain_tz = timezone('US/Mountain')
     now = datetime.datetime.now(mountain_tz)
 
-    cbac = None     # They are not providing a useful RSS feed!
+    cbac = None     # CBAC is not providing a useful RSS feed!
 
 ##    cbac = CBAC()
 ##    if cbac:
