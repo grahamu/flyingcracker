@@ -6,16 +6,8 @@ from .base import *
 DEBUG = True
 
 DATABASES = {
-##    'default': {
-##        'NAME': 'fc3staging',
-##        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-##        'USER': 'graham_fc3',
-##        'PASSWORD': '132af5e4',
-##        'HOST': 'localhost',
-##    }
-
     'default': {
-        'NAME': 'graham_fc3',
+        'NAME': 'fc3staging',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': 'graham_fc3',
         'PASSWORD': '132af5e4',
