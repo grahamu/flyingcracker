@@ -10,7 +10,7 @@
 
     <div class="yui-b" id="ingredient_description">
     {% if foodstuff.description %}
-        {{ foodstuff.description|textile }}
+        {{ foodstuff.description|markdown }}
     {% endif %}
     </div>
 
