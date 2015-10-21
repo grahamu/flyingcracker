@@ -12,7 +12,7 @@ LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-A
 CustomLog {{ log_path }}/access_{{ application_name }}.log combined
 ErrorLog {{ log_path }}/error_{{ application_name }}.log
 KeepAlive Off
-Listen 10663
+Listen {{ apache_listen_port }}
 MaxSpareThreads 3
 MinSpareThreads 1
 ServerLimit 1
