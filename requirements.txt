@@ -20,7 +20,7 @@ django-registration-redux==1.2
 django-uni-form==0.9.0
 docutils==0.12
 markdown==2.6.2
-psycopg2==2.6.1
+psycopg2==2.6
 python-dateutil==1.5
 python-memcached==1.57
 unipath==1.1
