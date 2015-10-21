@@ -1,0 +1,24 @@
+---
+
+- name: Fetch the Git repo
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ repo_root }}"
+    accept_hostkey: yes
+    version: "{{ branch }}"
+  tags: git
+
+- name: Delete all .pyc files
+  command: find . -name '*.pyc' -delete
+  args:
+    chdir: "{{ repo_root }}"
+  tags: git
+
+- name: Determine existence of secrets.json
+  stat: path={{ django_settings_path }}/secrets.json
+  register: p
+
+- name: Create secrets.json file if it does not exist
+  template: src=secrets_json.j2
+            dest={{ django_settings_path }}/secrets.json
+  when: p.stat.exists == false

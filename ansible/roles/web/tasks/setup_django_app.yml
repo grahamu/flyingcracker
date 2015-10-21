@@ -1,0 +1,28 @@
+---
+
+- name: Install packages required by the Django app inside virtualenv
+  pip:
+    virtualenv: "{{ virtualenv_path }}"
+    requirements: "{{ requirements_file }}"
+
+- name: Run migrations and synchronize database
+  django_manage:
+    command: migrate
+    app_path: "{{ django_root }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings }}"
+
+- name: Run Django collectstatic
+  django_manage:
+    command: collectstatic
+    app_path: "{{ django_root }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings }}"
+
+- name: Create FILESYSTEM cache directory for Django
+  file:
+    path: "{{ application_path }}/django_cache"
+    state: directory
+    owner: graham
+    group: graham
+    mode: "u=rwx,g=rwx,o=rx"

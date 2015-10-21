@@ -1,0 +1,6 @@
+---
+
+application_name: "fc3test"
+branch: "ansible"
+settings: "staging"
+requirements: "requirements-dev.txt"

@@ -1,0 +1,6 @@
+---
+
+application_name: "fc3"
+branch: "master"
+settings: "production"
+requirements: "requirements-prod.txt"

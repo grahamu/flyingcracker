@@ -1,0 +1,8 @@
+---
+
+- name: restart apache
+#  command: "{{ application_path }}/apache2/bin/restart"
+  shell: ./restart
+  args:
+    chdir: "{{ application_path }}/apache2/bin"
+    executable: /bin/bash

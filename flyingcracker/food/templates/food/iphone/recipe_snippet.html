@@ -1,0 +1,33 @@
+{% load markup %}
+
+{% if recipe %}
+<div id="cocktail">
+    <div class="yui-b" id="recipe-title">
+        {{ recipe.title }}
+    </div>
+{% for i in ingredients %}
+    <div class="yui-gf">
+        <div id="ingredient">
+            <div class="yui-u first i-qty">{{ i.quantity }}</div>
+            <div class="yui-u">
+                <span class="i-title"><a href="{% url 'food-ingredient-detail' recipe_type=recipe_type slug=i.slug %}">{{ i.title }}</a></span>
+                <span class="i-modifier">{{ i.modifier }}</span>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+    <div class="yui-b" id="recipe-directions">
+        {{ recipe.directions|markdown }}
+    </div>
+    {% if recipe.description %}
+    <div class="yui-b" id="recipe-description">
+        {{ recipe.description|markdown }}
+    </div>
+    {% endif %}
+    {% if recipe.credit %}
+    <div class="yui-b" id="recipe-credit">
+        {{ recipe.credit|markdown }}
+    </div>
+    {% endif %}
+</div>
+{% endif %}

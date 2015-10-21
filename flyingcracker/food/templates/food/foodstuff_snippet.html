@@ -1,0 +1,29 @@
+{% extends "food/iphone/food.html" %}
+{% load markup %}
+
+{% block bd %}
+{% if foodstuff %}
+<div id="cocktail">
+    <div class="yui-b" id="ingredient_title">
+        {{ foodstuff }}
+    </div>
+
+    <div class="yui-b" id="ingredient_description">
+    {% if foodstuff.description %}
+        {{ foodstuff.description|markdown }}
+    {% endif %}
+    </div>
+
+    {% if ingredients %}
+    <strong>Recipes using {{ foodstuff }}</strong>:
+    <ul>
+	{% for i in ingredients %}
+        <li><a href="{% url 'food-recipe-detail' recipe_type=recipe_type slug=i.recipe.slug %}">{{ i.recipe }}</a></li>
+	{% endfor %}
+    </ul>
+    {% else %}
+        No recipes use {{ foodstuff }}
+    {% endif %}
+</div>
+{% endif %}
+{% endblock bd %}

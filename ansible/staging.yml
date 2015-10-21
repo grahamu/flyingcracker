@@ -1,0 +1,19 @@
+---
+
+- name: Update an {{ application_name }} server
+
+  hosts:
+    - all
+
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+
+  roles:
+    - web
+
+  tasks:
+    - shell: echo "Restarting Apache..."
+
+  post_tasks:
+    notify: restart apache
