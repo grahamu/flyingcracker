@@ -1,10 +1,21 @@
-from django.conf import settings
-from urllib import urlopen
-from forecast import Forecast
+import datetime
 from dateutil import parser as dateutilparser
+import os
+from urllib import urlopen
+
+from django.conf import settings
+
+from forecast import Forecast
+
+##
+## This code parses weather data from NOAA
+##
 
 
 class NOAAForecastPreamble(object):
+    """
+    Parses (eats) junk data before NOAA forecast.
+    """
 
     def __init__(self, zname):
         self.zname = zname
@@ -17,6 +28,9 @@ class NOAAForecastPreamble(object):
 
 
 class NOAAForecastArea(object):
+    """
+    Parses NOAA forecast area section.
+    """
 
     def __init__(self):
         self.area = []
@@ -24,7 +38,9 @@ class NOAAForecastArea(object):
     def parse_line(self, line, forecast):
         if line.startswith('.'):
             self.parse_area(forecast)
-            return NOAAForecastBody, True   # recycle this line, it is the start of a different section
+            # recycle this line because it is the start
+            # of a different section.
+            return NOAAForecastBody, True
         else:
             line = line.strip()
             if len(line) > 0 and not line.startswith('$$'):
@@ -39,9 +55,10 @@ class NOAAForecastArea(object):
         Next is a timestamp.
         '''
         pubdate = self.area.pop()               # last item is pubdate
-        tod,remainder = pubdate.split(' ', 1)
-        tod = tod[0:-2] + ':' + tod[-2:]        # add a colon so parser recognized the time
-        pubdate = ' '.join([tod, remainder])
+        time_of_day, remainder = pubdate.split(' ', 1)
+        # insert colon so parser recognizes the time string
+        time_of_day = time_of_day[0:-2] + ':' + time_of_day[-2:]
+        pubdate = ' '.join([time_of_day, remainder])
         forecast.pubdate = pubdate
         forecast.timestamp = dateutilparser.parse(forecast.pubdate)
 
@@ -71,7 +88,9 @@ def capitalize_all(str):
 
 
 class NOAAForecastBody(object):
-
+    """
+    Parses NOAA forecast body.
+    """
     def __init__(self):
         self.title = ''
         self.body = []
@@ -81,13 +100,15 @@ class NOAAForecastBody(object):
             return False, False
 
         if line.startswith('...'):
-            return NOAAForecastWarning, True    # recycle this line, it starts a warning
+            # recycle this line, it starts a warning.
+            return NOAAForecastWarning, True
 
         if line == '$$':    # end of the forecast sections
             self.add_section(forecast)
             return False, False
 
-        if line == '&&':    # indicates some extra NOAA data, ignore all subsequent lines
+        if line == '&&':
+            # Indicates some extra NOAA data, ignore all subsequent lines.
             self.add_section(forecast)
             return NOAAForecastIgnore, False
 
@@ -113,7 +134,9 @@ class NOAAForecastBody(object):
 
 
 class NOAAForecastWarning(object):
-
+    """
+    Parses NOAA warnings.
+    """
     def __init__(self):
         self.warning = []
         pass
@@ -146,17 +169,16 @@ class NOAAForecast(Forecast):
 
     def parse_line(self, line):
         '''
-        Calls the state class' parseLine method.
-        Expects to see either a new state class with "recycle this line" boolean
-        or False.
-        If recycle_line is True that means we want to pass the line on to the next state.
-        If newState is False, we should remain in the same state.
+        Calls the ``parseLine`` method of class ``self.state``.
+        If a new state is indicated, set self.state.
+        Use recursion to recycle the input line if necessary.
         '''
         newState, recycle_line = self.state.parse_line(line, self)
-        if newState != False:
+        if newState is not False:
             self.set_state(newState())
             if recycle_line:
                 self.parse_line(line)
+
 
 def get_NOAA_forecast(state, zone):
     '''
@@ -176,11 +198,12 @@ def get_NOAA_forecast(state, zone):
     # when we're finished with all lines the forecast attributes should be set
     return forecast
 
-import os
-import datetime
 
 def get_NOAA_data(state, zname):
-    # get data from disk file first, but ignore the data if it is more than 4 hours old.
+    """
+    Get data from disk file if it exists, but
+    ignore the data if it is more than 4 hours old.
+    """
     filename = settings.WEATHER_ROOT.child('noaa-' + zname + '.txt')
     if not os.path.isfile(filename):
         return save_NOAA_data(state, zname)
@@ -202,8 +225,10 @@ def get_NOAA_data(state, zname):
             lines = save_NOAA_data(state, zname)
     return lines
 
+
 def save_NOAA_data(state, zname):
-    url = 'http://weather.noaa.gov/pub/data/forecasts/zone/' + state.lower() + '/' + zname.lower() + '.txt'
+    url = 'http://weather.noaa.gov/pub/data/forecasts/zone/' + \
+        state.lower() + '/' + zname.lower() + '.txt'
     try:
         lines = urlopen(url).readlines()
     except IOError:
@@ -215,6 +240,7 @@ def save_NOAA_data(state, zname):
         f.writelines(lines)
         f.close()
         return lines
+
 
 def test():
     forecast = get_NOAA_forecast('CO', 12)
@@ -237,9 +263,9 @@ if __name__ == '__main__':
         for cmd in arguments:
             if cmd.lower() == 'save':
                 state = options.state.upper()
-                save_NOAA_data(state, state+"Z%03d" % options.zone)
+                save_NOAA_data(state, state + "Z%03d" % options.zone)
             elif cmd.lower() == 'get':
                 state = options.state.upper()
-                print get_NOAA_data(state, state+"Z%03d" % options.zone)
+                print get_NOAA_data(state, state + "Z%03d" % options.zone)
 
 
