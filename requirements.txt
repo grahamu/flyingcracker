@@ -6,7 +6,7 @@
 
 -e git://github.com/schinckel/django-timezones.git#egg=django-timezones # Fork of 'brosner' with South 0.7 support
 -e git://github.com/SmileyChris/django-mailer-2.git#egg=django-mailer
--e git://github.com/wbrp/pygooglechart.git@143f99284c#egg=pygooglechart
+-e git://github.com/grahamu/pygooglechart.git@cfbfe2e930#egg=pygooglechart
 
 ansible==1.9.4
 django==1.8.5
