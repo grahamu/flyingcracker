@@ -82,8 +82,8 @@ def create_chart_url(date, data_type, size, plots, unit):
             height = 100
             plot_func = gchart.day_chart_iphone
         elif size == ChartUrl.SIZE_NORMAL:
-            width = 400
-            height = 160
+            width = 600
+            height = 240
             plot_func = gchart.day_chart_normal
         else:
             width = WIDTH_DEFAULT
@@ -98,8 +98,8 @@ def create_chart_url(date, data_type, size, plots, unit):
             height = 100
             plot_func = gchart.day_chart_iphone
         elif size == ChartUrl.SIZE_NORMAL:
-            width = 418
-            height = 160
+            width = 600
+            height = 240
             plot_func = gchart.day_chart_normal
         else:
             width = WIDTH_DEFAULT
