@@ -14,12 +14,11 @@ from django.views.decorators.cache import cache_page
 
 from fc3.myjson import JsonResponse
 from fc3.utils import ElapsedTime
-from weatherstation.models import Weather
 from .models import ChartUrl
 from .noaa import get_NOAA_forecast
-from .cbac import CBAC
 from .cbtv import CBTV
 import weather.utils as utils
+from weatherstation.models import Weather
 
 
 @cache_page(60 * 5)  # cache for 5 minutes
@@ -508,12 +507,13 @@ def output_data(request):
                     for temp in vals:
                         total += temp
                     avg = total / len(vals)
-                    writer.writerow([str(target),
-                                     str(low),
-                                     str(high),
-                                     str(avg.quantize(Decimal('0.1'),
-                                        rounding=ROUND_HALF_EVEN)),
-                                     ])
+                    writer.writerow(
+                        [str(target),
+                         str(low),
+                         str(high),
+                         str(avg.quantize(Decimal('0.1'),
+                                          rounding=ROUND_HALF_EVEN)),
+                         ])
                 else:
                     writer.writerow([str(target),
                                      'N/A',
@@ -576,12 +576,13 @@ def output_data(request):
                     avg = total / len(speed_vals)
                     peak = max([rec.__getattribute__('wind_peak')
                                 for rec in qs])
-                    writer.writerow([str(target),
-                                     str(avg.quantize(Decimal('0.1'),
-                                        rounding=ROUND_HALF_EVEN)),
-                                     str(peak.quantize(Decimal('0.1'),
-                                        rounding=ROUND_HALF_EVEN)),
-                                     ])
+                    writer.writerow(
+                        [str(target),
+                         str(avg.quantize(Decimal('0.1'),
+                                          rounding=ROUND_HALF_EVEN)),
+                         str(peak.quantize(Decimal('0.1'),
+                                           rounding=ROUND_HALF_EVEN)),
+                         ])
                 else:
                     writer.writerow([str(target),
                                      'N/A',

@@ -59,4 +59,4 @@ class CurrentWeather(TestCase):
         self.response_200(response)
 
         # deserialize content
-        obj = json.loads(response.content)
+        json.loads(response.content)

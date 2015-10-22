@@ -1,8 +1,14 @@
-from django.db import models
 import datetime
 
+from django.db import models
+
+
 class ChartUrl(models.Model):
-    date = models.DateField(blank=False) # date for the chart
+    """
+    Contains URL which will create a chart image
+    for a specific data type on a particular day.
+    """
+    date = models.DateField(blank=False)  # date for the chart
     timestamp = models.DateTimeField(default=datetime.datetime.now)  # when the url was created
     data_type = models.CharField(max_length=2, blank=False)
     unit = models.CharField(max_length=5, blank=False)
@@ -23,7 +29,9 @@ class ChartUrl(models.Model):
     PLOT_YEAR_AGO = 'Y'
 
     def __unicode__(self):
-        return str(self.date) + '-' + '-'.join([self.data_type, self.unit, self.size, self.plots]) + '-' + str(self.timestamp)
+        return str(self.date) + '-' + \
+            '-'.join([self.data_type, self.unit, self.size, self.plots]) + \
+            '-' + str(self.timestamp)
 
     class Meta:
         ordering = ['-date']

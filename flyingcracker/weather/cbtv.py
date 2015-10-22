@@ -1,7 +1,12 @@
 #!/usr/bin/env python
-from django.conf import settings
-from xml.etree.ElementTree import XML
+from xml.etree.ElementTree import (
+    ParseError,
+    XML,
+)
 from xml.parsers.expat import ExpatError
+
+from django.conf import settings
+
 from forecast import Forecast
 from utils import get_URL_data, save_URL_data
 
@@ -20,24 +25,41 @@ class CBTV(Forecast):
         super(CBTV, self).__init__(**kwargs)
         xml_text = get_URL_data(CBTV.url, CBTV.filename, max_file_age=10)
         if not xml_text:
-            return None
+            self.error = True
+            self.add_section('Origin Data Error', 'No XML text found')
+            return
 
         try:
             xml = XML(xml_text)
-        except ExpatError, info:
-            return None;    # fail silently
+        except ExpatError:
+            self.report_error('Bad XML')
+            return
+        except ParseError:
+            self.report_error('Cannot parse XML')
+            return
 
         rss = xml
         channel = rss.find('channel')
+        if channel is None:
+            self.report_error('No "channel"')
+            return
         item = channel.find('item')
+        if item is None:
+            self.report_error('No "item"')
+            return
 
         # Get the data we want
         pubdate = item.findtext('pubDate')
+        if not pubdate:
+            self.report_error('No "pubdate"')
+            return
+
         synopsis = item.findtext("description")
 
         self.pubdate = pubdate
         self.set_timestamp()
         self.add_section('Synopsis', synopsis.strip())
+
 
 def save_data():
     save_URL_data(CBTV.url, CBTV.filename)

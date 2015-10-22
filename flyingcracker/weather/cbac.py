@@ -1,15 +1,11 @@
 #!/usr/bin/env python
-import datetime
-
-from django.conf import settings
-
-from dateutil.tz import tzlocal
-from pytz import timezone
 from xml.etree.ElementTree import (
     ParseError,
     XML,
 )
 from xml.parsers.expat import ExpatError
+
+from django.conf import settings
 
 from forecast import Forecast
 from utils import (
