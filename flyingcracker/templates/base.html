@@ -141,21 +141,6 @@
 		<!-- the unwrapped div.yui-b takes a fixed width and alignment based on the class of the top-level containing node -->
 		<div class="yui-b left1">
             {% block leftbar %}
-            <img src="{% static "img/logo.png" %}" height="170" alt="nav photo" />
-            <div id="newsblog">
-                {% for post in miniblog %}
-                <div class="post">
-                    <div class="date">{{ post.pub_date|date:"n/j/y - g:i A" }}</div>
-                    <div class="body">{{ post.body|markdown }}</div>
-                </div>
-                {% endfor %}
-                <div class="post">
-                    <a href="{% url 'miniblog-archive' %}">More items...</a>
-                </div>
-            </div>
-            <div id="rss">
-                <a href="/feeds/rss/"><img alt="RSS Feed" src="{% static "img/feed-icon-28x28.png" %}" /></a>&nbsp;
-            </div> <!-- rss -->
             {% endblock leftbar %}
         </div>
 
