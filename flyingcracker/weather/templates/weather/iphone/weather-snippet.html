@@ -38,7 +38,7 @@
                     <span class="temp_value">{{ windchill_val }}&#186;</span>
                     <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
                     <div>
-                        <span style="font-size: 50%">windchill</span>
+                        <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">windchill</span>
                     </div>
                     {% endifnotequal %}
                 </div>
@@ -60,13 +60,10 @@
                     &nbsp;
                 </div>
             </div>
-            <div class="yui-b">
-                <button id="refresh-button">Refresh Weather</button>
-            </div>
         </div>
 
         <div class="row">
-            <label>Show Units:</label>
+            <label>Units</label>
             <div class="toggle" onclick="toggleUnits(this)" toggled="{{ unit_state }}">
             <span class="thumb"></span>
             <span class="toggleOn">Yes</span>
@@ -74,7 +71,7 @@
             </div>
         </div>
         <div class="row">
-            <label>Show Labels:</label>
+            <label>Labels</label>
             <div class="toggle" onclick="toggleLabels(this)" toggled="{{ title_state }}">
             <span class="thumb"></span>
             <span class="toggleOn">Yes</span>
