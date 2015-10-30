@@ -1,14 +1,13 @@
-from django.conf.urls import (
-    patterns,
-    url,
-)
+from django.conf.urls import url
 
-urlpatterns = patterns('weather.views',
-    url(r'^current/$',     'current', name='weather-current'),
-    url(r'^unitchange/$',  'unit_change', name='weather-unit-change'),
-    url(r'^$',          'weather', name='weather-root'),
-    url(r'^generate/$', 'generate', name='generate-weather'),
-    url(r'^delete/$',   'delete', name='delete-weather'),
-    url(r'^data/$',     'output_data', name='output-data'),
-    url(r'^chart/$',    'chart', name='weather-chart'),
-)
+from . import views
+
+urlpatterns = [
+    url(r'^current/$', views.current, name='weather-current'),
+    url(r'^unitchange/$', views.unit_change, name='weather-unit-change'),
+    url(r'^$', views.weather, name='weather-root'),
+    url(r'^generate/$', views.generate, name='generate-weather'),
+    url(r'^delete/$', views.delete, name='delete-weather'),
+    url(r'^data/$', views.output_data, name='output-data'),
+    url(r'^chart/$', views.chart, name='weather-chart'),
+]

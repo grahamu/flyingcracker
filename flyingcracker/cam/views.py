@@ -2,10 +2,11 @@ from __future__ import absolute_import
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from django.template.loader import render_to_string
-from django.conf import settings
 
-from .models import Cam, Category
+from .models import (
+    Cam,
+    Category,
+)
 from fc3.myjson import JsonResponse
 
 CAM_CATEGORY = "cam_category"
@@ -92,22 +93,6 @@ def cam_image(request):
         return JsonResponse({'image': image, 'valid': valid})
     else:
         return cam_view(request)
-
-
-def cam_suggestion(request):
-    url = request.POST.get('url')
-    description = request.POST.get('description')
-
-    from django.core.mail import send_mail
-
-    subject = "webcam suggestion"
-    message = render_to_string('suggestion/suggestion_email.txt',
-                               {'cam_url': url,
-                                'cam_description': description})
-
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
-              ["webcam@flyingcracker.com"])
-    return JsonResponse({'success': True})
 
 
 def get_cam_list(cat_id, cam_id=None):

@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url
 
+from . import views
 
-
-urlpatterns = patterns('home.views',
-    url(r'^$',          'home', name='fc-home'),
-    url(r'^about/$',    'about', name='fc-about'),
-)
+urlpatterns = [
+    url(r'^$', views.home, name='fc-home'),
+    url(r'^about/$', views.about, name='fc-about'),
+]
