@@ -14,7 +14,7 @@ urlpatterns = patterns(
 
     # Admin URLs
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    (r'^admin/', include(admin.site.urls)),
+    (r'^admin/', admin.site.urls),
 
     # Application URLs
     (r'^accounts/', include('registration.urls')),
