@@ -1,6 +1,12 @@
 #!/usr/bin/env python
-from django.conf.urls import patterns, url, include
+from django.conf.urls import (
+    patterns,
+    url,
+    include,
+)
 
+
+app_name = 'fantasy'
 urlpatterns = patterns('fantasy.views',
     url(r'^$',                                      'root', name='fantasy-root'),
     url(r'^series/add/$',                           'series_edit', name='fantasy-series-add'),
@@ -8,8 +14,8 @@ urlpatterns = patterns('fantasy.views',
     url(r'^series/(?P<id>[0-9]+)/edit/$',           'series_edit', name='fantasy-series-edit'),
     url(r'^series/(?P<id>[0-9]+)/leaderboard/$',    'leaderboard', name='fantasy-series-leaderboard'),
     url(r'^series/(?P<id>[0-9]+)/email/$',          'series_email', name='fantasy-series-email'),
-    
-    
+
+
     url(r'^series/(?P<id>[0-9]+)/competitor/list/$',   'competitor_list', name='fantasy-competitor-list'),
     url(r'^series/(?P<id>[0-9]+)/competitor/export/$', 'competitor_export', name='fantasy-competitor-export'),
     url(r'^series/(?P<id>[0-9]+)/competitor/import/$', 'competitor_import', name='fantasy-competitor-import'),

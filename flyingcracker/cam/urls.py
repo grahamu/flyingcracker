@@ -1,6 +1,10 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import (
+    patterns,
+    url,
+)
 
 
+app_name = 'cam'
 urlpatterns = patterns('cam.views',
     url(r'^list/$',            'cam_list', name='cam-list'),
     url(r'^image/$',           'cam_image', name='cam-image'),
