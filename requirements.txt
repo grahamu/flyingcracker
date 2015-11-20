@@ -9,7 +9,7 @@
 -e git://github.com/grahamu/pygooglechart.git@cfbfe2e930#egg=pygooglechart
 
 ansible==1.9.4
-django==1.8.5
+django==1.8.6
 django-announcements==1.2.0
 django-contrib-comments==1.6.1
 django-debug-toolbar==1.4
@@ -23,4 +23,5 @@ markdown==2.6.2
 psycopg2==2.6.1
 python-dateutil==2.4.2
 python-memcached==1.57
+pytz=2015.7
 unipath==1.1
