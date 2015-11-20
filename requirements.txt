@@ -13,7 +13,7 @@ django==1.8.6
 django-announcements==1.2.0
 django-contrib-comments==1.6.1
 django-debug-toolbar==1.4
-django-extensions==1.5.7
+django-extensions==1.5.9
 django-localflavor==1.1
 django-markup-deprecated==0.0.3
 django-registration-redux==1.2
