@@ -115,7 +115,7 @@ def get_current_weather(request):
 
     # get latest weather reading
     try:
-        current = Weather.objects.latest('timestamp')
+        current = Weather.objects.latest()
     except Weather.DoesNotExist:
         return {}, None
 
