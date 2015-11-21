@@ -24,5 +24,5 @@ class Weather(models.Model):
             return u"no time"
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['timestamp']
         get_latest_by = 'timestamp'
