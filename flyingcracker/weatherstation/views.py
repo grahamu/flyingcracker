@@ -24,7 +24,7 @@ def upload_data(request):
     dateutc = request.GET.get('datemtn', None)
 
     mountain_tz = timezone('US/Mountain')
-    
+
     if urltimestamp is not None:
         dbtimestamp = datetime.fromtimestamp(int(urltimestamp), mountain_tz)
     elif dateutc is not None:
@@ -32,7 +32,7 @@ def upload_data(request):
         year,month,day,hour,minute,second = dateutc.split()
         dbtimestamp = datetime(int(year),int(month),int(day),int(hour),int(minute),int(second))
         dbtimestamp = mountain_tz.localize(dbtimestamp)
-    
+
     if dbtimestamp:
         wind_dir    = request.GET.get('winddir', None)
         wind_speed  = request.GET.get('windspeedmph', None)
@@ -114,6 +114,3 @@ def upload_data(request):
     else:
         response = HttpResponse('failed: missing "datemtn" or "timestamp" field in URL')
     return response
-    
-def download_data(request):
-    pass

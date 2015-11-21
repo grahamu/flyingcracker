@@ -1,6 +1,7 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url
 
-urlpatterns = patterns('weatherstation.views',
-    (r'^upload/$', 'upload_data'),
-    (r'^$', 'download_data'),
-)
+from . import views
+
+urlpatterns = [
+    url(r'^upload/$', views.upload_data, name='weatherstation-upload'),
+]
