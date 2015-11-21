@@ -31,9 +31,6 @@
   </div>
   <div class="fantasy-form-help">
   Pick {{ series.num_guesses|apnumber }} {{ series.competitor_label|lower }}{{ series.num_guesses|pluralize:",s" }} you think will excel in this {{ series.event_label|lower }}.<br />
-  You may select {{ series.competitor_label|lower }}s individually or by choosing a team.
-  {% if wrapper.add_competitor_ok %}
-  {% endif %}
   </div>
 
   {% if wrapper.late_entry %}
@@ -53,9 +50,6 @@
           {{ error }}
           {% endfor %}
           <table id="event-guess-table" class="fantasy-select-table">
-              <thead>
-                  <th>{{ series.competitor_label }}</th>
-              </thead>
               <tbody>
               {% for form in wrapper.formset.forms %}
               <tr>
@@ -80,9 +74,6 @@
       {% if wrapper.team_form %}
         <form name="team-form" method="POST" action="">{% csrf_token %}
           <table id="event-team-guess-table" class="fantasy-select-table">
-              <thead>
-                  <th>Team</th>
-              </thead>
               <tbody>
               <tr>
                   <td>{{ wrapper.team_form.team }}</td>
@@ -121,34 +112,6 @@
 <a href="{% url 'registration_register' %}">Sign up</a> to pick your favorite {{ series.competitor_label }}s for this {{ series.event_label }}.
 </div>
 {% endif %}
-
-<div class="section-header">
-  <div  class="fantasy-list-container">
-  {% for g in wrapper.guesses %}
-    {% if forloop.first %}
-    <table class="fantasy-list-table">
-      <thead>
-        <tr>
-          <th>Player</th><th>Guess Time</th>
-        </tr>
-      </thead>
-      <tbody>
-    {% endif %}
-        <tr>
-          <td>{{ g.player }}</td>
-          {% with user|user_time:g.timestamp as timestamp %}
-          <td>{{ timestamp|date:"D N d" }} {{ timestamp|time:"f a" }} {% firstof user.get_profile.timezone event.timezone %}</td>
-          {% endwith %}
-        </tr>
-    {% if forloop.last %}
-      </tbody>
-    </table>
-    {% endif %}
-    {% empty %}
-    No guesses yet!
-  {% endfor %}
-  </div>
-</div>
 
 <div class="section-header">
   {% if is_admin or event.start_time_elapsed and user.is_authenticated %}
