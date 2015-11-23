@@ -99,44 +99,12 @@
 		</div>  <!-- weatherItem -->
 	</div>  <!-- box -->
 
-    {% if noaa %}
-    <div class="box">
-  	<div class="weatherItem">
-        <div class="header">
-            <div class="title">
-                NOAA Forecast
-            </div> <!-- title -->
-
-            <div class="date">
-                {{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}
-            </div> <!-- date -->
-        </div> <!-- header -->
-
-        <div class="forecast">
-            {% if noaa.warning %}
-            <div class="warning">
-                {{ noaa.warning }}
-            </div>
-            {% endif %}
-            {% for sec in noaa.sections %}
-            <div class="section">
-                <div class="title">{{ sec.title }}</div>
-                <div class="body">
-                    {{ sec.body }}
-                </div>
-            </div>
-            {% endfor %}
-        </div>  <!-- forecast -->
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
-    {% endif %}
-
     {% if cbtv %}
     <div class="box">
   	<div class="weatherItem">
         <div class="header">
             <div class="title">
-                CBTV-10 Forecast
+                CBTV-10 Forecast&nbsp;&nbsp;<span class="local">Local!</span>
             </div> <!-- title -->
 
             <div class="date">
@@ -167,7 +135,7 @@
   	<div class="weatherItem">
         <div class="header">
             <div class="title">
-                CBAC Forecast
+                CBAC Forecast&nbsp;&nbsp;<span class="local">Local!</span>
             </div> <!-- title -->
 
             <div class="date">
@@ -183,17 +151,51 @@
             {% endif %}
             {% for sec in cbac.sections %}
             <div class="section">
+			    {% if sec.title %}
                 <div class="title">{{ sec.title }}</div>
+				{% endif %}
                 <div class="body">
-                    {{ sec.body }}
+                    {{ sec.body|safe }}
                 </div>
             </div>
             {% endfor %}
             {% if cbac.reported_by %}
             <div class="reporter">
             reported by {{ cbac.reported_by }}
+			</div>
             {% endif %}
+        </div>  <!-- forecast -->
+    </div>  <!-- weatherItem -->
+    </div>  <!-- box -->
+    {% endif %}
+
+    {% if noaa %}
+    <div class="box">
+  	<div class="weatherItem">
+        <div class="header">
+            <div class="title">
+                NOAA Forecast
+            </div> <!-- title -->
+
+            <div class="date">
+                {{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}
+            </div> <!-- date -->
+        </div> <!-- header -->
+
+        <div class="forecast">
+            {% if noaa.warning %}
+            <div class="warning">
+                {{ noaa.warning }}
             </div>
+            {% endif %}
+            {% for sec in noaa.sections %}
+            <div class="section">
+                <div class="title">{{ sec.title }}</div>
+                <div class="body">
+                    {{ sec.body }}
+                </div>
+            </div>
+            {% endfor %}
         </div>  <!-- forecast -->
     </div>  <!-- weatherItem -->
     </div>  <!-- box -->

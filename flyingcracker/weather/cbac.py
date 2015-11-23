@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from bs4 import BeautifulSoup
 from xml.etree.ElementTree import (
     ParseError,
     XML,
@@ -16,7 +17,7 @@ from utils import (
 
 class CBAC(Forecast):
 
-    url = 'http://cbavalanchecenter.org/feed/'
+    url = 'http://cbavalanchecenter.org/category/weather/feed/'
     filename = settings.WEATHER_ROOT.child('cbac.txt')
 
     def __init__(self, **kwargs):
@@ -52,35 +53,18 @@ class CBAC(Forecast):
             return
 
         # Get the data we want
-        pubdate = item.findtext('pubdate')
-        if not pubdate:
-            self.report_error('No "pubdate"')
+        pubdate = item.find('pubDate')
+        if pubdate is None:
+            self.report_error('No "pubDate"')
             return
 
-        report_el = item.find('report')
-        if report_el is None:
-            self.report_error('No "report"')
-            return
+        html_text = item.find('description')
+        soup = BeautifulSoup(html_text.text, "html.parser")
+        synopsis = soup.contents[4].text
 
-        synopsis = report_el.findtext("weathersynopsis")
-        reportedby = report_el.findtext("reportedby")
-
-        forecast_el = report_el.find('forecast')
-        if forecast_el is None:
-            self.report_error('No "forecast"')
-            return
-
-        today = forecast_el.findtext('today')
-        tonight = forecast_el.findtext('tonight')
-        tomorrow = forecast_el.findtext('tomorrow')
-
-        self.pubdate = pubdate
+        self.pubdate = pubdate.text
         self.set_timestamp()
-        self.add_section('Synopsis', synopsis.strip())
-        self.add_section('Today', today.strip())
-        self.add_section('Tonight', tonight.strip())
-        self.add_section('Tomorrow', tomorrow.strip())
-        self.reported_by = reportedby.strip()
+        self.add_section('Synopsis', synopsis)
 
 
 def save_data():

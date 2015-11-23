@@ -12,11 +12,12 @@ from django.template import RequestContext
 from django.http import Http404, HttpResponse
 from django.views.decorators.cache import cache_page
 
-from fc3.myjson import JsonResponse
-from fc3.utils import ElapsedTime
+from .cbac import CBAC
+from .cbtv import CBTV
 from .models import ChartUrl
 from .noaa import get_NOAA_forecast
-from .cbtv import CBTV
+from fc3.myjson import JsonResponse
+from fc3.utils import ElapsedTime
 import weather.utils as utils
 from weatherstation.models import Weather
 
@@ -46,14 +47,14 @@ def weather(request):
     mountain_tz = timezone('US/Mountain')
     now = datetime.datetime.now(mountain_tz)
 
-    cbac = None     # CBAC is not providing a useful RSS feed!
+#    cbac = None     # CBAC is not providing a useful RSS feed!
 
-##    cbac = CBAC()
-##    if cbac:
-##        # Don't display CBAC stuff if older than 36 hours.
-##        # In this case they are probably closed for the season.
-##        if (now - cbac.timestamp) > datetime.timedelta(hours=36):
-##            cbac = None
+    cbac = CBAC()
+    if cbac:
+        # Don't display CBAC stuff if older than 36 hours.
+        # In this case they are probably closed for the season.
+        if (now - cbac.timestamp) > datetime.timedelta(hours=36):
+            cbac = None
 
     noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
 
