@@ -9,6 +9,7 @@
 -e git://github.com/grahamu/pygooglechart.git@cfbfe2e930#egg=pygooglechart
 
 ansible==1.9.4
+beautifulsoup4==4.4.1
 django==1.8.6
 django-announcements==1.2.0
 django-contrib-comments==1.6.1
