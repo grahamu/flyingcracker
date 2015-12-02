@@ -4,7 +4,7 @@ from datetime import *
 class Weather(models.Model):
     station_id = models.CharField(max_length=10)
     timestamp = models.DateTimeField('Date of reading', unique=True)
-   
+
     wind_dir = models.IntegerField(null=True)
     wind_speed = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     wind_peak = models.DecimalField(max_digits=5, decimal_places=2, null=True)
@@ -24,4 +24,5 @@ class Weather(models.Model):
             return u"no time"
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['timestamp']
+        get_latest_by = 'timestamp'

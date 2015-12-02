@@ -4,6 +4,8 @@ from pygooglechart import (
     Axis,
     XYLineChart,
 )
+from pytz import timezone
+
 
 DAY_EVERY_HOUR_DATA = [i for i in range(0, 24 + 1)]
 DAY_EVERY_HALFHOUR_DATA = [i for i in range(0, (24 * 2) + 1)]
@@ -100,13 +102,19 @@ def periodic_samples(qs, start, fudge, interval, periods):
 
     '''
     dataset = []
+    utc_tz = timezone('UTC')
+
     if len(qs):
         target = start
         end = start + (periods * interval)
         for rec in qs:
             if target >= end:
                 break
-            ts = rec.timestamp
+
+            # Database timestamps are naive UTC values.
+            # Convert this to a timezone-aware value.
+            ts = utc_tz.localize(rec.timestamp)
+
             while ts > (target + fudge):
                 dataset.append(None)
                 target += interval
@@ -115,6 +123,7 @@ def periodic_samples(qs, start, fudge, interval, periods):
             else:
                 dataset.append(rec)
                 target += interval
+
         # no more records, fill out the dataset with None values
         while target < end:
             dataset.append(None)
@@ -123,24 +132,18 @@ def periodic_samples(qs, start, fudge, interval, periods):
 
 
 def hourly_data(qs, start):
-    # normalize the starting date to midnight
-    start = start.replace(hour=6, minute=0, second=0, microsecond=0)
     return periodic_samples(qs, start,
                             datetime.timedelta(minutes=5),
                             datetime.timedelta(hours=1), 24 + 1)
 
 
 def halfhour_data(qs, start):
-    # normalize the starting date to midnight
-    start = start.replace(hour=6, minute=0, second=0, microsecond=0)
     return periodic_samples(qs, start,
                             datetime.timedelta(minutes=5),
                             datetime.timedelta(minutes=30), (24 * 2) + 1)
 
 
 def ten_minute_data(qs, start):
-    # normalize the starting date to midnight
-    start = start.replace(hour=6, minute=0, second=0, microsecond=0)
     return periodic_samples(qs, start,
                             datetime.timedelta(minutes=2, seconds=30),
                             datetime.timedelta(minutes=10), (24 * 6) + 1)
