@@ -8,7 +8,7 @@ class FCProfile(models.Model):
     FlyingCracker user profile.
 
     '''
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)  # is the user active?
     timezone = TimeZoneField()
 

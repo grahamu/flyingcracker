@@ -29,7 +29,8 @@ class Series(models.Model):
     invite_only = models.BooleanField('Users must be invited', default=False)
     only_members_can_view = models.BooleanField('Only members can view results', default=False)
     users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
-    scoring_system = models.ForeignKey(ScoringSystem, blank=True, null=True)
+    scoring_system = models.ForeignKey(ScoringSystem, blank=True, null=True,
+                                       on_delete=models.CASCADE)
     HIDDEN_STATUS = 'H'
     ACTIVE_STATUS = 'A'
     COMPLETE_STATUS = 'C'
@@ -39,7 +40,7 @@ class Series(models.Model):
         (COMPLETE_STATUS, 'COMPLETE - series is finished'),
     )
     status = models.CharField(max_length=1, choices=STATUS_TYPES, default=HIDDEN_STATUS, blank=False)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     guesses = GenericRelation('Guess')
 
     class Meta:
@@ -108,7 +109,7 @@ class Event(models.Model):
     guess_deadline = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
     start = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
     location = models.CharField(max_length=100, blank=True, null=True)
-    series = models.ForeignKey(Series)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE)
     result_locked = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
     guesses = GenericRelation('Guess')
 
@@ -175,8 +176,9 @@ class Event(models.Model):
 
 class Competitor(models.Model):
     name = models.CharField(max_length=100)
-    series = models.ForeignKey(Series)
-    team = models.ForeignKey('Team', blank=True, null=True)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE)
+    team = models.ForeignKey('Team', blank=True, null=True,
+                             on_delete=models.CASCADE)
     active = models.BooleanField(default=True, help_text='Players may only pick "active" competitors.')
 
     class Meta:
@@ -194,7 +196,7 @@ class Competitor(models.Model):
 
 
 class Team(models.Model):
-    series = models.ForeignKey(Series)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     short_name = models.CharField(max_length=50, blank=True)
 
@@ -212,10 +214,11 @@ class Team(models.Model):
 
 
 class Result(models.Model):
-    competitor = models.ForeignKey(Competitor)
-    event = models.ForeignKey(Event)
+    competitor = models.ForeignKey(Competitor, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     result = models.CharField(max_length=50)
-    entered_by = models.ForeignKey(User, blank=True, null=True)
+    entered_by = models.ForeignKey(User, blank=True, null=True,
+                                   on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['result']
@@ -234,9 +237,9 @@ class Result(models.Model):
 
 
 class Guess(models.Model):
-    user = models.ForeignKey(User)
-    competitor = models.ForeignKey(Competitor)
-    content_type = models.ForeignKey(ContentType)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    competitor = models.ForeignKey(Competitor, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     guess_for = GenericForeignKey()
     late_entry = models.BooleanField(default=False)
