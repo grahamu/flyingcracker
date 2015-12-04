@@ -21,13 +21,13 @@ Added {{ competitor_list|length|apnumber }} {{ series.competitor_label }}{{ comp
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ competitor }}</td>
-                <td class="nobg">{% if is_admin %}<a href="{% url 'fantasy-competitor-edit' competitor.pk %}">Edit</a>{% else %}&nbsp;{% endif %}</td>
+                <td class="nobg">{% if is_admin %}<a href="{% url 'fantasy:competitor-edit' competitor.pk %}">Edit</a>{% else %}&nbsp;{% endif %}</td>
             </tr>
 {% endfor %}
         </tbody>
     </table>
     {% endif %}
 </div>
-<a href="{% url 'fantasy-competitor-list' series.pk %}">{{ series.competitor_label }} list</a>
+<a href="{% url 'fantasy:competitor-list' series.pk %}">{{ series.competitor_label }} list</a>
 {% endblock %}
 

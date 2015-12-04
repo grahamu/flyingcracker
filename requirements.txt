@@ -13,12 +13,12 @@ beautifulsoup4==4.4.1
 django==1.9
 django-announcements==1.2.0
 django-contrib-comments==1.6.1
+django-crispy-forms==1.5.2
 django-debug-toolbar==1.4
 django-extensions==1.5.9
 django-localflavor==1.1
 django-markup-deprecated==0.0.3
-django-registration-redux==1.2
-django-uni-form==0.9.0
+django-registration==2.0.3
 docutils==0.12
 markdown==2.6.2
 psycopg2==2.6.1

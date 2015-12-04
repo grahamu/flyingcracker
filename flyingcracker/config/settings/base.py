@@ -7,17 +7,10 @@ SECRET_KEY = get_secret('SECRET_KEY')
 
 BASE_DIR = Path(__file__).ancestor(3)
 
-ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
-
-
 MEDIA_ROOT = BASE_DIR.child("media")
 STATIC_ROOT = BASE_DIR.child("static_media")
 STATICFILES_DIRS = (
     BASE_DIR.child("static"),
-)
-
-TEMPLATE_DIRS = (
-    BASE_DIR.child("templates"),
 )
 
 MEDIA_URL = '/media/'
@@ -50,25 +43,31 @@ USE_I18N = True
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
-# List of context processors, with some custom ones at the top.
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'fc3.context_processors.yui_version',
-    'fc3.context_processors.miniblog',
-    'fc3.context_processors.system_version',
-    'fc3.context_processors.login_url_with_redirect',
-    'django.contrib.messages.context_processors.messages',
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.request',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR.child("templates")],
+        'OPTIONS': {
+            'allowed_include_roots': [BASE_DIR],
+            'context_processors': [
+                'fc3.context_processors.yui_version',
+                'fc3.context_processors.miniblog',
+                'fc3.context_processors.system_version',
+                'fc3.context_processors.login_url_with_redirect',
+                'django.contrib.messages.context_processors.messages',
+                'django.contrib.auth.context_processors.auth',
+                'django.core.context_processors.debug',
+                'django.core.context_processors.i18n',
+                'django.core.context_processors.media',
+                'django.core.context_processors.request',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+        },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -87,6 +86,7 @@ ROOT_URLCONF = 'config.urls'
 APPEND_SLASH = True
 
 PREREQ_APPS = [
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -101,9 +101,7 @@ PREREQ_APPS = [
     'django_extensions',
     'django_mailer',
     'markup_deprecated',
-    'registration',
     'timezones',
-    'uni_form',
 ]
 
 PROJECT_APPS = [
@@ -141,7 +139,6 @@ AUTHENTICATION_BACKENDS = (
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 ACCOUNT_ACTIVATION_DAYS = 10
-REGISTRATION_AUTO_LOGIN = True
 
 YUI_VERSION = "2.9.0"
 

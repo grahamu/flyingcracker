@@ -12,7 +12,7 @@
     <table>
     {% for foodstuff in all_foodstuff %}
         <tr>
-            <td><a href="{% url 'food-ingredient-detail' recipe_type=recipe_type slug=foodstuff.slug %}">{{ foodstuff }}</a></td>
+            <td><a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=foodstuff.slug %}">{{ foodstuff }}</a></td>
         </tr>
     {% endfor %}
     </table>
@@ -22,7 +22,7 @@
     </div>
 
     <div class="box">
-        <a href="{% url 'food-recipe-list' recipe_type=recipe_type %}">All {{ recipe_type|capfirst }} Recipes</a>
+        <a href="{% url 'food:recipe-list' recipe_type=recipe_type %}">All {{ recipe_type|capfirst }} Recipes</a>
     </div>
 </div>
 

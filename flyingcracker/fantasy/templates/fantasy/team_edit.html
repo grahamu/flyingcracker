@@ -1,5 +1,5 @@
 {% extends "fantasy/admin.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block fantasy-main %}
 {{ block.super }}
@@ -8,12 +8,12 @@ Enter a team name and select {{ series.competitor_label }}s for {{ series }}. Cl
 </div>
 <div class="fantasy-form-container">
     <form method="POST" action="" class="uniForm">{% csrf_token %}
-        {{ team_form|as_uni_form }}
+        {{ team_form|crispy }}
         <input type="submit" value="Submit" />
     </form>
 </div>
 {% if team.pk and is_admin %}
-<a href="{% url 'fantasy-team-delete' team.pk %}">Delete this team</a>
+<a href="{% url 'fantasy:team-delete' team.pk %}">Delete this team</a>
 {% endif %}
-{% if is_admin %}<br /><a href="{% url 'fantasy-team-list' series.pk %}">Team List</a><br />{% endif %}
+{% if is_admin %}<br /><a href="{% url 'fantasy:team-list' series.pk %}">Team List</a><br />{% endif %}
 {% endblock %}

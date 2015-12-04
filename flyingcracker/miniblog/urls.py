@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/(?P<slug>[-\w]+)/$',
         dates.DateDetailView.as_view,
         {'model': Post, 'date_field': 'pub_date'},
-        name='miniblog-detail'),
+        name='detail'),
     url(r'^(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/$',
         dates.DayArchiveView.as_view, {'model': Post}),
     url(r'^(?P<year>\d{4})/(?P<month>[a-z]{3})/$',
@@ -21,9 +21,9 @@ urlpatterns = [
     url(r'^$',
         dates.ArchiveIndexView.as_view,
         {'model': Post, 'date_field': 'pub_date'},
-        name='miniblog-archive'),
+        name='archive'),
 ]
 
 urlpatterns += [
-    url(r'^special/$', views.special,  name='miniblog-special')
+    url(r'^special/$', views.special,  name='special')
 ]

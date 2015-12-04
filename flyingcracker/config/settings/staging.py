@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 from unipath import Path
 
-from .base import *
-
 DEBUG = True
+
+from .base import *
 
 DATABASES = {
     'default': {
@@ -24,8 +24,6 @@ STATIC_ROOT = STATIC_DIR.child('staging_static')
 STATICFILES_DIRS = (
     BASE_DIR.child('static'),
 )
-
-ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
 
 STATIC_URL = 'http://ullrichsoftware.com/static/'
 MEDIA_URL = 'http://ullrichsoftware.com/media/'

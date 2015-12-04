@@ -11,7 +11,7 @@
 <div class="section-header">
   <div class="fantasy-guess-deadline">
     {% if is_admin %}
-    <input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url 'fantasy-event-edit' event.pk %}';" />
+    <input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url 'fantasy:event-edit' event.pk %}';" />
     {% endif %}
   </div>
   <div class="section-title">{{ event }}</div>
@@ -47,7 +47,7 @@
     <div class="yui-u first">
       <div class="fantasy-form-container">
       {% if wrapper.formset %}
-        <form name="guess-form" method="POST" action="{% url 'fantasy-event-detail' event.pk %}?next={% url 'fantasy-series-home' series.pk %}">{% csrf_token %}
+        <form name="guess-form" method="POST" action="{% url 'fantasy:event-detail' event.pk %}?next={% url 'fantasy:series-home' series.pk %}">{% csrf_token %}
           {{ wrapper.formset.management_form }}
           {% for error in wrapper.formset.non_form_errors %}
           {{ error }}
@@ -152,7 +152,7 @@
 
 <div class="section-header">
   {% if is_admin or event.start_time_elapsed and user.is_authenticated %}
-  <input type="button" value="Enter {{ series.event_label|lower }} results" onclick="location.href='{% url 'fantasy-result-edit' event.pk %}';" />
+  <input type="button" value="Enter {{ series.event_label|lower }} results" onclick="location.href='{% url 'fantasy:result-edit' event.pk %}';" />
   {% endif %}
 </div>
 

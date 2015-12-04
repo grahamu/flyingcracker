@@ -5,10 +5,10 @@
 {{ block.super }}
 {% if is_admin %}
 <div class="fantasy-form-help">The following {{ series.competitor_label }}s are available for this series.<br />
-To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button, or <a href="{% url 'fantasy-competitor-import' series.pk %}">Import {{ series.competitor_label }}s</a> from other Series.</div>
+To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ series.competitor_label }}" button, or <a href="{% url 'fantasy:competitor-import' series.pk %}">Import {{ series.competitor_label }}s</a> from other Series.</div>
 <div class="fantasy-form-container">
     <form method="POST" action="" class="uniForm">{% csrf_token %}
-        {{ competitor_form|as_uni_form }}
+        {{ competitor_form|crispy }}
         <input type="submit" value="Add {{ series.competitor_label }}" />
     </form>
 </div>
@@ -36,7 +36,7 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
                 <td>{{ competitor.team.short }}</td>
                 <td class="center"><img src="{% if competitor.active %}{{ active_img|safe }}{% else %}{{ inactive_img|safe }}{% endif %}"></td>
                 {% if is_admin %}
-                <td><input type="button" value="Edit" onclick="location.href='{% url 'fantasy-competitor-edit' competitor.pk %}';" /></td>
+                <td><input type="button" value="Edit" onclick="location.href='{% url 'fantasy:competitor-edit' competitor.pk %}';" /></td>
                 {% endif %}
             </tr>
 {% empty %}
@@ -50,5 +50,5 @@ To add a new {{ series.competitor_label }}, enter a name and click the "Add {{ s
         </tbody>
     </table>
 </div>
-<a href="{% url 'fantasy-team-list' series.pk %}">Team List</a><br />
+<a href="{% url 'fantasy:team-list' series.pk %}">Team List</a><br />
 {% endblock %}

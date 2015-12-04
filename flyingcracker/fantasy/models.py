@@ -20,15 +20,30 @@ class Series(models.Model):
     description = models.CharField(max_length=100, blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    competitor_label = models.CharField(help_text='How competitors are referred to, i.e. "Driver" or "Rider".', max_length=50, default='Driver')
-    event_label = models.CharField(help_text='How series events are referred to, i.e. "Race" or "Stage".', max_length=50, default='Race')
-    num_guesses = models.PositiveIntegerField('# guesses', help_text='The number of competitors a user can pick for each event.', default=1)
-    guess_once_per_series = models.BooleanField('Pick competitors once for entire series', default=False)
-    allow_late_guesses = models.BooleanField('Allow late guesses', help_text='Late guesses will not count in Series standings', default=False)
-    late_entry_footnote = models.CharField(max_length=100, default="player entered late picks", blank=True)
+    competitor_label = models.CharField(
+        help_text='How competitors are referred to, i.e. "Driver" or "Rider".',
+        max_length=50, default='Driver')
+    event_label = models.CharField(
+        help_text='How series events are referred to, i.e. "Race" or "Stage".',
+        max_length=50, default='Race')
+    num_guesses = models.PositiveIntegerField(
+        '# guesses',
+        help_text='The number of competitors a user can pick for each event.',
+        default=1)
+    guess_once_per_series = models.BooleanField(
+        'Pick competitors once for entire series', default=False)
+    allow_late_guesses = models.BooleanField(
+        'Allow late guesses',
+        help_text='Late guesses will not count in Series standings',
+        default=False)
+    late_entry_footnote = models.CharField(max_length=100,
+                                           default="player entered late picks",
+                                           blank=True)
     invite_only = models.BooleanField('Users must be invited', default=False)
-    only_members_can_view = models.BooleanField('Only members can view results', default=False)
-    users_enter_competitors = models.BooleanField('Users can add competitors', default=True)
+    only_members_can_view = models.BooleanField(
+        'Only members can view results', default=False)
+    users_enter_competitors = models.BooleanField(
+        'Users can add competitors', default=True)
     scoring_system = models.ForeignKey(ScoringSystem, blank=True, null=True,
                                        on_delete=models.CASCADE)
     HIDDEN_STATUS = 'H'
@@ -39,7 +54,8 @@ class Series(models.Model):
         (ACTIVE_STATUS, 'ACTIVE - ready for use'),
         (COMPLETE_STATUS, 'COMPLETE - series is finished'),
     )
-    status = models.CharField(max_length=1, choices=STATUS_TYPES, default=HIDDEN_STATUS, blank=False)
+    status = models.CharField(max_length=1, choices=STATUS_TYPES,
+                              default=HIDDEN_STATUS, blank=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     guesses = GenericRelation('Guess')
 
@@ -94,7 +110,7 @@ class Series(models.Model):
         return u'%s' % self.name
 
     def get_absolute_url(self):
-        return ('fantasy-series-home', [self.pk])
+        return ('fantasy:series-home', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
 
 
@@ -106,11 +122,18 @@ class Event(models.Model):
     name = models.CharField(max_length=100)
     short_name = models.CharField(max_length=20, blank=True)
     description = models.CharField(max_length=100, blank=True, null=True)
-    guess_deadline = models.DateTimeField('Guess cutoff date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)', blank=True, null=True)
-    start = models.DateTimeField('Event start date & time', help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
+    guess_deadline = models.DateTimeField(
+        'Guess cutoff date & time',
+        help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)',
+        blank=True, null=True)
+    start = models.DateTimeField(
+        'Event start date & time',
+        help_text='(format: YYYY-MM-DD HH:MM) in UTC (Greenwich time)')
     location = models.CharField(max_length=100, blank=True, null=True)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
-    result_locked = models.BooleanField('Lock results', default=False, help_text='If unlocked, users are allowed to enter results.')
+    result_locked = models.BooleanField(
+        'Lock results', default=False,
+        help_text='If unlocked, users are allowed to enter results.')
     guesses = GenericRelation('Guess')
 
     objects = managers.EventManager()
@@ -170,7 +193,7 @@ class Event(models.Model):
         return u'%s' % self.name
 
     def get_absolute_url(self):
-        return ('fantasy-event-detail', [self.pk])
+        return ('fantasy:event-detail', [self.pk])
     get_absolute_url = permalink(get_absolute_url)
 
 
@@ -179,7 +202,9 @@ class Competitor(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     team = models.ForeignKey('Team', blank=True, null=True,
                              on_delete=models.CASCADE)
-    active = models.BooleanField(default=True, help_text='Players may only pick "active" competitors.')
+    active = models.BooleanField(
+        default=True,
+        help_text='Players may only pick "active" competitors.')
 
     class Meta:
         unique_together = ('name', 'series')
@@ -229,7 +254,8 @@ class Result(models.Model):
 
     def guessers(self):
         ctype, obj_id = self.event.guess_generics()
-        guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id, competitor=self.competitor)
+        guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id,
+                                        competitor=self.competitor)
         return [g.user for g in guessers]
 
     def points_for_result(self):

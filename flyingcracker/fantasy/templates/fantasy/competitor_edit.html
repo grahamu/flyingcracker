@@ -1,5 +1,5 @@
 {% extends "fantasy/admin.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block fantasy-main %}
 {{ block.super }}
@@ -10,10 +10,10 @@
 </div>
 <div class="fantasy-form-container">
     <form method="POST" action="" class="uniForm">{% csrf_token %}
-        {{ competitor_form|as_uni_form }}
+        {{ competitor_form|crispy }}
         <input type="submit" value="Submit" />
     </form>
 </div>
-{% if is_admin and competitor.pk %}<br /><a href="{% url 'fantasy-competitor-delete' competitor.pk %}">Delete this {{ series.competitor_label }}</a> (from {{ series }}){% endif %}
-{% if is_admin %}<br /><a href="{% url 'fantasy-competitor-list' series.pk %}">{{ series.competitor_label }} list</a>{% endif %}
+{% if is_admin and competitor.pk %}<br /><a href="{% url 'fantasy:competitor-delete' competitor.pk %}">Delete this {{ series.competitor_label }}</a> (from {{ series }}){% endif %}
+{% if is_admin %}<br /><a href="{% url 'fantasy:competitor-list' series.pk %}">{{ series.competitor_label }} list</a>{% endif %}
 {% endblock %}

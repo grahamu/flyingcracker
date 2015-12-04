@@ -107,7 +107,7 @@ var current_weather = {
     retrieve_current: function() {
         // Show the "Loading" panel
         YAHOO.weather.current.wait.show();
-        var post_url = "{% url 'weather-current' %}";
+        var post_url = "{% url 'weather:current' %}";
         var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, current_weather.retrieve_current_callback);
     },
 
@@ -319,7 +319,7 @@ var current_weather = {
 
     update_server_units: function(type, unit) {
         // async call to server
-        var post_url = "{% url 'weather-unit-change' %}";
+        var post_url = "{% url 'weather:unit-change' %}";
         var post_data = "type=" + type;
         post_data += "&unit=" + unit;
         var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, current_weather.update_server_callback, post_data);

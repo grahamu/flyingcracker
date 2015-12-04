@@ -5,8 +5,9 @@ from miniblog.models import Post
 
 class RssSiteNewsFeed(Feed):
     title = "CracklyFinger.com"
-    link = reverse('miniblog-archive')
-    description = "Updates on changes and additions to cracklyfinger.com, plus occasional random comments"
+    link = reverse('miniblog:archive')
+    description = "Updates on changes and additions to cracklyfinger.com,"
+    " plus occasional random comments"
 
     def items(self):
         return Post.objects.order_by('-pub_date')[:5]

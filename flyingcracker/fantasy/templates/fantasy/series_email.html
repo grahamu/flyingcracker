@@ -1,5 +1,5 @@
 {% extends "fantasy/admin.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block fantasy-main %}
 {{ block.super }}
@@ -9,7 +9,7 @@
 
 <div class="fantasy-form-container">
     <form method="POST" action="">{% csrf_token %}
-        {{ email_form|as_uni_form }}
+        {{ email_form|crispy }}
         <input type="submit" value="Send" />
     </form>
 </div>
