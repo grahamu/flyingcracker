@@ -24,7 +24,7 @@
                 {% firstof user.get_profile.timezone "UTC" %}</td>
                 {% endwith %}
                 {% if is_admin %}
-                <td><input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url 'fantasy-event-edit' r.event.pk %}';" /></td>
+                <td><input type="button" value="Edit {{ series.event_label|lower }}" onclick="location.href='{% url 'fantasy:event-edit' r.event.pk %}';" /></td>
                 {% endif %}
             </tr>
 {% endfor %}

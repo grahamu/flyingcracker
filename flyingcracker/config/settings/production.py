@@ -5,6 +5,8 @@ from .base import *
 
 DEBUG = False
 
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
+
 DATABASES = {
     'default': {
         'NAME': 'graham_fc3',
@@ -24,8 +26,6 @@ STATIC_ROOT = STATIC_DIR.child('static')
 STATICFILES_DIRS = (
     BASE_DIR.child('static'),
 )
-
-ALLOWED_INCLUDE_ROOTS = (BASE_DIR,)
 
 STATIC_URL = 'http://cracklyfinger.com/static/'
 MEDIA_URL = 'http://cracklyfinger.com/media/'

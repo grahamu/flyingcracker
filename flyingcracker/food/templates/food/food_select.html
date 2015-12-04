@@ -6,7 +6,7 @@
                 <select id="id-recipe" class="selectLink">
                     <option value="">Select a recipe</option>
                     {% for item in recipe_list %}
-                    <option value="{% url 'food-recipe-detail' recipe_type=recipe_type slug=item.slug %}">
+                    <option value="{% url 'food:recipe-detail' recipe_type=recipe_type slug=item.slug %}">
                         {{ item.title }}
                     </option>
                     {% endfor %}
@@ -19,7 +19,7 @@
                 <select id="id-foodstuff" class="selectLink">
                     <option value="">Select an ingredient</option>
                     {% for item in foodstuff_list %}
-                    <option value="{% url 'food-ingredient-detail' recipe_type=recipe_type slug=item.slug %}">
+                    <option value="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=item.slug %}">
                         {{ item.title }}
                     </option>
                     {% endfor %}
@@ -32,7 +32,7 @@
                 <select id="id-category" class="selectLink">
                     <option value="">Select a category</option>
                     {% for item in category_list %}
-                    <option value="{% url 'food-category-list' recipe_type=recipe_type slug=item.slug %}">
+                    <option value="{% url 'food:category-list' recipe_type=recipe_type slug=item.slug %}">
                         {{ item.title }}
                     </option>
                     {% endfor %}

@@ -36,7 +36,7 @@
     <div id="tab-admin">
       <div class="section-header">
         <div class="fantasy-guess-deadline">
-          <input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy-series-edit' series.pk %}';" />
+          <input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy:series-edit' series.pk %}';" />
         </div>
         <div class="section-title">{{ series }}</div>
         {% if series.description %}
@@ -47,11 +47,11 @@
       <table class="fantasy-list-table">
       <tbody>
         <tr>
-          <td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url 'fantasy-event-add' series.pk %}';" /></td>
-          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url 'fantasy-competitor-list' series.pk %}';" /></td>
-          <td><input type="button" value="Team List" onclick="location.href='{% url 'fantasy-team-list' series.pk %}';" /></td>
-          <td><input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy-series-edit' series.pk %}';" /></td>
-          <td><input type="button" value="Email Players" onclick="location.href='{% url 'fantasy-series-email' series.pk %}';" /></td>
+          <td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url 'fantasy:event-add' series.pk %}';" /></td>
+          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url 'fantasy:competitor-list' series.pk %}';" /></td>
+          <td><input type="button" value="Team List" onclick="location.href='{% url 'fantasy:team-list' series.pk %}';" /></td>
+          <td><input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy:series-edit' series.pk %}';" /></td>
+          <td><input type="button" value="Email Players" onclick="location.href='{% url 'fantasy:series-email' series.pk %}';" /></td>
         </tr>
       </tbody>
       </table>
@@ -62,5 +62,5 @@
 </div>
 
 <br />
-<p><a href="{% url 'fantasy-series-add' %}">Create new Series</a></p>
+<p><a href="{% url 'fantasy:series-add' %}">Create new Series</a></p>
 {% endblock %}

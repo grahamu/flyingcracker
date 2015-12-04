@@ -76,7 +76,7 @@
       <div class="section-header">
         {% if is_admin %}
         <div class="fantasy-guess-deadline">
-          <input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy-series-edit' series.pk %}';" />
+          <input type="button" value="Edit Series" onclick="location.href='{% url 'fantasy:series-edit' series.pk %}';" />
         </div>
         {% endif %}
         <div class="section-title">{{ series }}</div>
@@ -88,10 +88,10 @@
       <table class="fantasy-list-table">
       <tbody>
         <tr>
-          {% if is_admin %}<td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url 'fantasy-event-add' series.pk %}';" /></td>{% endif %}
-          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url 'fantasy-competitor-list' series.pk %}';" /></td>
-          <td><input type="button" value="Team List" onclick="location.href='{% url 'fantasy-team-list' series.pk %}';" /></td>
-          {% if is_admin %}<td><input type="button" value="Email Players" onclick="location.href='{% url 'fantasy-series-email' series.pk %}';" /></td>{% endif %}
+          {% if is_admin %}<td><input type="button" value="Add {{ series.event_label }}" onclick="location.href='{% url 'fantasy:event-add' series.pk %}';" /></td>{% endif %}
+          <td><input type="button" value="{{ series.competitor_label }} List" onclick="location.href='{% url 'fantasy:competitor-list' series.pk %}';" /></td>
+          <td><input type="button" value="Team List" onclick="location.href='{% url 'fantasy:team-list' series.pk %}';" /></td>
+          {% if is_admin %}<td><input type="button" value="Email Players" onclick="location.href='{% url 'fantasy:series-email' series.pk %}';" /></td>{% endif %}
         </tr>
       </tbody>
       </table>

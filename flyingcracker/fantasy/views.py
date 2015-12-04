@@ -48,7 +48,7 @@ def series_edit(request, id=None):
         series = get_object_or_404(Series, pk=id)
         if not series.is_admin(request.user):
             # cannot edit Series if you're not an admin
-            return HttpResponseRedirect(reverse('fantasy-root'))
+            return HttpResponseRedirect(reverse('fantasy:root'))
     else:
         series = Series(owner=request.user)
 
@@ -57,7 +57,7 @@ def series_edit(request, id=None):
         if series_form.is_valid():
             series = series_form.save()
             messages.success(request, u'Saved series "%s".' % series)
-            return HttpResponseRedirect(reverse('fantasy-root'))
+            return HttpResponseRedirect(reverse('fantasy:root'))
     else:
         series_form = SeriesForm(instance=series)
 
@@ -304,7 +304,7 @@ def competitor_list(request, id):
             if next:
                 return HttpResponseRedirect(next)
             else:
-                return HttpResponseRedirect(reverse('fantasy-competitor-list',
+                return HttpResponseRedirect(reverse('fantasy:competitor-list',
                                                     args=[series.pk]))
 
     else:
@@ -332,7 +332,7 @@ def competitor_edit(request, id):
     series = competitor.series
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
     team_qs = Team.objects.filter(series=series)
 
     if request.method == 'POST':
@@ -343,7 +343,7 @@ def competitor_edit(request, id):
         if competitor_form.is_valid():
             competitor = competitor_form.save()
             messages.success(request, u'Saved "%s".' % competitor)
-            return HttpResponseRedirect(reverse('fantasy-competitor-list',
+            return HttpResponseRedirect(reverse('fantasy:competitor-list',
                                                 args=[series.pk]))
     else:
         competitor_form = CompetitorForm(instance=competitor,
@@ -368,7 +368,7 @@ def competitor_delete(request, id):
     series = competitor.series
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     results = Result.objects.filter(competitor=competitor)
     if results:
@@ -381,7 +381,7 @@ def competitor_delete(request, id):
         return render_to_response('fantasy/competitor_delete.html', c)
     else:
         competitor.delete()
-        return HttpResponseRedirect(reverse('fantasy-competitor-list',
+        return HttpResponseRedirect(reverse('fantasy:competitor-list',
                                             args=[series.pk]))
 
 
@@ -396,7 +396,7 @@ def competitor_export(request, id):
     series = get_object_or_404(Series, pk=id)
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(mimetype='text/csv')
@@ -421,7 +421,7 @@ def competitor_import(request, id):
     series = get_object_or_404(Series, pk=id)
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     qs = Series.objects.filter(only_members_can_view=False)
     #
@@ -452,7 +452,7 @@ def competitor_import(request, id):
                 return render_to_response('fantasy/competitors_imported.html',
                                           c)
             else:
-                return HttpResponseRedirect(reverse('fantasy-competitor-list',
+                return HttpResponseRedirect(reverse('fantasy:competitor-list',
                                                     args=[series.pk]))
     else:
         import_form = CompetitorImportForm(series_qs=qs)
@@ -475,7 +475,7 @@ def event_add(request, series_id):
     series = get_object_or_404(Series, pk=series_id)
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
     event = Event(series=series)
 
     if request.method == 'POST':
@@ -485,7 +485,7 @@ def event_add(request, series_id):
             event.series = series
             event.save()
             messages.success(request, u'Added event "%s".' % event)
-            return HttpResponseRedirect(reverse('fantasy-series-home',
+            return HttpResponseRedirect(reverse('fantasy:series-home',
                                                 args=[series.pk]))
     else:
         event_form = EventForm(instance=event)
@@ -512,7 +512,7 @@ def event_edit(request, id):
     series = event.series
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     if request.method == 'POST':
         event_form = EventForm(data=request.POST, instance=event)
@@ -520,7 +520,7 @@ def event_edit(request, id):
             event = event_form.save()
             messages.success(request, u'Saved %s "%s".' %
                              (series.event_label, event))
-            return HttpResponseRedirect(reverse('fantasy-series-home',
+            return HttpResponseRedirect(reverse('fantasy:series-home',
                                                 args=[series.pk]))
     else:
         event_form = EventForm(instance=event)
@@ -545,7 +545,7 @@ def event_delete(request, id):
     series = event.series
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     results = Result.objects.filter(event=event)
     if results:
@@ -635,7 +635,7 @@ def event_detail(request, id):
             return HttpResponseRedirect(next)
         else:
             return HttpResponseRedirect(
-                reverse('fantasy-event-detail', args=[event.pk]))
+                reverse('fantasy:event-detail', args=[event.pk]))
 
     c = RequestContext(request, {'wrapper': cv,
                                  'is_admin': series.is_admin(request.user),
@@ -739,7 +739,7 @@ def event_result(request, id):
 
     if not event.guess_deadline_elapsed():
         messages.info(request, "The guess deadline has not been reached!")
-        return HttpResponseRedirect(reverse('fantasy-series-home',
+        return HttpResponseRedirect(reverse('fantasy:series-home',
                                             args=[series.pk]))
 
     context_vars = event_result_context(request, event, user)
@@ -890,12 +890,12 @@ def result_edit(request, id):
     series = event.series
     if (not series.is_admin(request.user) and event.result_locked):
         messages.info(request, "Sorry, results are locked for this event.")
-        return HttpResponseRedirect(reverse('fantasy-series-home',
+        return HttpResponseRedirect(reverse('fantasy:series-home',
                                             args=[series.pk]))
     if not event.start_time_elapsed():
         messages.error(request, "Sorry, you are not allowed to enter results "
                        "before the event starts!")
-        return HttpResponseRedirect(reverse('fantasy-series-home',
+        return HttpResponseRedirect(reverse('fantasy:series-home',
                                             args=[series.pk]))
 
     all_competitors = Competitor.objects.filter(series=series)
@@ -955,7 +955,7 @@ def result_edit(request, id):
                     r.save()
             messages.success(request, u'%s results have been saved.'
                              % series.event_label)
-            return HttpResponseRedirect(reverse('fantasy-series-home',
+            return HttpResponseRedirect(reverse('fantasy:series-home',
                                                 args=[series.pk]))
     else:
         formset = ResultFormset(initial=initial_results,
@@ -986,7 +986,7 @@ def team_add(request, series_id):
     series = get_object_or_404(Series, pk=series_id)
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     team = Team(series=series)
     competitor_qs = Competitor.objects.filter(series=series, team=None)
@@ -998,7 +998,7 @@ def team_add(request, series_id):
         if team_form.is_valid():
             team = team_form.save()
             messages.success(request, u'Added new team "%s".' % team)
-            return HttpResponseRedirect(reverse('fantasy-team-list',
+            return HttpResponseRedirect(reverse('fantasy:team-list',
                                                 args=[series.pk]))
     else:
         team_form = TeamEditForm(instance=team,
@@ -1028,7 +1028,7 @@ def team_edit(request, id):
 
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     competitor_qs = Competitor.objects.filter(series=series)
     members = [str(c.pk) for c in Competitor.objects.filter(team=team)]
@@ -1042,7 +1042,7 @@ def team_edit(request, id):
         if team_form.is_valid():
             team = team_form.save()
             messages.success(request, u'Saved team "%s".' % str(team))
-            return HttpResponseRedirect(reverse('fantasy-team-list',
+            return HttpResponseRedirect(reverse('fantasy:team-list',
                                                 args=[series.pk]))
     else:
         team_form = TeamEditForm(instance=team,
@@ -1087,7 +1087,7 @@ def team_detail(request, id):
     series = team.series
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     c = RequestContext(request, {
         'series': series,
@@ -1107,13 +1107,13 @@ def team_delete(request, id):
     series = team.series
     if not series.is_admin(request.user):
         # cannot edit Series if you're not an admin
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     for competitor in team.competitor_set.all():
         competitor.team = None
         competitor.save()
     team.delete()
-    return HttpResponseRedirect(reverse('fantasy-team-list', args=[series.pk]))
+    return HttpResponseRedirect(reverse('fantasy:team-list', args=[series.pk]))
 
 
 @login_required
@@ -1128,7 +1128,7 @@ def series_email(request, id):
 
     series = get_object_or_404(Series, pk=id)
     if not series.is_admin(request.user):
-        return HttpResponseRedirect(reverse('fantasy-root'))
+        return HttpResponseRedirect(reverse('fantasy:root'))
 
     if request.method == 'POST':
         email_form = EmailSeriesForm(data=request.POST)
@@ -1151,7 +1151,7 @@ def series_email(request, id):
 #            send_mail(subject, body, mail_from, recipients)
 
             messages.success(request, 'Your email has been sent.')
-            return HttpResponseRedirect(reverse('fantasy-series-home',
+            return HttpResponseRedirect(reverse('fantasy:series-home',
                                                 args=[series.pk]))
     else:
         email_form = EmailSeriesForm()

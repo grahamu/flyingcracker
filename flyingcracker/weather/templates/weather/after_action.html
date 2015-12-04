@@ -12,6 +12,6 @@
     {% endfor %}
 </div>
 <br />
-<a href="{% url 'generate-weather' %}">Generate Weather</a><br /><br />
-<a href="{% url 'delete-weather' %}">Delete Weather</a>
+<a href="{% url 'weather:generate' %}">Generate Weather</a><br /><br />
+<a href="{% url 'weather:delete' %}">Delete Weather</a>
 {% endblock body %}

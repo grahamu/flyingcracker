@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load uni_form_tags %}
+{% load crispy_forms_tags %}
 
 {% block extra_title %}Edit User Profile{% endblock %}
 
@@ -8,7 +8,7 @@
 <h2>Edit User Profile</h2>
   <form method="POST" action="" class="uniForm">{% csrf_token %}
     <fieldset class="inlineLabels">
-      {{ form|as_uni_form }}
+      {{ form|crispy }}
     </fieldset>
     <br />
     <input type="button" value="Cancel" onClick="history.back()" class="std-button" /><input type="submit" value="Submit" class="std-button" />

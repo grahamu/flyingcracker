@@ -6,7 +6,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(help_text='Automatically built from the title.')
     teaser = models.TextField()
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     pub_date = models.DateTimeField('Date this post will get published')
     body = models.TextField()
     enable_comments = models.BooleanField(default=True)
@@ -15,7 +15,8 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return "/blog/%s/%s/" % (self.pub_date.strftime("%Y/%m/%d").lower(), self.slug)
+        return "/blog/%s/%s/" % (self.pub_date.strftime("%Y/%m/%d").lower(),
+                                 self.slug)
 
     class Meta:
         get_latest_by = 'pub_date'
@@ -34,4 +35,4 @@ class Post(models.Model):
             '/static/js/yui/button-debug.js',
             # Source file for Rich Text Editor
             '/static/js/yui/editor-min.js',
-      )
+        )

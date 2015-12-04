@@ -2,15 +2,16 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'food'
 urlpatterns = [
     url(r'^i/(?P<slug>[\w_-]+)/$', views.foodstuff_detail,
-        name='food-ingredient-detail'),
+        name='ingredient-detail'),
     url(r'^i/$', views.foodstuff_list,
-        name='food-ingredient-list'),
+        name='ingredient-list'),
     url(r'^c/(?P<slug>[\w_-]+)/$', views.category_list,
-        name='food-category-list'),
+        name='category-list'),
     url(r'^(?P<slug>[\w_-]+)/$', views.recipe_detail,
-        name='food-recipe-detail'),
+        name='recipe-detail'),
     url(r'^$', views.recipe_list,
-        name='food-recipe-list'),
+        name='recipe-list'),
 ]

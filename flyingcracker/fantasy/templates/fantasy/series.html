@@ -4,7 +4,7 @@
 {{ block.super }}
 {% if series.pk %}
 <div class="section-header">
-  <div class="section-title"><a href="{% url 'fantasy-series-home' series.pk %}">{{ series }}</a></div>
+  <div class="section-title"><a href="{% url 'fantasy:series-home' series.pk %}">{{ series }}</a></div>
   {% if series.description %}<div class="section-tagline">{{ series.description }}</div>{% endif %}
 </div>
 {% endif %}

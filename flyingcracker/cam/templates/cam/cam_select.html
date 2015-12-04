@@ -70,7 +70,7 @@ var webcam = {
 
     request_list: function(select) {
         // POST a request for new data
-        var post_url = '{% url 'cam-list' %}';
+        var post_url = '{% url 'cam:list' %}';
         var post_data = 'cat=' + select.value + '&csrfmiddlewaretoken=' + YAHOO.util.Cookie.get("csrftoken");
         var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, webcam.request_list_callback, post_data);
         Set_Cookie("cam_category", ''+select.value, 7, '/', '', '');
@@ -105,7 +105,7 @@ var webcam = {
 
     request_image: function(select) {
         // POST a request for new data
-        var post_url = '{% url 'cam-image' %}';
+        var post_url = '{% url 'cam:image' %}';
         var post_data = 'id=' + select.value + '&csrfmiddlewaretoken=' + YAHOO.util.Cookie.get("csrftoken");
         var cObj = YAHOO.util.Connect.asyncRequest('POST', post_url, webcam.request_image_callback, post_data);
         Set_Cookie("cam_id", ''+select.value, 7, '/', '', '');

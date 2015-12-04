@@ -120,11 +120,11 @@
                     <div class="bd">
                         <ul class="first-of-type">
                             {% block navmenu %}
-                            <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="{% url 'weather-root' %}">Weather</a></li>
-                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'cam-root' %}">WebCams</a></li>
-                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'food-recipe-list' recipe_type="cocktail" %}">Cocktails</a></li>
-                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'food-recipe-list' recipe_type="food" %}">Food</a></li>
-                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'fantasy-root' %}">Fantasy</a></li>
+                            <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="{% url 'weather:root' %}">Weather</a></li>
+                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'cam:root' %}">WebCams</a></li>
+                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'food:recipe-list' recipe_type="cocktail" %}">Cocktails</a></li>
+                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'food:recipe-list' recipe_type="food" %}">Food</a></li>
+                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'fantasy:root' %}">Fantasy</a></li>
                             {% endblock %}
                         </ul>
                     </div>
@@ -174,7 +174,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for query in sql_queries %}<tr class="{% cycle odd,even %}">
+    {% for query in sql_queries %}<tr class="{% cycle 'odd' 'even' %}">
       <td>{{ forloop.counter }}</td>
       <td>{{ query.sql|escape }}</td>
       <td>{{ query.time }}</td>

@@ -18,7 +18,7 @@
     <strong>Recipes using {{ foodstuff }}</strong>:
     <ul>
 	{% for i in ingredients %}
-        <li><a href="{% url 'food-recipe-detail' recipe_type=recipe_type slug=i.recipe.slug %}">{{ i.recipe }}</a></li>
+        <li><a href="{% url 'food:recipe-detail' recipe_type=recipe_type slug=i.recipe.slug %}">{{ i.recipe }}</a></li>
 	{% endfor %}
     </ul>
     {% else %}

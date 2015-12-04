@@ -31,7 +31,7 @@ class Cam(models.Model):
     title = models.CharField(max_length=100)
     url = models.URLField()
     description = models.TextField(blank=True)
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     state = USStateField(default="CO")
     objects = CamManager()
 

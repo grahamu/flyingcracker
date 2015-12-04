@@ -42,6 +42,6 @@ def login_url_with_redirect(request):
     login_url = settings.LOGIN_URL
     path = urlquote(request.get_full_path())
     if path == reverse('auth_logout'):
-        path = reverse('fc-home')
+        path = reverse('home:home')
     url = '%s?%s=%s' % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path)
     return {'login_url': url}

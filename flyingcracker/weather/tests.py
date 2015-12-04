@@ -46,14 +46,14 @@ class CurrentWeather(TestCase):
         '''
         import json
 
-        response = self.get('weather-current')
+        response = self.get('weather:current')
         self.response_404(response)
 
-        response = self.post('weather-current')
+        response = self.post('weather:current')
         self.response_404(response)
 
         # EXPENSE Account list
-        response = self.post('weather-current', data={
+        response = self.post('weather:current', data={
             'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest',
         })
         self.response_200(response)

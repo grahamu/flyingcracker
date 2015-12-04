@@ -10,7 +10,7 @@
 </div>
 {% include 'fantasy/team_detail_snippet.html' %}
 {% if is_admin %}
-<a href="{% url 'fantasy-team-edit' team.pk %}">Edit this Team</a>
-<a href="{% url 'fantasy-team-list' series.pk %}">Team List</a><br />
+<a href="{% url 'fantasy:team-edit' team.pk %}">Edit this Team</a>
+<a href="{% url 'fantasy:team-list' series.pk %}">Team List</a><br />
 {% endif %}
 {% endblock %}

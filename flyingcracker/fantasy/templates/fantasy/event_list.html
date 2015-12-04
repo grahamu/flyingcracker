@@ -55,7 +55,7 @@ Click on a {{ series.event_label|lower }} to enter your picks or see results.<br
                 <td>{{ cutoff|date:"D N d" }}<br />{{ cutoff|time:"f a" }}<br />
                 {% firstof user.get_profile.timezone "UTC" %}</td>
                 {% endwith %}
-                <td class="nobg">{% if is_admin %}<a href="{% url 'fantasy-event-edit' r.event.pk %}">Edit {{ series.event_label|lower }}</a>{% endif %}</td>
+                <td class="nobg">{% if is_admin %}<a href="{% url 'fantasy:event-edit' r.event.pk %}">Edit {{ series.event_label|lower }}</a>{% endif %}</td>
             </tr>
 {% endfor %}
         </tbody>
@@ -65,10 +65,10 @@ Click on a {{ series.event_label|lower }} to enter your picks or see results.<br
 No {{ series.event_label|lower }}s found.<br />
 {% endif %}
 {% if is_admin %}
-<a href="{% url 'fantasy-event-add' series.pk %}">Add {{ series.event_label }} to Series</a><br />
-<a href="{% url 'fantasy-competitor-list' series.pk %}">{{ series.competitor_label }} List</a><br />
-<a href="{% url 'fantasy-team-list' series.pk %}">Team List</a><br />
-<a href="{% url 'fantasy-series-edit' series.pk %}">Edit this Series</a><br />
-<a href="{% url 'fantasy-series-email' series.pk %}">Email guessers in this Series</a>
+<a href="{% url 'fantasy:event-add' series.pk %}">Add {{ series.event_label }} to Series</a><br />
+<a href="{% url 'fantasy:competitor-list' series.pk %}">{{ series.competitor_label }} List</a><br />
+<a href="{% url 'fantasy:team-list' series.pk %}">Team List</a><br />
+<a href="{% url 'fantasy:series-edit' series.pk %}">Edit this Series</a><br />
+<a href="{% url 'fantasy:series-email' series.pk %}">Email guessers in this Series</a>
 {% endif %}
 {% endblock %}

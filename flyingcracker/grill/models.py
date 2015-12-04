@@ -14,7 +14,7 @@ class Doneness(models.Model):
         verbose_name_plural = 'Donenesses'
 
     def get_absolute_url(self):
-        return ('grill-doneness-detail', [self.slug])
+        return ('grill:doneness-detail', [self.slug])
     get_absolute_url = permalink(get_absolute_url)
 
     def __unicode__(self):
@@ -22,14 +22,14 @@ class Doneness(models.Model):
 
     def less(self):
         try:
-            obj = Doneness.objects.get(doneness=self.doneness-1)
+            obj = Doneness.objects.get(doneness=self.doneness - 1)
         except Doneness.DoesNotExist:
             obj = None
         return obj
 
     def more(self):
         try:
-            obj = Doneness.objects.get(doneness=self.doneness+1)
+            obj = Doneness.objects.get(doneness=self.doneness + 1)
         except Doneness.DoesNotExist:
             obj = None
         return obj
@@ -69,12 +69,19 @@ class Cut(models.Model):
 
 class Grilling(models.Model):
     user = models.ManyToManyField(User)
-    doneness = models.ForeignKey(Doneness)
-    method = models.ForeignKey(Method)
-    food = models.ForeignKey(Food)
-    hardware = models.ForeignKey(Hardware, blank=True, null=True)
-    cut = models.ForeignKey(Cut, blank=True, null=True)
+    doneness = models.ForeignKey(Doneness, on_delete=models.CASCADE)
+    method = models.ForeignKey(Method, on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    hardware = models.ForeignKey(Hardware, blank=True, null=True,
+                                 on_delete=models.CASCADE)
+    cut = models.ForeignKey(Cut, blank=True, null=True,
+                            on_delete=models.CASCADE)
     details = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return ' : '.join([str(self.food), str(self.cut), str(self.doneness)]) + ' - ' + ' : '.join([str(self.hardware), str(self.method), self.details])
+        return ' : '.join([str(self.food),
+                           str(self.cut),
+                           str(self.doneness)]) + \
+               ' - ' + ' : '.join([str(self.hardware),
+                                   str(self.method),
+                                   self.details])
