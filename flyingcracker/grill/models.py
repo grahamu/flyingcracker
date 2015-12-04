@@ -14,7 +14,7 @@ class Doneness(models.Model):
         verbose_name_plural = 'Donenesses'
 
     def get_absolute_url(self):
-        return ('grill-doneness-detail', [self.slug])
+        return ('grill:doneness-detail', [self.slug])
     get_absolute_url = permalink(get_absolute_url)
 
     def __unicode__(self):

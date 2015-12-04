@@ -30,7 +30,7 @@ hardwareChange = new YAHOO.util.CustomEvent('hardware change');
 hardwareChange.subscribe(new_hardware);
 
 function foodRequest(food_id, doneness_id, hardware_id) {
-    var url = "{% url 'grill' %}";
+    var url = "{% url 'grill:grill' %}";
     url += '?food='+food_id;
     url += '&doneness='+doneness_id;
     url += '&hardware='+hardware_id;
