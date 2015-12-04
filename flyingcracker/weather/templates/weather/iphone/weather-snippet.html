@@ -121,9 +121,11 @@
                 </div>
             </div>
             {% endfor %}
+            {% if cbac.reported_by %}
             <div id="cbac_reporter">
                 reported by:&nbsp;{{ cbac.reported_by|slugify|capfirst }}
             </div>
+            {% endif %}
         </div>
     </div>
     </fieldset>
