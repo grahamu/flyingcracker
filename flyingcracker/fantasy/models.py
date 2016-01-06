@@ -1,14 +1,16 @@
-from django.db import models
-from django.contrib.contenttypes.models import ContentType
+from datetime import datetime
+
+from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import (
     GenericForeignKey,
     GenericRelation,
 )
-from django.contrib.auth.models import User
-from django.db.models import permalink
-from datetime import datetime
-from scoresys.models import ScoringSystem
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+
 from fantasy import managers
+from scoresys.models import ScoringSystem
 
 
 class Series(models.Model):
@@ -110,8 +112,7 @@ class Series(models.Model):
         return u'%s' % self.name
 
     def get_absolute_url(self):
-        return ('fantasy:series-home', [self.pk])
-    get_absolute_url = permalink(get_absolute_url)
+        return reverse('fantasy:series-home', args=[self.pk])
 
 
 class Event(models.Model):
@@ -193,8 +194,7 @@ class Event(models.Model):
         return u'%s' % self.name
 
     def get_absolute_url(self):
-        return ('fantasy:event-detail', [self.pk])
-    get_absolute_url = permalink(get_absolute_url)
+        return reverse('fantasy:event-detail', args=[self.pk])
 
 
 class Competitor(models.Model):

@@ -1,6 +1,6 @@
-from django.db import models
-from django.db.models import permalink
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.db import models
 
 
 class Doneness(models.Model):
@@ -14,8 +14,7 @@ class Doneness(models.Model):
         verbose_name_plural = 'Donenesses'
 
     def get_absolute_url(self):
-        return ('grill:doneness-detail', [self.slug])
-    get_absolute_url = permalink(get_absolute_url)
+        return reverse('grill:doneness-detail', args=[self.slug])
 
     def __unicode__(self):
         return self.title
