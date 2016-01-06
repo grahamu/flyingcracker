@@ -1,6 +1,7 @@
-from django.db import models
-from django.db.models import permalink
 from datetime import date
+
+from django.core.urlresolvers import reverse
+from django.db import models
 
 
 class Foodstuff(models.Model):
@@ -12,8 +13,9 @@ class Foodstuff(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return ('food-ingredient-detail', [self.slug])
-    get_absolute_url = permalink(get_absolute_url)
+        return reverse('food:ingredient-detail',
+                       kwargs={'slug': self.slug,
+                               'recipe_type': 'food'})
 
     class Meta:
         ordering = ['title']
@@ -68,8 +70,13 @@ class Recipe(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return ('food-recipe-detail', [self.slug])
-    get_absolute_url = permalink(get_absolute_url)
+        if self.rclass == self.DRINK_CLASS:
+            recipe_type = 'cocktail'
+        else:
+            recipe_type = 'food'
+        return reverse('food:recipe-detail',
+                       kwargs={'slug': self.slug,
+                               'recipe_type': recipe_type})
 
     class Meta:
         ordering = ['title']
