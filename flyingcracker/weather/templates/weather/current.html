@@ -275,7 +275,7 @@
 		{% if sunmoon %}
 		<div class="forecast">
             <div class="body">
-				<table bgcolor="white" border="0" cellpadding="3" width="600">
+				<table bgcolor="white" border="0" cellpadding="3" width="420">
 				<!-- Headers -->
 				<tr align="center">
 					<th>&nbsp</th>
@@ -303,7 +303,7 @@
 		{% if moonphases %}
 		<div class="forecast">
 			<div class="body">
-				<table bgcolor="white" border="0" cellpadding="3" width="600">
+				<table bgcolor="white" border="0" cellpadding="3" width="800">
 				<!-- Phase name -->
 				<tr align="center">
 					<th>&nbsp</th>
@@ -318,7 +318,7 @@
 					Moon Phases:
 					</th>
 					{% for phase in moonphases.phases %}
-					<td><img src="{{ phase.image }}" height=180px /></td>
+					<td><img src="{{ phase.image }}" height=160px /></td>
 					{% endfor %}
 				</tr>
 				<!-- Date -->
