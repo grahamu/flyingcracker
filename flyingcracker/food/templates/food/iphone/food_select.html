@@ -19,7 +19,7 @@
             <select id="id-foodstuff" class="selectLink">
                 <option value="">Select an ingredient</option>
                 {% for item in foodstuff_list %}
-                <option value="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=item.slug %}">
+                <option value="{% url 'ingredient-detail' slug=item.slug %}">
                     {{ item.title }}
                 </option>
                 {% endfor %}

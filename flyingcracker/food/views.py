@@ -1,24 +1,44 @@
 from __future__ import absolute_import
-from django.template import RequestContext
+
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
-from django.template.defaultfilters import random
+from django.template import RequestContext
+from django.views.generic.base import RedirectView
+
 from .models import Recipe, Foodstuff, Category
 
 
-def category_list(request, recipe_type, slug):
-    try:
-        category = Category.objects.get(slug=slug)
-    except Category.DoesNotExist:
-        return HttpResponseRedirect(
-            reverse('food:recipe-list', kwargs={'recipe_type': recipe_type}))
-    category_recipes = Recipe.objects.filter(
-        rclass=db_recipe_type(recipe_type),
-        categories=category).order_by('title')
-    c = RequestContext(request, {'all_recipes': category_recipes,
-                                 'recipe_type': recipe_type,
-                                 'category': category,
-                                 })
-    return render_to_response('food/recipe_list.html', c)
+class FoodRedirectView(RedirectView):
+    """
+    Redirection for old 'cocktail URL paths.
+    """
+    permanent = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        if kwargs['recipe_type'] == 'cocktail':
+            kwargs['recipe_type'] = 'drink'
+        return super(FoodRedirectView, self).get_redirect_url(*args, **kwargs)
+
+
+class RecipeListRedirectView(FoodRedirectView):
+
+    pattern_name = 'food:recipe-list'
+
+
+class RecipeDetailRedirectView(FoodRedirectView):
+
+    pattern_name = 'food:recipe-detail'
+
+
+class IngredientListRedirectView(FoodRedirectView):
+
+    pattern_name = 'food:ingredient-list'
+
+
+class CategoryListRedirectView(FoodRedirectView):
+
+    pattern_name = 'food:category-list'
 
 
 def recipe_list(request, recipe_type=""):
@@ -50,7 +70,9 @@ def recipe_detail(request, slug, recipe_type=""):
 
     # get ingredients for this recipe
     ingredient_list = []
-    for ingredient in r.ingredients.all().order_by('rank'):
+    for ingredient in (r.ingredients.all()
+                       .select_related('foodstuff')
+                       .order_by('rank')):
         ingredient_list.append(ingredient)
 
     c = RequestContext(request, {'recipe_list': all_recipes,
@@ -97,15 +119,15 @@ def foodstuff_list(request, recipe_type=""):
 def foodstuff_detail(request, slug, recipe_type=""):
     f = get_object_or_404(Foodstuff, slug=slug)
 
-    ingredient_list = f.ingredients.all().order_by('recipe')
+    recipe_list = (Recipe.objects.filter(ingredients__foodstuff=f)
+                   .order_by('rclass', 'title'))
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
         all_recipes, all_foodstuff = get_all_lists(recipe_type)
         c = RequestContext(request, {'recipe_list': all_recipes,
                                      'foodstuff_list': all_foodstuff,
                                      'foodstuff': f,
-                                     'ingredients': ingredient_list,
-                                     'recipe_type': recipe_type,
+                                     'recipes': recipe_list,
                                      })
         if request.GET.has_key('snippet'):
             return render_to_response('food/iphone/foodstuff_snippet.html', c)
@@ -115,10 +137,26 @@ def foodstuff_detail(request, slug, recipe_type=""):
             return render_to_response('food/iphone/foodstuff_initial.html', c)
     else:
         c = RequestContext(request, {'foodstuff': f,
-                                     'ingredients': ingredient_list,
-                                     'recipe_type': recipe_type,
+                                     'recipes': recipe_list,
                                      })
         return render_to_response('food/foodstuff_detail.html', c)
+
+
+def category_list(request, recipe_type, slug):
+    try:
+        category = Category.objects.get(slug=slug)
+    except Category.DoesNotExist:
+        return HttpResponseRedirect(
+            reverse('food:recipe-list', kwargs={'recipe_type': recipe_type}))
+
+    category_recipes = Recipe.objects.filter(
+        rclass=db_recipe_type(recipe_type),
+        categories=category)
+    c = RequestContext(request, {'all_recipes': category_recipes,
+                                 'recipe_type': recipe_type,
+                                 'category': category,
+                                 })
+    return render_to_response('food/recipe_list.html', c)
 
 
 def get_all_lists(recipe_type):
@@ -131,7 +169,7 @@ def get_all_lists(recipe_type):
 
 
 def db_recipe_type(recipe_type):
-    if recipe_type == "food":
-        return Recipe.EAT_CLASS
-    else:
+    if recipe_type == "drink":
         return Recipe.DRINK_CLASS
+    else:
+        return Recipe.EAT_CLASS

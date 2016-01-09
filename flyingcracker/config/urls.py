@@ -5,6 +5,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views import static as static_views
 
+from food import views as food_views
+
 try:
     from fc3 import pattern_views
 except ImportError:
@@ -20,7 +22,13 @@ urlpatterns = [
     url(r'^blog/', include('blog.urls')),
     url(r'^cam/', include('cam.urls')),
     url(r'^comments/', include('django_comments.urls')),
-    url(r'^(?P<recipe_type>cocktail|food)/', include('food.urls')),
+
+    url(r'^(?P<recipe_type>drink|food)/', include('food.urls')),
+    url(r'^ingredient/(?P<slug>[\w_-]+)/$', food_views.foodstuff_detail,
+        name='ingredient-detail'),
+    # deprecated urls
+    url(r'^(?P<recipe_type>cocktail)/', include('food.redirect_urls')),
+
     url(r'^weatherstation/', include('weatherstation.urls')),
     url(r'^weather/', include('weather.urls')),
     url(r'^grill/', include('grill.urls')),

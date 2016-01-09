@@ -10,7 +10,7 @@
         <div id="ingredient">
             <div class="yui-u first i-qty">{{ i.quantity }}</div>
             <div class="yui-u">
-                <span class="i-title"><a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=i.slug %}">{{ i.title }}</a></span>
+                <span class="i-title"><a href="{% url 'ingredient-detail' slug=i.slug %}">{{ i.title }}</a></span>
                 <span class="i-modifier">{{ i.modifier }}</span>
             </div>
         </div>

@@ -4,6 +4,7 @@ from unipath import Path
 from .base import *
 
 DEBUG = True
+TEMPLATE_DEBUG = True
 
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
