@@ -16,24 +16,17 @@
         {% endif %}
         </div>
 
-        {% if ingredients %}
+        {% if recipes %}
         <br />
-        <h2>Recipes using {{ foodstuff }}</h2>
+        <div class="title">Recipes</div>
         <ul>
-        {% for i in ingredients %}
-            <li><a href="{% url 'food:recipe-detail' recipe_type=recipe_type slug=i.recipe.slug %}">{{ i.recipe }}</a></li>
+        {% for r in recipes %}
+            <li><a href="{{ r.get_absolute_url }}">{{ r }}</a></li>
         {% endfor %}
          </ul>
         {% else %}
             No recipes use {{ foodstuff }}
         {% endif %}
-        <br />
-        <div>
-            <a href="{% url 'food:ingredient-list' recipe_type=recipe_type %}">All Ingredients</a>
-        </div>
-        <div>
-            <a href="{% url 'food:recipe-list' recipe_type=recipe_type %}">All Recipes</a>
-        </div>
     </div> <!-- box -->
 </div> <!-- cocktail -->
 {% endblock %}

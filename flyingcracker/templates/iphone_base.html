@@ -271,12 +271,11 @@ function snippet_navigation ( url ) {
         <ul id="toolul">
         	<li><a href="{% url 'weather:root' %}?iphone&iui" title="Weather" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/weather.png" %}" /><br/>Weather</a></li>
         	<li><a href="{% url 'cam:root' %}?iphone&iui" title="WebCams" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/cam.png" %}" /><br/>WebCams</a></li>
-    		<li><a href="{% url 'food:recipe-list' recipe_type="cocktail" %}?iphone&iui" title="Cocktails" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/cocktail.png" %}" /><br/>Cocktails</a></li>
-            <li><a href="{% url 'grill:grill' %}?iphone&iui" title="Grill" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/grill.png" %}" /><br/>Grill</a></li>
+    		<li><a href="{% url 'food:recipe-list' recipe_type="drink" %}?iphone&iui" title="Drink" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/cocktail.png" %}" /><br/>Drink</a></li>
+			<li><a href="{% url 'food:recipe-list' recipe_type="food" %}?iphone&iui" title="Food" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/food.png" %}" /><br/>Food</a></li>
         	<li class="arrow" style="border-left:1px solid #333;" onclick="document.getElementById('toolul').setAttribute('style','left:-320px');"><img src="{% static "img/iphone/toolarrow.png" %}" /></li>
         	<li class="arrow" style="border-right:1px solid #333;" onclick="document.getElementById('toolul').setAttribute('style','left:0px');"><img src="{% static "img/iphone/toolarrow2.png" %}" /></li>
-    		<li><a href="{% url 'food:recipe-list' recipe_type="food" %}?iphone&iui" title="Food" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/food.png" %}" /><br/>Food</a></li>
-    		<li><a href="{% url 'miniblog:special' %}?iphone&iui" title="MiniBlog" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/miniblog.png" %}" /><br/>MiniBlog</a></li>
+			<li><a href="{% url 'grill:grill' %}?iphone&iui" title="Grill" class="toolBarLink" type="toolBarLink"><img src="{% static "img/iphone/icons/grill.png" %}" /><br/>Grill</a></li>
         </ul>
     </div>
 	<div class="content yui-dispatchable" id="content">

@@ -13,9 +13,8 @@ class Foodstuff(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('food:ingredient-detail',
-                       kwargs={'slug': self.slug,
-                               'recipe_type': 'food'})
+        return reverse('ingredient-detail',
+                       kwargs={'slug': self.slug})
 
     class Meta:
         ordering = ['title']
@@ -71,7 +70,7 @@ class Recipe(models.Model):
 
     def get_absolute_url(self):
         if self.rclass == self.DRINK_CLASS:
-            recipe_type = 'cocktail'
+            recipe_type = 'drink'
         else:
             recipe_type = 'food'
         return reverse('food:recipe-detail',
