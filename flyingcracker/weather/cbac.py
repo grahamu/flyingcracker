@@ -8,8 +8,8 @@ from xml.parsers.expat import ExpatError
 
 from django.conf import settings
 
-from forecast import Forecast
-from utils import (
+from .forecast import Forecast
+from .utils import (
     get_URL_data,
     save_URL_data,
 )

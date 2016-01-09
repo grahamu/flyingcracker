@@ -594,15 +594,15 @@ def save_URL_data(url, filename):
     from urllib import urlopen
 
     try:
-        xml_text = urlopen(url).read()
+        text = urlopen(url).read()
     except IOError:
         return None
     else:
         # save the retrieved data
         f = open(filename, "w")
-        f.write(xml_text)
+        f.write(text)
         f.close()
-        return xml_text
+        return text
 ##
 ##
 ##if __name__ == '__main__':

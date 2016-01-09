@@ -6,14 +6,11 @@ from pytz import timezone
 from django.utils.encoding import smart_str
 
 
-class Forecast(object):
+class DataBlock(object):
 
     def __init__(self):
         self.pubdate = None
-        self.area = None
-        self.warning = None
         self.sections = []
-        self.reported_by = None
         self.timestamp = None
         self.stale = False
         self.error = False
@@ -25,9 +22,9 @@ class Forecast(object):
         if pubdate is None:
             pubdate = self.pubdate
         if pubdate:
-            self.timestamp = dateutilparser.parse(pubdate)
             mountain_tz = timezone('US/Mountain')
-            self.timestamp = self.timestamp.astimezone(mountain_tz)
+            timestamp = dateutilparser.parse(pubdate)
+            self.timestamp = timestamp.astimezone(mountain_tz)
 
             # figure out if the publication time is not today
             now = datetime.datetime.now(tzlocal()).astimezone(mountain_tz)
@@ -40,6 +37,15 @@ class Forecast(object):
         self.timestamp = datetime.datetime.now(tzlocal())
         mountain_tz = timezone('US/Mountain')
         self.timestamp = self.timestamp.astimezone(mountain_tz)
+
+
+class Forecast(DataBlock):
+
+    def __init__(self):
+        super(Forecast, self).__init__()
+        self.area = None
+        self.warning = None
+        self.reported_by = None
 
     def __repr__(self):
         s = ''
