@@ -16,6 +16,10 @@ from .cbac import CBAC
 from .cbtv import CBTV
 from .models import ChartUrl
 from .noaa import get_NOAA_forecast
+from .sunmoon import (
+    SunMoon,
+    MoonPhases,
+)
 from fc3.myjson import JsonResponse
 from fc3.utils import ElapsedTime
 import weather.utils as utils
@@ -25,8 +29,6 @@ from weatherstation.models import Weather
 @cache_page(60 * 5)  # cache for 5 minutes
 def weather(request):
     from django.core.serializers.json import DjangoJSONEncoder
-
-    et = ElapsedTime()
 
     show_titles = request.COOKIES.get("curr_weather_show_titles")
     if show_titles is None:
@@ -47,7 +49,7 @@ def weather(request):
     mountain_tz = timezone('US/Mountain')
     now = datetime.datetime.now(mountain_tz)
 
-#    cbac = None     # CBAC is not providing a useful RSS feed!
+    et = ElapsedTime()
 
     cbac = CBAC()
     if cbac:
@@ -68,6 +70,13 @@ def weather(request):
 
     et.mark_time('forecasts')
 
+    # powcam
+    powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
+
+    sunmoon = SunMoon()
+
+    moonphases = MoonPhases()
+
     current_dict, current = get_current_weather(request)
     weather_dict = dict(current_dict)
     weather_dict.update({
@@ -79,6 +88,9 @@ def weather(request):
         'cbac': cbac,
         'noaa': noaa,
         'cbtv': cbtv,
+        'powcam': powcam,
+        'sunmoon': sunmoon,
+        'moonphases': moonphases,
         'elapsed': et.list(),
         'json_weather': json.dumps(current_dict,
                                    cls=DjangoJSONEncoder),
