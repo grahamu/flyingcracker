@@ -154,4 +154,76 @@
     </div>
     </fieldset>
     {% endif %}
+
+    {% if sunmoon %}
+    <a name="sun"></a>
+    <h2>Sun</h2>
+    <fieldset>
+        <div class="forecast">
+            <div class="body">
+                <table bgcolor="white" border="0" cellpadding="3" margin="0">
+                <!-- Headers -->
+                <tr align="center">
+                    <th>&nbsp</th>
+                    <th>Begin<br>Twilight</th>
+                    <th>Sunrise</th>
+                    <th>Sunset</th>
+                    <th>End<br>Twilight</th>
+                </tr>
+                <!-- Today -->
+                <tr align="center">
+                    <th>Today:</th>
+                    <td>{{ sunmoon.today_rstt.twilight_begin }}</td>
+                    <td>{{ sunmoon.today_rstt.sunrise }}</td>
+                    <td>{{ sunmoon.today_rstt.sunset }}</td>
+                    <td>{{ sunmoon.today_rstt.twilight_end }}</td>
+                </tr>
+                <!-- Tomorrow -->
+                <tr align="center">
+                    <th>Tomorrow:</th>
+                    <td>{{ sunmoon.tomorrow_rstt.twilight_begin }}</td>
+                    <td>{{ sunmoon.tomorrow_rstt.sunrise }}</td>
+                    <td>{{ sunmoon.tomorrow_rstt.sunset }}</td>
+                    <td>{{ sunmoon.tomorrow_rstt.twilight_end }}</td>
+                </tr>
+                </table>
+            </div>
+        </div>  <!-- forecast -->
+    </fieldset>
+    {% endif %}
+
+    {% if sunmoon or moonphases %}
+    <a name="moon"></a>
+    <h2>Moon</h2>
+    <fieldset>
+
+        {% if sunmoon %}
+        <div class="forecast">
+            <div class="body">
+                <table bgcolor="white" border="0" cellpadding="3">
+                <!-- Headers -->
+                <tr align="center">
+                    <th>&nbsp</th>
+                    <th>Moonrise</th>
+                    <th>Moonset</th>
+                </tr>
+                <!-- Today -->
+                <tr align="center">
+                    <th>Today:</th>
+                    <td>{{ sunmoon.today_rstt.moonrise }}</td>
+                    <td>{{ sunmoon.today_rstt.moonset }}</td>
+                </tr>
+                <!-- Tomorrow -->
+                <tr align="center">
+                    <th>Tomorrow:</th>
+                    <td>{{ sunmoon.tomorrow_rstt.moonrise }}</td>
+                    <td>{{ sunmoon.tomorrow_rstt.moonset }}</td>
+                </tr>
+                </table>
+
+            </div>
+        </div>  <!-- forecast -->
+        {% endif %}
+    </fieldset>
+    {% endif %}
 </div>
