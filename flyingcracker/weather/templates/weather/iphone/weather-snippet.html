@@ -224,6 +224,35 @@
             </div>
         </div>  <!-- forecast -->
         {% endif %}
+
+        {% if moonphases %}
+        <div class="forecast">
+            <div class="body">
+                <table bgcolor="white" border="0" cellpadding="3">
+                <!-- Phase name -->
+                <tr align="center">
+                    {% for phase in moonphases.phases %}
+                    <th>{{ phase.name }}</th>
+                    {% endfor %}
+                </tr>
+                <!-- Date -->
+                <tr align="center">
+                    {% for phase in moonphases.phases %}
+                    <td>{{ phase.date }}</td>
+                    {% endfor %}
+                </tr>
+                <!-- Time -->
+                <tr align="center">
+                    {% for phase in moonphases.phases %}
+                    <td>{{ phase.time }}</td>
+                    {% endfor %}
+                </tr>
+                </table>
+
+            </div>
+        </div>  <!-- forecast -->
+        {% endif %}
+
     </fieldset>
     {% endif %}
 </div>
