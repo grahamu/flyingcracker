@@ -306,31 +306,24 @@
 				<table bgcolor="white" border="0" cellpadding="3" width="800">
 				<!-- Phase name -->
 				<tr align="center">
-					<th>&nbsp</th>
 					{% for phase in moonphases.phases %}
 					<th>{{ phase.name }}</th>
 					{% endfor %}
 				</tr>
 				<!-- Image -->
 				<tr align="center">
-					<th>
-					Upcoming<br />
-					Moon Phases:
-					</th>
 					{% for phase in moonphases.phases %}
 					<td><img src="{{ phase.image }}" height=160px /></td>
 					{% endfor %}
 				</tr>
 				<!-- Date -->
 				<tr align="center">
-					<th>&nbsp</th>
 					{% for phase in moonphases.phases %}
 					<td>{{ phase.date }}</td>
 					{% endfor %}
 				</tr>
 				<!-- Time -->
 				<tr align="center">
-					<th>&nbsp</th>
 					{% for phase in moonphases.phases %}
 					<td>{{ phase.time }}</td>
 					{% endfor %}
