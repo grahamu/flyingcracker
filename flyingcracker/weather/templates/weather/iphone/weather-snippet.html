@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load humanize staticfiles %}
 <div class="panel" selected="true">
     <a name="current"></a>
     <span id="curr_timestamp" class="fieldset_timestamp">{{ timestamp }}</span><h2>Crested Butte, CO</h2>
@@ -247,7 +247,7 @@
                 <!-- Date -->
                 <tr align="center">
                     {% for phase in moonphases.phases %}
-                    <td>{{ phase.date }}</td>
+                    <td>{{ phase.date|naturalday }}</td>
                     {% endfor %}
                 </tr>
                 <!-- Time -->

@@ -165,8 +165,8 @@ class MoonPhases(DataBlock):
 
 
             date = dateutilparser.parse(phase['date'] + ' ' + phase['time'])
-            phase_data.date = date.strftime("%b %d, %Y")
-            phase_data.time = date.strftime("%I:%M %p")
+            phase_data.date = date.date()
+            phase_data.time = date.time()
             phase_data.image = ("http://api.usno.navy.mil/imagery/moon.png"
                                 "?&date={date}&time={time}"
                                 .format(date=date.strftime("%m/%d/%Y"),
