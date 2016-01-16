@@ -155,6 +155,15 @@
     </fieldset>
     {% endif %}
 
+    {% if powcam %}
+    <h2>CBMR PowCam</h2>
+        <div class="forecast">
+            <div class="body">
+                <img src="{{ powcam }}" width="300" alt="CBMR powder cam" />
+            </div>
+        </div>  <!-- forecast -->
+    {% endif %}
+
     {% if sunmoon %}
     <a name="sun"></a>
     <h2>Sun</h2>

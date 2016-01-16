@@ -1,5 +1,5 @@
 {% extends "weather.html" %}
-{% load markup static %}
+{% load humanize markup static %}
 
 {% block javascript %}
 {{ block.super }}
@@ -206,7 +206,7 @@
   	<div class="weatherItem">
         <div class="header">
             <div class="title">
-                SkiCB PowCam
+                CBMR PowCam
             </div> <!-- title -->
         </div> <!-- header -->
 
@@ -319,7 +319,7 @@
 				<!-- Date -->
 				<tr align="center">
 					{% for phase in moonphases.phases %}
-					<td>{{ phase.date }}</td>
+					<td>{{ phase.date|naturalday }}</td>
 					{% endfor %}
 				</tr>
 				<!-- Time -->
