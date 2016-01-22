@@ -101,6 +101,7 @@ PREREQ_APPS = [
     'django_extensions',
     'django_mailer',
     'markup_deprecated',
+    'taggit',
     'timezones',
 ]
 
@@ -147,6 +148,8 @@ SYSTEM_NAME = "cracklyfinger.com"
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
 ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
+
+TAGGIT_CASE_INSENSITIVE = True
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
