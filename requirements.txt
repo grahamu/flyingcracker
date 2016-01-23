@@ -8,7 +8,7 @@
 -e git://github.com/SmileyChris/django-mailer-2.git#egg=django-mailer
 -e git://github.com/grahamu/pygooglechart.git@cfbfe2e930#egg=pygooglechart
 
-ansible==2.0.0.2
+ansible==1.9.4
 beautifulsoup4==4.4.1
 django==1.9.1
 django-announcements==1.2.0
