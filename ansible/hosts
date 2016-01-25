@@ -1,2 +1,2 @@
-cracklyfinger.com ansible_ssh_user='graham'
+cracklyfinger.com ansible_user='graham'
 

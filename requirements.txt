@@ -8,17 +8,17 @@
 -e git://github.com/SmileyChris/django-mailer-2.git#egg=django-mailer
 -e git://github.com/grahamu/pygooglechart.git@cfbfe2e930#egg=pygooglechart
 
-ansible==1.9.4
+ansible==2.0.0.2
 beautifulsoup4==4.4.1
 django==1.9.1
 django-announcements==1.2.0
 django-contrib-comments==1.6.2
-django-crispy-forms==1.5.2
+django-crispy-forms==1.6.0
 django-debug-toolbar==1.4
 django-extensions==1.6.1
 django-localflavor==1.2
 django-markup-deprecated==0.0.3
-django-registration==2.0.3
+django-registration==2.0.4
 docutils==0.12
 markdown==2.6.5
 psycopg2==2.6.1
