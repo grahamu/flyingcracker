@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 from unipath import Path
 
-DEBUG = True
-
 from .base import *
+
+DEBUG = True
 
 DATABASES = {
     'default': {

@@ -44,14 +44,14 @@ class CategoryListRedirectView(FoodRedirectView):
 def recipe_list(request, recipe_type=""):
     all_recipes, all_foodstuff = get_all_lists(recipe_type)
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         c = RequestContext(request, {'recipe_list': all_recipes,
                                      'foodstuff_list': all_foodstuff,
                                      'recipe_type': recipe_type,
                                      })
-        if request.GET.has_key('snippet'):
+        if 'snippet' in request.GET:
             return render_to_response('food/iphone/recipe_snippet.html', c)
-        elif request.GET.has_key('iui'):
+        elif 'iui' in request.GET:
             return render_to_response('food/iphone/recipe.html', c)
         else:
             return render_to_response('food/iphone/recipe_initial.html', c)
@@ -84,10 +84,10 @@ def recipe_detail(request, slug, recipe_type=""):
                                  })
 
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-        if request.GET.has_key('snippet'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
+        if 'snippet' in request.GET:
             return render_to_response('food/iphone/recipe_snippet.html', c)
-        elif request.GET.has_key('iui'):
+        elif 'iui' in request.GET:
             return render_to_response('food/iphone/recipe.html', c)
         else:
             return render_to_response('food/iphone/recipe_initial.html', c)
@@ -98,14 +98,14 @@ def recipe_detail(request, slug, recipe_type=""):
 def foodstuff_list(request, recipe_type=""):
     all_recipes, all_foodstuff = get_all_lists(recipe_type)
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         c = RequestContext(request, {'recipe_list': all_recipes,
                                      'foodstuff_list': all_foodstuff,
                                      'recipe_type': recipe_type,
                                      })
-        if request.GET.has_key('snippet'):
+        if 'snippet' in request.GET:
             return render_to_response('food/iphone/foodstuff_snippet.html', c)
-        elif request.GET.has_key('iui'):
+        elif 'iui' in request.GET:
             return render_to_response('food/iphone/foodstuff.html', c)
         else:
             return render_to_response('food/iphone/foodstuff_initial.html', c)
@@ -122,16 +122,16 @@ def foodstuff_detail(request, slug, recipe_type=""):
     recipe_list = (Recipe.objects.filter(ingredients__foodstuff=f)
                    .order_by('rclass', 'title'))
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         all_recipes, all_foodstuff = get_all_lists(recipe_type)
         c = RequestContext(request, {'recipe_list': all_recipes,
                                      'foodstuff_list': all_foodstuff,
                                      'foodstuff': f,
                                      'recipes': recipe_list,
                                      })
-        if request.GET.has_key('snippet'):
+        if 'snippet' in request.GET:
             return render_to_response('food/iphone/foodstuff_snippet.html', c)
-        elif request.GET.has_key('iui'):
+        elif 'iui' in request.GET:
             return render_to_response('food/iphone/foodstuff.html', c)
         else:
             return render_to_response('food/iphone/foodstuff_initial.html', c)
@@ -162,9 +162,9 @@ def category_list(request, recipe_type, slug):
 def get_all_lists(recipe_type):
     all_recipes = (Recipe.objects.filter(rclass=db_recipe_type(recipe_type))
                    .order_by('title'))
-    all_foodstuffs = (Foodstuff.objects.filter(ingredients__recipe__rclass=
-                                               db_recipe_type(recipe_type))
-                      .distinct().order_by('title'))
+    all_foodstuffs = Foodstuff.objects.filter(
+        ingredients__recipe__rclass=db_recipe_type(recipe_type)) \
+        .distinct().order_by('title')
     return all_recipes, all_foodstuffs
 
 

@@ -25,5 +25,5 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r'^special/$', views.special,  name='special')
+    url(r'^special/$', views.special, name='special')
 ]

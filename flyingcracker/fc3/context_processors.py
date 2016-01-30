@@ -17,8 +17,9 @@ def yui_version(request):
 
 
 def miniblog(request):
-##    from miniblog.models import Post
-##    posts = Post.objects.all().order_by('-pub_date')[0:7]
+
+    ## from miniblog.models import Post
+    ## posts = Post.objects.all().order_by('-pub_date')[0:7]
     return {'miniblog': None}
 
 
@@ -39,7 +40,6 @@ def login_url_with_redirect(request):
     from django.contrib.auth import REDIRECT_FIELD_NAME
     from django.core.urlresolvers import reverse
 
-    login_url = settings.LOGIN_URL
     path = urlquote(request.get_full_path())
     if path == reverse('auth_logout'):
         path = reverse('home:home')

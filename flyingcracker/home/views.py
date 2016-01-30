@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 
 def home(request):
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         c = RequestContext(request)
         return render_to_response('home/iphone/home.html', c)
     else:
@@ -15,7 +15,7 @@ def home(request):
 
 def about(request):
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         c = RequestContext(request)
         return render_to_response('home/iphone/about.html', c)
     else:
