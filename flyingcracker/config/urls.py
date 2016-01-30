@@ -19,7 +19,6 @@ urlpatterns = [
 
     # Application URLs
     url(r'^accounts/', include('registration.backends.hmac.urls')),
-    url(r'^blog/', include('blog.urls')),
     url(r'^cam/', include('cam.urls')),
     url(r'^comments/', include('django_comments.urls')),
 
