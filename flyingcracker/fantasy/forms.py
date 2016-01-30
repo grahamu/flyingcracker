@@ -38,9 +38,12 @@ class CompetitorForm(forms.ModelForm):
         if not name:
             raise forms.ValidationError, u'Please enter a Competitor name in the field provided'
         if self.instance.pk:
-            existing = Competitor.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
+            existing = Competitor.objects \
+                .filter(name__iexact=name, series=series) \
+                .exclude(pk=self.instance.pk)
             if existing:
-                raise forms.ValidationError, u'Competitor "%s" already exists for this series, try another name' % name
+                raise forms.ValidationError, u'Competitor "%s" already exists' \
+                    ' for this series, try another name' % name
             else:
                 return self.cleaned_data
         else:
@@ -49,7 +52,8 @@ class CompetitorForm(forms.ModelForm):
             except Competitor.DoesNotExist:
                 return self.cleaned_data
             else:
-                raise forms.ValidationError, u'Competitor "%s" already exists for this series, try another name' % name
+                raise forms.ValidationError, u'Competitor "%s" already exists' \
+                    ' for this series, try another name' % name
 
 
 class CompetitorImportForm(forms.Form):
@@ -100,8 +104,7 @@ class PickOptionsForm(forms.Form):
     '''
     remaining_events = forms.BooleanField(
         label='Feeling lazy?',
-        help_text=
-        'Save these picks for all remaining events'
+        help_text='Save these picks for all remaining events',
     )
 
 
@@ -142,7 +145,7 @@ class TeamEditForm(forms.ModelForm):
             # Remove competitors currently associated with the Team
             # which are not selected.
             for competitor in team.competitor_set.all():
-                if not competitor in members:
+                if competitor not in members:
                     competitor.team = None
                     competitor.save()
             # Add selected competitors to the Team
@@ -165,7 +168,8 @@ class EventForm(forms.ModelForm):
         if self.instance.pk:
             existing = Event.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
             if existing:
-                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists for this series, try another name' % name
+                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists' \
+                    ' for this series, try another name' % name
             else:
                 return self.cleaned_data
         else:
@@ -174,7 +178,8 @@ class EventForm(forms.ModelForm):
             except Event.DoesNotExist:
                 return self.cleaned_data
             else:
-                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists for this series, try another name' % name
+                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists' \
+                    ' for this series, try another name' % name
 
 
 class GuessAndResultBaseFormset(formsets.BaseFormSet):

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from django.contrib import admin
-import miniblog.models as miniblog
+
+from . import models as miniblog
 
 
 class PostAdmin(admin.ModelAdmin):

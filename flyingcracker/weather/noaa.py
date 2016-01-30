@@ -267,5 +267,3 @@ if __name__ == '__main__':
             elif cmd.lower() == 'get':
                 state = options.state.upper()
                 print get_NOAA_data(state, state + "Z%03d" % options.zone)
-
-

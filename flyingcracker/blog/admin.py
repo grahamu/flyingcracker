@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from django.conf import settings 
+from django.conf import settings
 from django.contrib import admin
 import blog.models as blog
+
 
 class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}

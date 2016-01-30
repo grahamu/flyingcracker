@@ -1,4 +1,3 @@
-from datetime import datetime
 import pytz
 
 from django import template
@@ -6,6 +5,7 @@ from django.conf import settings
 from django.utils.encoding import smart_str
 
 register = template.Library()
+
 
 @register.filter
 def as_timezone(dt, timezone=None):
@@ -23,4 +23,3 @@ def as_timezone(dt, timezone=None):
     if dt.tzinfo is None:
         dt = pytz.utc.localize(dt)
     return dt.astimezone(pytz.timezone(smart_str(timezone)))
-

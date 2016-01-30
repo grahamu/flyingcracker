@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from django.contrib import admin
-import grill.models as grill
+
+from . import models as grill
 
 
 class DonenessAdmin(admin.ModelAdmin):

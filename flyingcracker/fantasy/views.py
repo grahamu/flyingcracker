@@ -785,9 +785,9 @@ def event_result_context(request, event, user):
 
     bad_guess_list = []
     # list of results for this event where the place yielded no points.
-    no_points_list = Result.objects.filter(~Q(result__in=
-                                              series.scoring_system.results()),
-                                           event=event).order_by('result')
+    no_points_list = Result.objects.filter(
+        ~Q(result__in=series.scoring_system.results()),
+        event=event).order_by('result')
     for result in no_points_list:
         guessers = Guess.objects.filter(content_type=ctype, object_id=obj_id,
                                         competitor=result.competitor)
@@ -939,8 +939,8 @@ def result_edit(request, id):
             form_results = [{'result': result['result'],
                              'competitor': int(result['competitor'])}
                             for result in formset.cleaned_data
-                            if result and result['result']
-                            and result['competitor']]
+                            if result and result['result'] and
+                            result['competitor']]
             form_results.sort()
             results.sort()
             if form_results != results:

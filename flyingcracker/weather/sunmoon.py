@@ -16,6 +16,7 @@ U.S. Naval Observatory Astronomical Applications Department.
 Reference http://aa.usno.navy.mil/data/docs/api.php
 """
 
+
 class SunMoonTimes(object):
 
     pubdate = None
@@ -48,7 +49,7 @@ class SunMoon(DataBlock):
         today_string = today.strftime("%m/%d/%Y")
         today_url = self.url_pattern.format(date=today_string)
         response = get_URL_data(today_url, self.today_filename,
-                                max_file_age=12*60)
+                                max_file_age=12 * 60)
         rstt = json.loads(response)
         self.set_times(rstt, self.today_rstt)
         self.pubdate = self.today_rstt.pubdate
@@ -65,7 +66,7 @@ class SunMoon(DataBlock):
         tomorrow_string = tomorrow.strftime("%m/%d/%Y")
         tomorrow_url = self.url_pattern.format(date=tomorrow_string)
         response = get_URL_data(tomorrow_url, self.tomorrow_filename,
-                                max_file_age=12*60)
+                                max_file_age=12 * 60)
         rstt = json.loads(response)
         self.set_times(rstt, self.tomorrow_rstt)
 
@@ -141,7 +142,7 @@ class MoonPhases(DataBlock):
         today_string = today.strftime("%m/%d/%Y")
         today_url = self.url_pattern.format(date=today_string)
         response = get_URL_data(today_url, self.filename,
-                                max_file_age=12*60)
+                                max_file_age=12 * 60)
         phases = json.loads(response)
         self.phases = []
         self.set_phases(phases)
@@ -158,11 +159,12 @@ class MoonPhases(DataBlock):
 
         for phase in phases['phasedata']:
             phase_data = MoonPhaseData()
-            phase_data.pubdate = "{}-{}-{} 00:00:01 -0700".format(phases['year'],
-                                                                  phases['month'],
-                                                                  phases['day'])
+            phase_data.pubdate = ("{}-{}-{} 00:00:01 -0700"
+                                  .format(phases['year'],
+                                          phases['month'],
+                                          phases['day'])
+                                  )
             phase_data.name = phase['phase']
-
 
             date = dateutilparser.parse(phase['date'] + ' ' + phase['time'])
             phase_data.date = date.date()

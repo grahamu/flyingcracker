@@ -9,7 +9,8 @@ class ChartUrl(models.Model):
     for a specific data type on a particular day.
     """
     date = models.DateField(blank=False)  # date for the chart
-    timestamp = models.DateTimeField(default=datetime.datetime.now)  # when the url was created
+    # timestamp is when the url was created
+    timestamp = models.DateTimeField(default=datetime.datetime.now)
     data_type = models.CharField(max_length=2, blank=False)
     unit = models.CharField(max_length=5, blank=False)
     size = models.CharField(max_length=2, blank=False)
@@ -36,4 +37,3 @@ class ChartUrl(models.Model):
     class Meta:
         ordering = ['-date']
         unique_together = ("date", "data_type", "unit", "size", "plots")
-

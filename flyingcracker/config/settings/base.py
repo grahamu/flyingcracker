@@ -24,7 +24,7 @@ MANAGERS = ADMINS
 
 # Local time zone for this installation. All choices can be found here:
 # http://www.postgresql.org/docs/current/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
-#TIME_ZONE = 'US/Mountain'
+# TIME_ZONE = 'US/Mountain'
 TIME_ZONE = 'UTC'
 
 # Language code for this installation. All choices can be found here:

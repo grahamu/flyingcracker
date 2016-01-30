@@ -1,5 +1,6 @@
 from django.db import models
-from datetime import *
+from datetime import datetime
+
 
 class Weather(models.Model):
     station_id = models.CharField(max_length=10)
