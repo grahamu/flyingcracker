@@ -19,7 +19,7 @@ class FCProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse('profiles_profile_detail',
-                kwargs={'username': self.user.username})
+                       kwargs={'username': self.user.username})
 
     def full_name(self):
         return self.user.get_full_name()

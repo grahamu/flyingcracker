@@ -7,6 +7,8 @@ from decimal import (
 import json
 from pytz import timezone
 
+from django import forms
+from django.forms import ModelForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404, HttpResponse
@@ -98,8 +100,8 @@ def weather(request):
     c = RequestContext(request, weather_dict)
 
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-        if request.GET.has_key('iui'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
+        if 'iui' in request.GET:
             return render_to_response('weather/iphone/weather-iui.html', c)
         else:
             return render_to_response('weather/iphone/weather.html', c)
@@ -183,7 +185,7 @@ def get_current_weather(request):
     t_chart = []
     b_chart = []
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         for unit in utils.temp_units:
             t_chart.append(get_chart(utils.get_today(request),
                                      ChartUrl.DATA_TEMP,
@@ -304,9 +306,6 @@ def get_chart(date, data_type, size, plots, unit, force_create=False):
             chart.timestamp = now
             chart.save()
     return chart.url
-
-from django import forms
-from django.forms import ModelForm
 
 
 class WeatherForm(ModelForm):
@@ -633,7 +632,7 @@ def chart(request):
                                     (str(item), ', '.join(item_list)))
 
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         size = ChartUrl.SIZE_IPHONE
     else:
         size = ChartUrl.SIZE_NORMAL

@@ -30,8 +30,8 @@ def cam_view(request):
     })
 
     agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or request.GET.has_key('iphone'):
-        if request.GET.has_key('iui'):
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
+        if 'iui' in request.GET:
             return render_to_response('cam/iphone/cam.html', c)
         else:
             return render_to_response('cam/iphone/cam_initial.html', c)

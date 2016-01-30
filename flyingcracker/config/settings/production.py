@@ -42,4 +42,3 @@ SYSTEM_NAME = "cracklyfinger.com"
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
 ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
-

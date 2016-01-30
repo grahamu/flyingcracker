@@ -65,4 +65,3 @@ class Forecast(DataBlock):
         if self.error:
             s += "Data Error\n"
         return s
-
