@@ -105,7 +105,6 @@ PREREQ_APPS = [
 ]
 
 PROJECT_APPS = [
-    'blog',
     'cam',
     'fantasy',
     'fcprofile',
