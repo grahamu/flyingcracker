@@ -3,8 +3,6 @@ import os
 import site
 import sys
 
-from django.core.wsgi import get_wsgi_application
-
 site.addsitedir('{{ virtualenv_path }}/lib/python2.7/site-packages')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = '{{ django_settings }}'
@@ -16,5 +14,7 @@ execfile(activate_this, dict(__file__=activate_this))
 
 workspace = os.path.dirname("{{ django_root }}")
 sys.path.append(workspace)
+
+from django.core.wsgi import get_wsgi_application
 
 application = get_wsgi_application()
