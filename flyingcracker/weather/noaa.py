@@ -227,7 +227,7 @@ def get_NOAA_data(state, zname):
 
 
 def save_NOAA_data(state, zname):
-    url = 'http://weather.noaa.gov/pub/data/forecasts/zone/' + \
+    url = 'http://tgftp.nws.noaa.gov/data/forecasts/zone/' + \
         state.lower() + '/' + zname.lower() + '.txt'
     try:
         lines = urlopen(url).readlines()
