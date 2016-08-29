@@ -73,7 +73,8 @@ def weather(request):
     et.mark_time('forecasts')
 
     # powcam
-    powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
+#     powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
+    powcam = None
 
     sunmoon = SunMoon()
 
