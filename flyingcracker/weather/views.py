@@ -76,9 +76,11 @@ def weather(request):
 #     powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
     powcam = None
 
-    sunmoon = SunMoon()
+#     sunmoon = SunMoon()
+    sunmoon = None
 
-    moonphases = MoonPhases()
+#     moonphases = MoonPhases()
+    moonphases = None
 
     current_dict, current = get_current_weather(request)
     weather_dict = dict(current_dict)
