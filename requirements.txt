@@ -10,7 +10,7 @@
 
 ansible==2.0.0.2
 beautifulsoup4==4.4.1
-django==1.9.1
+django==1.9.12
 django-announcements==1.2.0
 django-contrib-comments==1.6.2
 django-crispy-forms==1.6.0
