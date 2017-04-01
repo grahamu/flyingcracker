@@ -7,9 +7,9 @@ from django.conf import settings
 
 from forecast import Forecast
 
-##
-## This code parses weather data from NOAA
-##
+#
+# This code parses weather data from NOAA
+#
 
 
 class NOAAForecastPreamble(object):
@@ -249,6 +249,7 @@ def test():
     print repr(forecast)
     forecast = get_NOAA_forecast('OR', 1)
     print repr(forecast)
+
 
 if __name__ == '__main__':
     import optparse

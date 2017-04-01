@@ -18,8 +18,8 @@ def yui_version(request):
 
 def miniblog(request):
 
-    ## from miniblog.models import Post
-    ## posts = Post.objects.all().order_by('-pub_date')[0:7]
+    # from miniblog.models import Post
+    # posts = Post.objects.all().order_by('-pub_date')[0:7]
     return {'miniblog': None}
 
 

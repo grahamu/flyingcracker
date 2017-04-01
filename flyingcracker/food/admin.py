@@ -8,6 +8,7 @@ from . import models as food
 class FoodstuffAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
+
 admin.site.register(food.Foodstuff, FoodstuffAdmin)
 user = models.ForeignKey(settings.AUTH_USER_MODEL)
 admin.site.register(food.Attribute)
@@ -15,6 +16,7 @@ admin.site.register(food.Attribute)
 
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
+
 
 admin.site.register(food.Category, CategoryAdmin)
 
@@ -37,6 +39,7 @@ class RecipeAdmin(admin.ModelAdmin):
         IngredientInline,
     ]
 
+
 admin.site.register(food.Recipe, RecipeAdmin)
 
 
@@ -49,6 +52,6 @@ class IngredientAdmin(admin.ModelAdmin):
         FoodstuffInline,
     ]
 
-admin.site.register(food.Ingredient, IngredientAdmin)
 
+admin.site.register(food.Ingredient, IngredientAdmin)
 admin.site.register(food.Link)
