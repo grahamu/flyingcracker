@@ -50,7 +50,7 @@ class SunMoon(DataBlock):
         # Location is hard coded to Crested Butte for now
         # Someday convert to user's location.
         observer.lat, observer.lon = '38.813125', '-106.8972617'
-        observer.elevation = '2600'  # meters ASL
+        observer.elevation = 2600  # meters ASL
         return observer
 
     def observed_time(self, date):
