@@ -1,20 +1,14 @@
 #!/usr/bin/env python
 import datetime
 from dateutil import parser as dateutilparser
+import ephem
 import json
+import pytz
 
 from django.conf import settings
 
 from .forecast import DataBlock
 from .utils import get_URL_data
-
-
-"""
-Sun and moon data obtained from
-U.S. Naval Observatory Astronomical Applications Department.
-
-Reference http://aa.usno.navy.mil/data/docs/api.php
-"""
 
 
 class SunMoonTimes(object):
@@ -30,84 +24,84 @@ class SunMoonTimes(object):
 
 class SunMoon(DataBlock):
 
-    url_pattern = ('http://api.usno.navy.mil/rstt/oneday?ID=CBSOUTH'
-                   '&date={date}&loc=Crested%20Butte,CO')
-    today_filename = settings.WEATHER_ROOT.child('sunmoon_today.txt')
-    tomorrow_filename = settings.WEATHER_ROOT.child('sunmoon_tomorrow.txt')
     today_rstt = SunMoonTimes()
     tomorrow_rstt = SunMoonTimes()
     current_phase = None
 
     def __init__(self, **kwargs):
-        '''
-        Obtain latest aa.usno.navy.mil "Rise Set Transit Times" for
-        Sun and Moon.
-        '''
+        """
+        Obtain "Rise Set Transit Times" for Sun and Moon, based
+        on user location.
+        """
+        self.user = kwargs.pop('user')
         super(SunMoon, self).__init__(**kwargs)
 
         today = datetime.date.today()
-        today_string = today.strftime("%m/%d/%Y")
-        today_url = self.url_pattern.format(date=today_string)
-        response = get_URL_data(today_url, self.today_filename,
-                                max_file_age=12 * 60)
-        if response:
-            rstt = json.loads(response)
-            self.set_times(rstt, self.today_rstt)
-            self.pubdate = self.today_rstt.pubdate
-            self.set_timestamp()
-
-            # Get current moon phase
-            if 'curphase' in rstt:
-                self.current_phase = "{} ({})".format(rstt['curphase'],
-                                                      rstt['fracillum'])
-            else:
-                self.current_phase = "{}".format(rstt['closestphase']['phase'])
-        else:
-            self.add_section('Origin Data Error', 'no response from api.usno.navy.mil')
+        self.set_times(self.today_rstt, today)
+        self.pubdate = self.today_rstt.pubdate
+        self.set_timestamp()
 
         tomorrow = today + datetime.timedelta(days=1)
-        tomorrow_string = tomorrow.strftime("%m/%d/%Y")
-        tomorrow_url = self.url_pattern.format(date=tomorrow_string)
-        response = get_URL_data(tomorrow_url, self.tomorrow_filename,
-                                max_file_age=12 * 60)
-        if response:
-            rstt = json.loads(response)
-            self.set_times(rstt, self.tomorrow_rstt)
+        self.set_times(self.tomorrow_rstt, tomorrow)
 
-    def set_times(self, rstt, times):
+    def _get_observer(self, user):
+        observer = ephem.Observer()
+        observer.pressure = 0
+        # Location is hard coded to Crested Butte for now
+        # Someday convert to user's location.
+        observer.lat, observer.lon = '38.813125', '-106.8972617'
+        observer.elevation = 2600  # meters ASL
+        return observer
 
-        if not rstt or rstt['error']:
-            self.error = True
-            self.add_section('Origin Data Error',
-                             'computation (parameters?) unsuccessful')
-            return
+    def observed_time(self, date):
+        """
+        Convert an ephem.Date object, specified in UTC but without
+        timezone awareness, to a timezone correct string.
+        """
+        utc_date = date.datetime().replace(tzinfo=pytz.UTC)
+        # Convert to Mountain Time
+        # Someday convert to user's timezone, as seen in
+        # fcprofile.user_tags.user_time.
+        mt_date = utc_date.astimezone(pytz.timezone('US/Mountain'))
+        return mt_date.strftime('%I:%M %p')
 
-        # Get the data we want
-        times.pubdate = "{}-{}-{} 00:00:01 -0700".format(rstt['year'],
-                                                         rstt['month'],
-                                                         rstt['day'])
+    def set_times(self, times, date):
+        """
+        """
+        observer = self._get_observer(self.user)
+        observer.date = date.strftime('%Y/%m/%d 19:00')  # 7pm UTC, mid-day in Colorado
 
-        try:
-            for item in rstt['sundata']:
-                if item['phen'] == 'BC':
-                    times.twilight_begin = item['time'].rsplit(' ', 1)[0]
-                elif item['phen'] == 'R':
-                    times.sunrise = item['time'].rsplit(' ', 1)[0]
-                elif item['phen'] == 'S':
-                    times.sunset = item['time'].rsplit(' ', 1)[0]
-                elif item['phen'] == 'EC':
-                    times.twilight_end = item['time'].rsplit(' ', 1)[0]
-        except KeyError:
-            pass
+        # sun rise and set
+        # See http://rhodesmill.org/pyephem/rise-set.html#naval-observatory-risings-and-settings
+        observer.horizon = '-0:34'
+        times.sunrise = self.observed_time(
+            observer.previous_rising(ephem.Sun())
+        )
+        times.sunset = self.observed_time(
+            observer.next_setting(ephem.Sun())
+        )
 
-        try:
-            for item in rstt['moondata']:
-                if item['phen'] == 'R':
-                    times.moonrise = item['time'].rsplit(' ', 1)[0]
-                elif item['phen'] == 'S':
-                    times.moonset = item['time'].rsplit(' ', 1)[0]
-        except KeyError:
-            pass
+        # moon rise and set
+        times.moonrise = self.observed_time(
+            observer.previous_rising(ephem.Moon())
+        )
+        times.moonset = self.observed_time(
+            observer.next_setting(ephem.Moon())
+        )
+
+        # twilight
+        # As per PyEphem suggestion, get time when Sun is 6 degrees
+        # below the horizon, and use center of the Sun.
+        # http://rhodesmill.org/pyephem/rise-set.html#computing-twilight
+        observer.horizon = '-6'
+        times.twilight_begin = self.observed_time(
+            observer.previous_rising(ephem.Sun(), use_center=True)
+        )
+        times.twilight_end = self.observed_time(
+            observer.next_setting(ephem.Sun(), use_center=True)
+        )
+
+        times.pubdate = date.strftime('%Y-%m-%d 00:00:01 -0700')
 
     def __repr__(self):
         s = ''

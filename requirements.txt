@@ -22,6 +22,7 @@ django-registration==2.0.4
 docutils==0.12
 markdown==2.6.5
 psycopg2==2.6.1
+pyephem==3.7.6.0
 python-dateutil==2.4.2
 python-memcached==1.57
 pytz==2015.7

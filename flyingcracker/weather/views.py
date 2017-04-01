@@ -18,10 +18,10 @@ from .cbac import CBAC
 from .cbtv import CBTV
 from .models import ChartUrl
 from .noaa import get_NOAA_forecast
-# from .sunmoon import (
-#     SunMoon,
-#     MoonPhases,
-# )
+from .sunmoon import (
+    SunMoon,
+#    MoonPhases,
+)
 from fc3.myjson import JsonResponse
 from fc3.utils import ElapsedTime
 import weather.utils as utils
@@ -76,8 +76,7 @@ def weather(request):
 #     powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
     powcam = None
 
-#     sunmoon = SunMoon()
-    sunmoon = None
+    sunmoon = SunMoon(user=request.user)
 
 #     moonphases = MoonPhases()
     moonphases = None
