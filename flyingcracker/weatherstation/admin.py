@@ -7,4 +7,5 @@ from . import models as weatherstation
 class WeatherAdmin(admin.ModelAdmin):
     pass
 
+
 admin.site.register(weatherstation.Weather, WeatherAdmin)

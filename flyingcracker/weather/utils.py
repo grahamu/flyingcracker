@@ -395,6 +395,7 @@ def convert_speed(value, unit):
         nv = value
     return nv
 
+
 dir_table = {
     'NNE': 22.5,
     'NE': 45,
@@ -603,10 +604,10 @@ def save_URL_data(url, filename):
         f.write(text)
         f.close()
         return text
-##
-##
-##if __name__ == '__main__':
-##    today = get_today_timestamp(None)
-##    today_wx = weather_on_date(today)
-##    print gchart.hourly_data(today_wx, today)
-##    print gchart.halfhour_data(today_wx, today)
+
+
+# if __name__ == '__main__':
+#     today = get_today_timestamp(None)
+#     today_wx = weather_on_date(today)
+#     print gchart.hourly_data(today_wx, today)
+#     print gchart.halfhour_data(today_wx, today)

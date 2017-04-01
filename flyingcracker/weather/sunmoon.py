@@ -50,25 +50,29 @@ class SunMoon(DataBlock):
         today_url = self.url_pattern.format(date=today_string)
         response = get_URL_data(today_url, self.today_filename,
                                 max_file_age=12 * 60)
-        rstt = json.loads(response)
-        self.set_times(rstt, self.today_rstt)
-        self.pubdate = self.today_rstt.pubdate
-        self.set_timestamp()
+        if response:
+            rstt = json.loads(response)
+            self.set_times(rstt, self.today_rstt)
+            self.pubdate = self.today_rstt.pubdate
+            self.set_timestamp()
 
-        # Get current moon phase
-        if 'curphase' in rstt:
-            self.current_phase = "{} ({})".format(rstt['curphase'],
-                                                  rstt['fracillum'])
+            # Get current moon phase
+            if 'curphase' in rstt:
+                self.current_phase = "{} ({})".format(rstt['curphase'],
+                                                      rstt['fracillum'])
+            else:
+                self.current_phase = "{}".format(rstt['closestphase']['phase'])
         else:
-            self.current_phase = "{}".format(rstt['closestphase']['phase'])
+            self.add_section('Origin Data Error', 'no response from api.usno.navy.mil')
 
         tomorrow = today + datetime.timedelta(days=1)
         tomorrow_string = tomorrow.strftime("%m/%d/%Y")
         tomorrow_url = self.url_pattern.format(date=tomorrow_string)
         response = get_URL_data(tomorrow_url, self.tomorrow_filename,
                                 max_file_age=12 * 60)
-        rstt = json.loads(response)
-        self.set_times(rstt, self.tomorrow_rstt)
+        if response:
+            rstt = json.loads(response)
+            self.set_times(rstt, self.tomorrow_rstt)
 
     def set_times(self, rstt, times):
 

@@ -15,5 +15,6 @@ class CamAdmin(admin.ModelAdmin):
                     }),
         )
 
+
 admin.site.register(cam.Category)
 admin.site.register(cam.Cam, CamAdmin)

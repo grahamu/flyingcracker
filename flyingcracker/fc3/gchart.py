@@ -221,32 +221,32 @@ def float_ceil(vals, prev):
     top = max(max(vals), prev)
     # round up to nearest tenth
     return math.ceil(float(top) * 10.0) / 10.0
-##
-##
-##def test(date=datetime.datetime.now()):
-##    from fc3.utils import ElapsedTime
-##    from weatherstation.models import Weather
-##
-##    def get_and_process(et, date):
-##        qs = Weather.objects.filter(
-##            timestamp__year=date.year,
-##            timestamp__month=date.month,
-##            timestamp__day=date.day).order_by('timestamp')
-##        if qs:
-##            et.mark_time('obtained qs for %s' % str(date))
-##            hourly_data(qs, date)
-##            et.mark_time('processed hourly_data()')
-##
-##    et = ElapsedTime(totals=True)
-##
-##    get_and_process(et, date)
-##    date -= datetime.timedelta(days=1)
-##    get_and_process(et, date)
-##    date -= datetime.timedelta(days=1)
-##    get_and_process(et, date)
-##
-##    for e in et.list():
-##        print e.label, e.elapsed
-##
-##if __name__ == '__main__':
-##    test()
+
+
+# def test(date=datetime.datetime.now()):
+#     from fc3.utils import ElapsedTime
+#     from weatherstation.models import Weather
+#
+#     def get_and_process(et, date):
+#         qs = Weather.objects.filter(
+#             timestamp__year=date.year,
+#             timestamp__month=date.month,
+#             timestamp__day=date.day).order_by('timestamp')
+#         if qs:
+#             et.mark_time('obtained qs for %s' % str(date))
+#             hourly_data(qs, date)
+#             et.mark_time('processed hourly_data()')
+#
+#     et = ElapsedTime(totals=True)
+#
+#     get_and_process(et, date)
+#     date -= datetime.timedelta(days=1)
+#     get_and_process(et, date)
+#     date -= datetime.timedelta(days=1)
+#     get_and_process(et, date)
+#
+#     for e in et.list():
+#         print e.label, e.elapsed
+#
+# if __name__ == '__main__':
+#     test()
