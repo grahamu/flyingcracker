@@ -76,8 +76,7 @@ def weather(request):
 #     powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
     powcam = None
 
-#     sunmoon = SunMoon()
-    sunmoon = None
+    sunmoon = SunMoon(request.user)
 
 #     moonphases = MoonPhases()
     moonphases = None
