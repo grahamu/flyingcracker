@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 import datetime
-from dateutil import parser as dateutilparser
 import ephem
-import json
+from operator import itemgetter
 import pytz
 
 from django.conf import settings
 
 from .forecast import DataBlock
-from .utils import get_URL_data
 
 
 class SunMoonTimes(object):
@@ -22,27 +20,7 @@ class SunMoonTimes(object):
     moonset = None
 
 
-class SunMoon(DataBlock):
-
-    today_rstt = SunMoonTimes()
-    tomorrow_rstt = SunMoonTimes()
-    current_phase = None
-
-    def __init__(self, **kwargs):
-        """
-        Obtain "Rise Set Transit Times" for Sun and Moon, based
-        on user location.
-        """
-        self.user = kwargs.pop('user')
-        super(SunMoon, self).__init__(**kwargs)
-
-        today = datetime.date.today()
-        self.set_times(self.today_rstt, today)
-        self.pubdate = self.today_rstt.pubdate
-        self.set_timestamp()
-
-        tomorrow = today + datetime.timedelta(days=1)
-        self.set_times(self.tomorrow_rstt, tomorrow)
+class EphemMixin(object):
 
     def _get_observer(self, user):
         observer = ephem.Observer()
@@ -63,7 +41,29 @@ class SunMoon(DataBlock):
         # Someday convert to user's timezone, as seen in
         # fcprofile.user_tags.user_time.
         mt_date = utc_date.astimezone(pytz.timezone('US/Mountain'))
-        return mt_date.strftime('%I:%M %p')
+        return mt_date
+
+
+class SunMoon(DataBlock, EphemMixin):
+
+    today_rstt = SunMoonTimes()
+    tomorrow_rstt = SunMoonTimes()
+
+    def __init__(self, **kwargs):
+        """
+        Obtain "Rise Set Transit Times" for Sun and Moon, based
+        on user location.
+        """
+        self.user = kwargs.pop('user')
+        super(SunMoon, self).__init__(**kwargs)
+
+        today = datetime.date.today()
+        self.set_times(self.today_rstt, today)
+        self.pubdate = self.today_rstt.pubdate
+        self.set_timestamp()
+
+        tomorrow = today + datetime.timedelta(days=1)
+        self.set_times(self.tomorrow_rstt, tomorrow)
 
     def set_times(self, times, date):
         """
@@ -124,7 +124,7 @@ class MoonPhaseData(object):
     image = None
 
 
-class MoonPhases(DataBlock):
+class MoonPhases(DataBlock, EphemMixin):
 
     url_pattern = ('http://api.usno.navy.mil/moon/phase?ID=CBSOUTH'
                    '&date={date}&nump=4')
@@ -134,44 +134,45 @@ class MoonPhases(DataBlock):
         '''
         Obtain latest aa.usno.navy.mil "Phases of the Moon".
         '''
+        self.user = kwargs.pop('user')
         super(MoonPhases, self).__init__(**kwargs)
 
         today = datetime.date.today()
-        today_string = today.strftime("%m/%d/%Y")
-        today_url = self.url_pattern.format(date=today_string)
-        response = get_URL_data(today_url, self.filename,
-                                max_file_age=12 * 60)
-        phases = json.loads(response)
-        self.phases = []
-        self.set_phases(phases)
+        self.set_phases(today)
+
         self.pubdate = self.phases[0].pubdate
         self.set_timestamp()
 
-    def set_phases(self, phases):
+    def set_phases(self, date):
 
-        if not phases or phases['error']:
-            self.error = True
-            self.add_section('Origin Data Error',
-                             'computation (parameters?) unsuccessful')
-            return
+        self.phases = []
 
-        for phase in phases['phasedata']:
+        phases = [
+            (self.observed_time(ephem.next_new_moon(date)), "new moon"),
+            (self.observed_time(ephem.next_first_quarter_moon(date)), "first quarter"),
+            (self.observed_time(ephem.next_full_moon(date)), "full moon"),
+            (self.observed_time(ephem.next_last_quarter_moon(date)), "last quarter"),
+        ]
+
+        # sort phases by date
+        phases = sorted(phases, key=itemgetter(0))
+
+        for phase_date, phase_name in phases:
             phase_data = MoonPhaseData()
             phase_data.pubdate = ("{}-{}-{} 00:00:01 -0700"
-                                  .format(phases['year'],
-                                          phases['month'],
-                                          phases['day'])
+                                  .format(phase_date.year,
+                                          phase_date.month,
+                                          phase_date.day)
                                   )
-            phase_data.name = phase['phase']
+            phase_data.name = phase_name
 
-            date = dateutilparser.parse(phase['date'] + ' ' + phase['time'])
-            phase_data.date = date.date()
-            phase_data.time = date.time()
-            phase_data.image = ("http://api.usno.navy.mil/imagery/moon.png"
-                                "?&date={date}&time={time}"
-                                .format(date=date.strftime("%m/%d/%Y"),
-                                        time=phase['time'])
-                                )
+            phase_data.date = phase_date.date()
+            phase_data.time = phase_date.time()
+#             phase_data.image = ("http://api.usno.navy.mil/imagery/moon.png"
+#                                 "?&date={date}&time={time}"
+#                                 .format(date=date.strftime("%m/%d/%Y"),
+#                                         time=phase['time'])
+#                                 )
             self.phases.append(phase_data)
 
     def __repr__(self):

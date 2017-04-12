@@ -242,18 +242,18 @@
 				<!-- Today -->
 				<tr align="center">
 					<th>Today:</th>
-					<td>{{ sunmoon.today_rstt.twilight_begin }}</td>
-					<td>{{ sunmoon.today_rstt.sunrise }}</td>
-					<td>{{ sunmoon.today_rstt.sunset }}</td>
-					<td>{{ sunmoon.today_rstt.twilight_end }}</td>
+					<td>{{ sunmoon.today_rstt.twilight_begin|time:"%P" }}</td>
+					<td>{{ sunmoon.today_rstt.sunrise|time:"%P" }}</td>
+					<td>{{ sunmoon.today_rstt.sunset|time:"%P" }}</td>
+					<td>{{ sunmoon.today_rstt.twilight_end|time:"%P" }}</td>
 				</tr>
 				<!-- Tomorrow -->
 				<tr align="center">
 					<th>Tomorrow:</th>
-					<td>{{ sunmoon.tomorrow_rstt.twilight_begin }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.sunrise }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.sunset }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.twilight_end }}</td>
+					<td>{{ sunmoon.tomorrow_rstt.twilight_begin|time:"%P" }}</td>
+					<td>{{ sunmoon.tomorrow_rstt.sunrise|time:"%P" }}</td>
+					<td>{{ sunmoon.tomorrow_rstt.sunset|time:"%P" }}</td>
+					<td>{{ sunmoon.tomorrow_rstt.twilight_end|time:"%P" }}</td>
 				</tr>
 				</table>
             </div>
@@ -285,14 +285,14 @@
 				<!-- Today -->
 				<tr align="center">
 					<th>Today:</th>
-					<td>{{ sunmoon.today_rstt.moonrise }}</td>
-					<td>{{ sunmoon.today_rstt.moonset }}</td>
+					<td>{{ sunmoon.today_rstt.moonrise|time:"%P" }}</td>
+					<td>{{ sunmoon.today_rstt.moonset|time:"%P" }}</td>
 				</tr>
 				<!-- Tomorrow -->
 				<tr align="center">
 					<th>Tomorrow:</th>
-					<td>{{ sunmoon.tomorrow_rstt.moonrise }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.moonset }}</td>
+					<td>{{ sunmoon.tomorrow_rstt.moonrise|time:"%P" }}</td>
+					<td>{{ sunmoon.tomorrow_rstt.moonset|time:"%P" }}</td>
 				</tr>
 				</table>
 
@@ -305,29 +305,11 @@
 			<div class="body">
 				<table bgcolor="white" border="0" cellpadding="3" width="800">
 				<!-- Phase name -->
-				<tr align="center">
-					{% for phase in moonphases.phases %}
-					<th>{{ phase.name }}</th>
-					{% endfor %}
+				{% for phase in moonphases.phases %}
+				<tr>
+					<td>{{ phase.date|naturalday:"l N j, Y" }} {{ phase.time|time:"P" }}</td><td>{{ phase.name }}</td>
 				</tr>
-				<!-- Image -->
-				<tr align="center">
-					{% for phase in moonphases.phases %}
-					<td><img src="{{ phase.image }}" height=160px /></td>
-					{% endfor %}
-				</tr>
-				<!-- Date -->
-				<tr align="center">
-					{% for phase in moonphases.phases %}
-					<td>{{ phase.date|naturalday }}</td>
-					{% endfor %}
-				</tr>
-				<!-- Time -->
-				<tr align="center">
-					{% for phase in moonphases.phases %}
-					<td>{{ phase.time }}</td>
-					{% endfor %}
-				</tr>
+				{% endfor %}
 				</table>
 			</div>
 		</div>  <!-- forecast -->

@@ -20,7 +20,7 @@ from .models import ChartUrl
 from .noaa import get_NOAA_forecast
 from .sunmoon import (
     SunMoon,
-#    MoonPhases,
+    MoonPhases,
 )
 from fc3.myjson import JsonResponse
 from fc3.utils import ElapsedTime
@@ -77,9 +77,10 @@ def weather(request):
     powcam = None
 
     sunmoon = SunMoon(user=request.user)
+    moonphases = MoonPhases(user=request.user)
+    # want to show current phase name "waxing gibbous, 14%"
+    # want to display ISS overhead transit info if available that night
 
-#     moonphases = MoonPhases()
-    moonphases = None
 
     current_dict, current = get_current_weather(request)
     weather_dict = dict(current_dict)
