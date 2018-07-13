@@ -60,7 +60,11 @@ class CBAC(Forecast):
 
         html_text = item.find('description')
         soup = BeautifulSoup(html_text.text, "html.parser")
-        synopsis = soup.contents[4].text
+        contents = soup.contents.get(4, None)
+        if not contents:
+            synopsis = ""
+        else:
+            synopsis = soup.contents[4].text
 
         self.pubdate = pubdate.text
         self.set_timestamp()

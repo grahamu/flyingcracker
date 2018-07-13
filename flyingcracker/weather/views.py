@@ -14,7 +14,6 @@ from django.template import RequestContext
 from django.http import Http404, HttpResponse
 from django.views.decorators.cache import cache_page
 
-from .cbac import CBAC
 from .cbtv import CBTV
 from .models import ChartUrl
 from .noaa import get_NOAA_forecast
@@ -53,13 +52,6 @@ def weather(request):
 
     et = ElapsedTime()
 
-    cbac = CBAC()
-    if cbac:
-        # Don't display CBAC stuff if older than 36 hours.
-        # In this case they are probably closed for the season.
-        if (now - cbac.timestamp) > datetime.timedelta(hours=36):
-            cbac = None
-
     noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
 
     cbtv = CBTV()
@@ -90,7 +82,6 @@ def weather(request):
         'title_state': title_state,
         'show_units': show_units,
         'unit_state': unit_state,
-        'cbac': cbac,
         'noaa': noaa,
         'cbtv': cbtv,
         'powcam': powcam,
