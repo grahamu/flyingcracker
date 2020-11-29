@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 #!/usr/bin/env python
 from django import forms
 from django.forms import formsets
@@ -17,8 +18,7 @@ class SeriesForm(forms.ModelForm):
 
 
 class CompetitorForm(forms.ModelForm):
-    series = forms.ModelChoiceField(queryset=Series.objects.all(),
-                                    widget=forms.HiddenInput)
+    series = forms.ModelChoiceField(queryset=Series.objects.all(), widget=forms.HiddenInput)
 
     class Meta:
         model = Competitor
@@ -38,12 +38,14 @@ class CompetitorForm(forms.ModelForm):
         if not name:
             raise forms.ValidationError, u'Please enter a Competitor name in the field provided'
         if self.instance.pk:
-            existing = Competitor.objects \
-                .filter(name__iexact=name, series=series) \
-                .exclude(pk=self.instance.pk)
+            existing = Competitor.objects.filter(name__iexact=name, series=series).exclude(
+                pk=self.instance.pk
+            )
             if existing:
-                raise forms.ValidationError, u'Competitor "%s" already exists' \
-                    ' for this series, try another name' % name
+                raise (
+                    forms.ValidationError,
+                    u'Competitor "%s" already exists' ' for this series, try another name' % name,
+                )
             else:
                 return self.cleaned_data
         else:
@@ -52,8 +54,10 @@ class CompetitorForm(forms.ModelForm):
             except Competitor.DoesNotExist:
                 return self.cleaned_data
             else:
-                raise forms.ValidationError, u'Competitor "%s" already exists' \
-                    ' for this series, try another name' % name
+                raise (
+                    forms.ValidationError,
+                    u'Competitor "%s" already exists' ' for this series, try another name' % name,
+                )
 
 
 class CompetitorImportForm(forms.Form):
@@ -66,10 +70,11 @@ class CompetitorImportForm(forms.Form):
 
 
 class TeamChoiceForm(forms.Form):
-    '''
+    """
     Form used to select a team to associate with a Competitor.
 
-    '''
+    """
+
     team = forms.ModelChoiceField(queryset=[], required=False)
 
     def __init__(self, *args, **kwargs):
@@ -82,13 +87,14 @@ class TeamChoiceForm(forms.Form):
 
 
 class TeamGuessForm(forms.Form):
-    '''
+    """
     Form used to select a team.
     Choices for this form are specified at creation,
     and typically have values different than the standard
     `team.pk`.
 
-    '''
+    """
+
     team = forms.ChoiceField(choices=[], required=False)
 
     def __init__(self, *args, **kwargs):
@@ -98,10 +104,11 @@ class TeamGuessForm(forms.Form):
 
 
 class PickOptionsForm(forms.Form):
-    '''
+    """
     Form used to present options about the competitor selection
     for an event or series.
-    '''
+    """
+
     remaining_events = forms.BooleanField(
         label='Feeling lazy?',
         help_text='Save these picks for all remaining events',
@@ -109,7 +116,6 @@ class PickOptionsForm(forms.Form):
 
 
 class CompetitorModelMultipleChoiceField(ModelMultipleChoiceField):
-
     def label_from_instance(self, obj):
         """
         This method is used to convert objects into strings; it's used to
@@ -166,10 +172,15 @@ class EventForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
         series = self.cleaned_data.get('series')
         if self.instance.pk:
-            existing = Event.objects.filter(name__iexact=name, series=series).exclude(pk=self.instance.pk)
+            existing = Event.objects.filter(name__iexact=name, series=series).exclude(
+                pk=self.instance.pk
+            )
             if existing:
-                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists' \
-                    ' for this series, try another name' % name
+                raise (
+                    forms.ValidationError,
+                    u'{{ series.event_label|capfirst }} "%s" already exists'
+                    ' for this series, try another name' % name,
+                )
             else:
                 return self.cleaned_data
         else:
@@ -178,12 +189,14 @@ class EventForm(forms.ModelForm):
             except Event.DoesNotExist:
                 return self.cleaned_data
             else:
-                raise forms.ValidationError, u'{{ series.event_label|capfirst }} "%s" already exists' \
-                    ' for this series, try another name' % name
+                raise (
+                    forms.ValidationError,
+                    u'{{ series.event_label|capfirst }} "%s" already exists'
+                    ' for this series, try another name' % name,
+                )
 
 
 class GuessAndResultBaseFormset(formsets.BaseFormSet):
-
     def __init__(self, *args, **kwargs):
         self.competitors = kwargs.pop('competitors', None)
         super(GuessAndResultBaseFormset, self).__init__(*args, **kwargs)
@@ -221,7 +234,6 @@ class ResultForm(forms.Form):
 
 
 class EventOptionsForm(forms.ModelForm):
-
     class Meta:
         model = Event
         fields = ('result_locked',)

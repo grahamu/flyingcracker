@@ -1,12 +1,8 @@
 #!/usr/bin/env python
-from xml.etree.ElementTree import (
-    ParseError,
-    XML,
-)
+from xml.etree.ElementTree import XML, ParseError
 from xml.parsers.expat import ExpatError
 
 from django.conf import settings
-
 from forecast import Forecast
 from utils import get_URL_data, save_URL_data
 
@@ -17,11 +13,11 @@ class CBTV(Forecast):
     filename = settings.WEATHER_ROOT.child('cbtv.txt')
 
     def __init__(self, **kwargs):
-        '''
+        """
         Obtain latest CBTV RSS feed
         Parse into the pieces we want (synopsis, today, tonight, tomorrow)
         Format nicely into parts
-        '''
+        """
         super(CBTV, self).__init__(**kwargs)
         xml_text = get_URL_data(CBTV.url, CBTV.filename, max_file_age=10)
         if not xml_text:
@@ -67,11 +63,12 @@ def save_data():
 
 def test():
     cbtv = CBTV()
-    print repr(cbtv)
+    print(repr(cbtv))
 
 
 if __name__ == '__main__':
     import optparse
+
     p = optparse.OptionParser()
     options, arguments = p.parse_args()
 

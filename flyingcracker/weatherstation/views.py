@@ -30,8 +30,7 @@ def upload_data(request):
     elif dateutc is not None:
         dateutc = dateutc.replace(':', ' ').replace('-', ' ').replace('+', ' ')
         year, month, day, hour, minute, second = dateutc.split()
-        dbtimestamp = datetime(int(year), int(month), int(day),
-                               int(hour), int(minute), int(second))
+        dbtimestamp = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
         dbtimestamp = mountain_tz.localize(dbtimestamp)
 
     if dbtimestamp:
@@ -109,11 +108,9 @@ def upload_data(request):
             else:
                 success_str = "weather record created"
         except:
-            response = HttpResponse("upload_data failed: '%s'"
-                                    % traceback.format_exc())
+            response = HttpResponse("upload_data failed: '%s'" % traceback.format_exc())
         else:
             response = HttpResponse(success_str)
     else:
-        response = HttpResponse('failed: missing "datemtn" '
-                                'or "timestamp" field in URL')
+        response = HttpResponse('failed: missing "datemtn" ' 'or "timestamp" field in URL')
     return response

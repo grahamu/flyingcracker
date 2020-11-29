@@ -20,6 +20,7 @@ class GuessAdmin(admin.ModelAdmin):
 
     def competitor(self, obj):
         return "%s" % obj.competitor
+
     competitor.short_description = 'Guess'
 
 
@@ -27,7 +28,7 @@ admin.site.register(fantasy.Guess, GuessAdmin)
 
 
 class EventAdmin(admin.ModelAdmin):
-    list_filter = ('series', )
+    list_filter = ('series',)
 
 
 admin.site.register(fantasy.Event, EventAdmin)

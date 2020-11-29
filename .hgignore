@@ -1,9 +1,0 @@
-syntax: glob
-*.pyc
-dist
-MANIFEST
-.DS_Store
-settings_local.py
-cron_mail*.*
-local_fc3
-

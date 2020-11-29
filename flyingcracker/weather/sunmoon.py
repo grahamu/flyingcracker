@@ -21,7 +21,6 @@ class SunMoonTimes(object):
 
 
 class EphemMixin(object):
-
     def _get_observer(self, user):
         observer = ephem.Observer()
         observer.pressure = 0
@@ -66,28 +65,19 @@ class SunMoon(DataBlock, EphemMixin):
         self.set_times(self.tomorrow_rstt, tomorrow)
 
     def set_times(self, times, date):
-        """
-        """
+        """"""
         observer = self._get_observer(self.user)
         observer.date = date.strftime('%Y/%m/%d 19:00')  # 7pm UTC, mid-day in Colorado
 
         # sun rise and set
         # See http://rhodesmill.org/pyephem/rise-set.html#naval-observatory-risings-and-settings
         observer.horizon = '-0:34'
-        times.sunrise = self.observed_time(
-            observer.previous_rising(ephem.Sun())
-        )
-        times.sunset = self.observed_time(
-            observer.next_setting(ephem.Sun())
-        )
+        times.sunrise = self.observed_time(observer.previous_rising(ephem.Sun()))
+        times.sunset = self.observed_time(observer.next_setting(ephem.Sun()))
 
         # moon rise and set
-        times.moonrise = self.observed_time(
-            observer.previous_rising(ephem.Moon())
-        )
-        times.moonset = self.observed_time(
-            observer.next_setting(ephem.Moon())
-        )
+        times.moonrise = self.observed_time(observer.previous_rising(ephem.Moon()))
+        times.moonset = self.observed_time(observer.next_setting(ephem.Moon()))
 
         # twilight
         # As per PyEphem suggestion, get time when Sun is 6 degrees
@@ -97,9 +87,7 @@ class SunMoon(DataBlock, EphemMixin):
         times.twilight_begin = self.observed_time(
             observer.previous_rising(ephem.Sun(), use_center=True)
         )
-        times.twilight_end = self.observed_time(
-            observer.next_setting(ephem.Sun(), use_center=True)
-        )
+        times.twilight_end = self.observed_time(observer.next_setting(ephem.Sun(), use_center=True))
 
         times.pubdate = date.strftime('%Y-%m-%d 00:00:01 -0700')
 
@@ -108,8 +96,7 @@ class SunMoon(DataBlock, EphemMixin):
         if self.pubdate:
             s += "SunMoon pubdate: " + self.pubdate + "\n"
         if self.timestamp:
-            s += "SunMoon timestamp: " + \
-                self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
+            s += "SunMoon timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
         if self.error:
             s += "Data Error\n"
         return s
@@ -126,14 +113,13 @@ class MoonPhaseData(object):
 
 class MoonPhases(DataBlock, EphemMixin):
 
-    url_pattern = ('http://api.usno.navy.mil/moon/phase?ID=CBSOUTH'
-                   '&date={date}&nump=4')
+    url_pattern = 'http://api.usno.navy.mil/moon/phase?ID=CBSOUTH' '&date={date}&nump=4'
     filename = settings.WEATHER_ROOT.child('moonphases.txt')
 
     def __init__(self, **kwargs):
-        '''
+        """
         Obtain latest aa.usno.navy.mil "Phases of the Moon".
-        '''
+        """
         self.user = kwargs.pop('user')
         super(MoonPhases, self).__init__(**kwargs)
 
@@ -159,20 +145,18 @@ class MoonPhases(DataBlock, EphemMixin):
 
         for phase_date, phase_name in phases:
             phase_data = MoonPhaseData()
-            phase_data.pubdate = ("{}-{}-{} 00:00:01 -0700"
-                                  .format(phase_date.year,
-                                          phase_date.month,
-                                          phase_date.day)
-                                  )
+            phase_data.pubdate = "{}-{}-{} 00:00:01 -0700".format(
+                phase_date.year, phase_date.month, phase_date.day
+            )
             phase_data.name = phase_name
 
             phase_data.date = phase_date.date()
             phase_data.time = phase_date.time()
-#             phase_data.image = ("http://api.usno.navy.mil/imagery/moon.png"
-#                                 "?&date={date}&time={time}"
-#                                 .format(date=date.strftime("%m/%d/%Y"),
-#                                         time=phase['time'])
-#                                 )
+            #             phase_data.image = ("http://api.usno.navy.mil/imagery/moon.png"
+            #                                 "?&date={date}&time={time}"
+            #                                 .format(date=date.strftime("%m/%d/%Y"),
+            #                                         time=phase['time'])
+            #                                 )
             self.phases.append(phase_data)
 
     def __repr__(self):
@@ -180,8 +164,7 @@ class MoonPhases(DataBlock, EphemMixin):
         if self.pubdate:
             s += "MoonPhases pubdate: " + self.pubdate + "\n"
         if self.timestamp:
-            s += "MoonPhases timestamp: " + \
-                self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
+            s += "MoonPhases timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
         if self.error:
             s += "Data Error\n"
         return s

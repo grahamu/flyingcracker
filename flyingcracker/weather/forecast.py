@@ -7,7 +7,6 @@ from django.utils.encoding import smart_str
 
 
 class DataBlock(object):
-
     def __init__(self):
         self.pubdate = None
         self.sections = []
@@ -40,7 +39,6 @@ class DataBlock(object):
 
 
 class Forecast(DataBlock):
-
     def __init__(self):
         super(Forecast, self).__init__()
         self.area = None
@@ -52,8 +50,7 @@ class Forecast(DataBlock):
         if self.pubdate:
             s += "Forecast pubdate: " + self.pubdate + "\n"
         if self.timestamp:
-            s += "Forecast timestamp: " + \
-                self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
+            s += "Forecast timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
         if self.area:
             s += "Forecast Area: " + smart_str(self.area) + "\n"
         if self.warning:

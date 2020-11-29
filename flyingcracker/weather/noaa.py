@@ -48,13 +48,13 @@ class NOAAForecastArea(object):
             return False, False
 
     def parse_area(self, forecast):
-        '''
+        """
         Parse the area section of the NOAA forecast.
         The first line is always the area.
         Next is an optional line including cities of interest.
         Next is a timestamp.
-        '''
-        pubdate = self.area.pop()               # last item is pubdate
+        """
+        pubdate = self.area.pop()  # last item is pubdate
         time_of_day, remainder = pubdate.split(' ', 1)
         # insert colon so parser recognizes the time string
         time_of_day = time_of_day[0:-2] + ':' + time_of_day[-2:]
@@ -62,11 +62,11 @@ class NOAAForecastArea(object):
         forecast.pubdate = pubdate
         forecast.timestamp = dateutilparser.parse(forecast.pubdate)
 
-        area = self.area.pop(0).capitalize()    # first item is area
+        area = self.area.pop(0).capitalize()  # first item is area
         if area.endswith('-'):
             area = area[:-1]
 
-        if len(self.area) > 0:              # middle is cities of interest
+        if len(self.area) > 0:  # middle is cities of interest
             interest = ''.join(self.area)
             interest = interest.split('...')
             city_list = []
@@ -82,28 +82,29 @@ class NOAAForecastArea(object):
 
 
 def capitalize_all(str):
-    l = str.split(' ')
-    l = [word.capitalize() for word in l]
-    return ' '.join(l)
+    word_list = str.split(' ')
+    word_list = [word.capitalize() for word in word_list]
+    return ' '.join(word_list)
 
 
 class NOAAForecastBody(object):
     """
     Parses NOAA forecast body.
     """
+
     def __init__(self):
         self.title = ''
         self.body = []
 
     def parse_line(self, line, forecast):
-        if len(line) == 0:     # ignore this line
+        if len(line) == 0:  # ignore this line
             return False, False
 
         if line.startswith('...'):
             # recycle this line, it starts a warning.
             return NOAAForecastWarning, True
 
-        if line == '$$':    # end of the forecast sections
+        if line == '$$':  # end of the forecast sections
             self.add_section(forecast)
             return False, False
 
@@ -112,7 +113,7 @@ class NOAAForecastBody(object):
             self.add_section(forecast)
             return NOAAForecastIgnore, False
 
-        if line[0] == '.' and line[1] != ' ':   # start of a new section
+        if line[0] == '.' and line[1] != ' ':  # start of a new section
             self.add_section(forecast)
             title, body = line.split('...', 1)
             self.title = title[1:]
@@ -137,6 +138,7 @@ class NOAAForecastWarning(object):
     """
     Parses NOAA warnings.
     """
+
     def __init__(self):
         self.warning = []
         pass
@@ -147,19 +149,17 @@ class NOAAForecastWarning(object):
             self.warning = ' '.join(self.warning)
             self.warning.replace('...', '')
             forecast.warning = self.warning
-            return NOAAForecastBody, False      # done with the warning
+            return NOAAForecastBody, False  # done with the warning
         else:
-            return False, False     # ignore line for now
+            return False, False  # ignore line for now
 
 
 class NOAAForecastIgnore(object):
-
     def parse_line(self, line, forecast):
         return False, False
 
 
 class NOAAForecast(Forecast):
-
     def __init__(self, zname):
         super(NOAAForecast, self).__init__()
         self.state = NOAAForecastPreamble(zname)
@@ -168,11 +168,11 @@ class NOAAForecast(Forecast):
         self.state = state
 
     def parse_line(self, line):
-        '''
+        """
         Calls the ``parseLine`` method of class ``self.state``.
         If a new state is indicated, set self.state.
         Use recursion to recycle the input line if necessary.
-        '''
+        """
         newState, recycle_line = self.state.parse_line(line, self)
         if newState is not False:
             self.set_state(newState())
@@ -181,11 +181,11 @@ class NOAAForecast(Forecast):
 
 
 def get_NOAA_forecast(state, zone):
-    '''
+    """
     Obtain NOAA textual forecast.
     Parse into parts: area, [optional] warning, section array.
     Returns a Forecast object if successful, otherwise returns None.
-    '''
+    """
     zname = state.upper() + "Z%03d" % zone
     lines = get_NOAA_data(state, zname)
     if not lines:
@@ -227,8 +227,13 @@ def get_NOAA_data(state, zname):
 
 
 def save_NOAA_data(state, zname):
-    url = 'http://tgftp.nws.noaa.gov/data/forecasts/zone/' + \
-        state.lower() + '/' + zname.lower() + '.txt'
+    url = (
+        'http://tgftp.nws.noaa.gov/data/forecasts/zone/'
+        + state.lower()
+        + '/'
+        + zname.lower()
+        + '.txt'
+    )
     try:
         lines = urlopen(url).readlines()
     except IOError:
@@ -244,15 +249,16 @@ def save_NOAA_data(state, zname):
 
 def test():
     forecast = get_NOAA_forecast('CO', 12)
-    print repr(forecast)
+    print(repr(forecast))
     forecast = get_NOAA_forecast('CA', 1)
-    print repr(forecast)
+    print(repr(forecast))
     forecast = get_NOAA_forecast('OR', 1)
-    print repr(forecast)
+    print(repr(forecast))
 
 
 if __name__ == '__main__':
     import optparse
+
     p = optparse.OptionParser()
     p.add_option('--zone', '-z', type="int", default=12)
     p.add_option('--state', '-s', default='CO')
@@ -267,4 +273,4 @@ if __name__ == '__main__':
                 save_NOAA_data(state, state + "Z%03d" % options.zone)
             elif cmd.lower() == 'get':
                 state = options.state.upper()
-                print get_NOAA_data(state, state + "Z%03d" % options.zone)
+                print(get_NOAA_data(state, state + "Z%03d" % options.zone))

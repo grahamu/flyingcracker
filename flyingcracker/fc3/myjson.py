@@ -1,5 +1,5 @@
-from decimal import Decimal
 import json
+from decimal import Decimal
 
 from django.core.serializers.json import DateTimeAwareJSONEncoder
 from django.db import models
@@ -10,8 +10,7 @@ from django.utils.functional import Promise
 
 class JsonResponse(HttpResponse):
     def __init__(self, data):
-        super(JsonResponse, self).__init__(json_encode2(data),
-                                           content_type='text/javascript')
+        super(JsonResponse, self).__init__(json_encode2(data), content_type='text/javascript')
 
 
 def json_encode2(data):

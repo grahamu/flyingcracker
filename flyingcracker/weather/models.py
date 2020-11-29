@@ -8,6 +8,7 @@ class ChartUrl(models.Model):
     Contains URL which will create a chart image
     for a specific data type on a particular day.
     """
+
     date = models.DateField(blank=False)  # date for the chart
     # timestamp is when the url was created
     timestamp = models.DateTimeField(default=datetime.datetime.now)
@@ -30,9 +31,13 @@ class ChartUrl(models.Model):
     PLOT_YEAR_AGO = 'Y'
 
     def __unicode__(self):
-        return str(self.date) + '-' + \
-            '-'.join([self.data_type, self.unit, self.size, self.plots]) + \
-            '-' + str(self.timestamp)
+        return (
+            str(self.date)
+            + '-'
+            + '-'.join([self.data_type, self.unit, self.size, self.plots])
+            + '-'
+            + str(self.timestamp)
+        )
 
     class Meta:
         ordering = ['-date']
