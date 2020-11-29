@@ -125,7 +125,7 @@ def get_current_weather(request):
 
     # Force this timestamp to be Mountain Time
     timestamp = as_timezone(current.timestamp, "US/Mountain")
-    timestamp = date_filter(timestamp, "H:i \M\T D M j")
+    timestamp = date_filter(timestamp, "H:i \M\T D M j")  # noqa:W605
 
     temp_unit = request.COOKIES.get("temp_unit")
     if temp_unit is None:
@@ -426,7 +426,7 @@ def delete(request):
             for obj in records:
                 try:
                     obj.delete()
-                except:
+                except Weather.DoesNotExist:
                     pass
                 else:
                     deleted += 1

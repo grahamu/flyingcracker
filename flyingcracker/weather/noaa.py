@@ -216,12 +216,12 @@ def get_NOAA_data(state, zname):
 
     try:
         f = open(filename, 'r')
-    except:
+    except IOError:
         lines = save_NOAA_data(state, zname)
     else:
         try:
             lines = f.read().splitlines()
-        except:
+        except IOError:
             lines = save_NOAA_data(state, zname)
     return lines
 

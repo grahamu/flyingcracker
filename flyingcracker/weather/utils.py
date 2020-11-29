@@ -465,7 +465,7 @@ def get_date(request=None, date=None):
             year = int(date[0:4])
             month = int(date[4:6])
             day = int(date[6:8])
-        except:
+        except ValueError:
             return today
         else:
             try:
@@ -584,12 +584,12 @@ def get_URL_data(url, filename, max_file_age=60):
 
     try:
         f = open(filename, 'r')
-    except:
+    except IOError:
         lines = save_URL_data(url, filename)
     else:
         try:
             lines = f.read()
-        except:
+        except IOError:
             lines = save_URL_data(url, filename)
     return lines
 

@@ -22,7 +22,7 @@ def user_time(user, dt=None):
         dt = datetime(tzinfo=utc, *dt.timetuple()[:7])
     try:
         profile = user.get_profile()
-    except:
+    except Exception:
         profile = None
     if profile and profile.timezone:
         tz = profile.timezone
