@@ -38,7 +38,7 @@ def system_version(request):
 def login_url_with_redirect(request):
     from django.utils.http import urlquote
     from django.contrib.auth import REDIRECT_FIELD_NAME
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
 
     path = urlquote(request.get_full_path())
     if path == reverse('auth_logout'):

@@ -40,8 +40,8 @@ def json_encode2(data):
             ret = _model(data)
         # here we need to encode the string as unicode
         # (otherwise we get utf-16 in the json-response)
-        elif isinstance(data, basestring):
-            ret = unicode(data)
+        elif isinstance(data, str):
+            ret = str(data)
         # see http://code.djangoproject.com/ticket/5868
         elif isinstance(data, Promise):
             ret = force_unicode(data)
@@ -55,7 +55,7 @@ def json_encode2(data):
         for f in data._meta.fields:
             ret[f.attname] = _any(getattr(data, f.attname))
         # And additionally encode arbitrary properties that had been added.
-        fields = dir(data.__class__) + ret.keys()
+        fields = dir(data.__class__) + list(ret.keys())
         add_ons = [k for k in dir(data) if k not in fields]
         for k in add_ons:
             if k[0] != '_':
@@ -70,7 +70,7 @@ def json_encode2(data):
 
     def _dict(data):
         ret = {}
-        for k, v in data.items():
+        for k, v in list(data.items()):
             ret[k] = _any(v)
         return ret
 

@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-
-from django.template import RequestContext
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 
-from .models import (
-    Cam,
-    Category,
-)
 from fc3.myjson import JsonResponse
+
+from .models import Cam, Category
 
 CAM_CATEGORY = "cam_category"
 CAM_ID = "cam_id"
@@ -32,11 +28,11 @@ def cam_view(request):
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'iui' in request.GET:
-            return render_to_response('cam/iphone/cam.html', c)
+            return render('cam/iphone/cam.html', c)
         else:
-            return render_to_response('cam/iphone/cam_initial.html', c)
+            return render('cam/iphone/cam_initial.html', c)
     else:
-        return render_to_response('cam/cam.html', c)
+        return render('cam/cam.html', c)
 
 
 def cam_list(request):

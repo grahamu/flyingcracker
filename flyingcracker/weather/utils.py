@@ -1,9 +1,11 @@
 import datetime
-import pytz
 from decimal import Decimal
-from weatherstation.models import Weather
-from weather.models import ChartUrl
+
+import pytz
+
 import fc3.gchart as gchart
+from weather.models import ChartUrl
+from weatherstation.models import Weather
 
 TEMP_F = 'F'
 TEMP_C = 'C'
@@ -410,7 +412,7 @@ dir_table = {
 
 
 def wind_dir_to_english(dir):
-    for key, val in dir_table.items():
+    for key, val in list(dir_table.items()):
         # TODO make this value a named constant
         if dir >= (val - 11.25) and dir < (val + 11.25):
             return key
@@ -528,7 +530,7 @@ def temp_dict(weather_records):
         data.append(calc_temp_values(v))
 
     # transpose the 2-dimensional array, p.161 Python Cookbook
-    data = map(list, zip(*data))
+    data = list(map(list, zip(*data)))
 
     i = 0
     unit_dict = {}
@@ -595,7 +597,7 @@ def get_URL_data(url, filename, max_file_age=60):
 
 
 def save_URL_data(url, filename):
-    from urllib import urlopen
+    from urllib.request import urlopen
 
     try:
         text = urlopen(url).read()

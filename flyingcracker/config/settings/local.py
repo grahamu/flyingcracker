@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from unipath import Path
-
-from flyingcracker.config.settings.base import *
+from .base import *
 
 DEBUG = True
 

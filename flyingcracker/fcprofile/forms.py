@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
+
 from fcprofile.models import FCProfile
 
 attrs_dict = {'class': 'required'}
@@ -11,8 +12,8 @@ class ProfileForm(forms.ModelForm):
     """
     User profile form
     """
-    first_name = forms.CharField(label=_(u'First name'), max_length=30)
-    last_name = forms.CharField(label=_(u'Last name'), max_length=30)
+    first_name = forms.CharField(label=_('First name'), max_length=30)
+    last_name = forms.CharField(label=_('Last name'), max_length=30)
     email = forms.EmailField(label="Primary email")
 
     class Meta:

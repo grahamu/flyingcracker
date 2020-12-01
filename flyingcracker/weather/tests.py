@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import datetime
 
 from fc3.gchart import periodic_samples

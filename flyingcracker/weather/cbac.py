@@ -71,7 +71,7 @@ def save_data():
 
 def test():
     cbac = CBAC()
-    print(repr(cbac))
+    print((repr(cbac)))
 
 
 if __name__ == '__main__':

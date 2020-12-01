@@ -24,7 +24,7 @@ def _get_named_patterns():
     resolver = urlresolvers.get_resolver(None)
     patterns = sorted([
         (key, value[0][0][0])
-        for key, value in resolver.reverse_dict.items()
-        if isinstance(key, basestring)
+        for key, value in list(resolver.reverse_dict.items())
+        if isinstance(key, str)
     ])
     return patterns

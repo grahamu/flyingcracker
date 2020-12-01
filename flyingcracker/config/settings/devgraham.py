@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from unipath import Path
-
-from flyingcracker.config.settings.local import *
+from .local import *
 
 DATABASES = {
     'default': {
@@ -13,7 +10,7 @@ DATABASES = {
     }
 }
 
-LOCAL_ROOT = Path("/Users/graham/Documents/fc3/testing/web/media")
+LOCAL_ROOT = Path("/Users/graham/code/flyingcracker/testing/web/media")
 WEATHER_ROOT = LOCAL_ROOT + '/weather/'
 
 # Just dump emails to the console.

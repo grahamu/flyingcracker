@@ -10,7 +10,6 @@ class FoodstuffAdmin(admin.ModelAdmin):
 
 
 admin.site.register(food.Foodstuff, FoodstuffAdmin)
-user = models.ForeignKey(settings.AUTH_USER_MODEL)
 admin.site.register(food.Attribute)
 
 

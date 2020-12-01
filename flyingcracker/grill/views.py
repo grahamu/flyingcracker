@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -62,24 +60,24 @@ def grill(request):
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'snippet' in request.GET:
-            return render_to_response('grill/iphone/snippet.html', c)
+            return render('grill/iphone/snippet.html', c)
         elif 'iui' in request.GET:
-            return render_to_response('grill/iphone/iui.html', c)
+            return render('grill/iphone/iui.html', c)
         else:
-            return render_to_response('grill/iphone/grill.html', c)
+            return render('grill/iphone/grill.html', c)
     else:
         # BUGBUG 2008-11-13 - Should be using "normal" browser templates,
         #        if they are different from the iPhone templates.
         if 'snippet' in request.GET:
-            return render_to_response('grill/iphone/snippet.html', c)
+            return render('grill/iphone/snippet.html', c)
         elif 'iui' in request.GET:
-            return render_to_response('grill/iphone/iui.html', c)
+            return render('grill/iphone/iui.html', c)
         else:
-            return render_to_response('grill/iphone/grill.html', c)
+            return render('grill/iphone/grill.html', c)
 
 
 def doneness_detail(request, slug):
     doneness = Doneness.objects.get(slug=slug)
     c = RequestContext(request, {'doneness': doneness,
                                  })
-    return render_to_response('grill/iphone/doneness_detail.html', c)
+    return render('grill/iphone/doneness_detail.html', c)

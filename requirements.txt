@@ -4,26 +4,22 @@
 #
 #     pip install -U -r requirements.txt
 
--e git://github.com/schinckel/django-timezones.git#egg=django-timezones # Fork of 'brosner' with South 0.7 support
--e git://github.com/SmileyChris/django-mailer-2.git#egg=django-mailer
--e git://github.com/grahamu/pygooglechart.git@cfbfe2e930#egg=pygooglechart
+-e git://github.com/grahamu/pygooglechart.git@3da7db94f2#egg=pygooglechart
 
-ansible==2.0.0.2
-beautifulsoup4==4.4.1
-django==1.9.12
-django-announcements==1.2.0
-django-contrib-comments==1.6.2
-django-crispy-forms==1.6.0
-django-debug-toolbar==1.4
-django-extensions==1.6.1
-django-localflavor==1.2
+ansible==2.10.3
+beautifulsoup4==4.9.3
+django==3.1.3
+django-debug-toolbar==3.1.1
+django-extensions==3.1.0
+django-localflavor==3.0.1
 django-markup-deprecated==0.0.3
 django-registration==2.0.4
-docutils==0.12
-markdown==2.6.5
-psycopg2>=2.6.1
-pyephem==3.7.6.0
-python-dateutil==1.5
-python-memcached==1.57
-pytz==2015.7
+django-timezone-field==4.1.1
+docutils==0.16
+markdown==3.3.3
+psycopg2==2.7.3.1 --no-binary psycopg2
+pyephem==3.7.7.0
+python-dateutil==2.8.1
+python-memcached==1.59
+pytz==2020.4
 unipath==1.1

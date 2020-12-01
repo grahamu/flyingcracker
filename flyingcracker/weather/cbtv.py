@@ -63,7 +63,7 @@ def save_data():
 
 def test():
     cbtv = CBTV()
-    print(repr(cbtv))
+    print((repr(cbtv)))
 
 
 if __name__ == '__main__':

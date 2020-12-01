@@ -1,5 +1,6 @@
-from django.db import models
 from datetime import datetime
+
+from django.db import models
 
 
 class Weather(models.Model):
@@ -22,7 +23,7 @@ class Weather(models.Model):
         if self.timestamp is not None:
             return datetime.ctime(self.timestamp)
         else:
-            return u"no time"
+            return 'no time'
 
     class Meta:
         ordering = ['timestamp']

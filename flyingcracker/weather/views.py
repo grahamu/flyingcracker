@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import datetime
 import json
 from decimal import ROUND_HALF_EVEN, Decimal
@@ -91,11 +89,11 @@ def weather(request):
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'iui' in request.GET:
-            return render_to_response('weather/iphone/weather-iui.html', c)
+            return render('weather/iphone/weather-iui.html', c)
         else:
-            return render_to_response('weather/iphone/weather.html', c)
+            return render('weather/iphone/weather.html', c)
     else:
-        return render_to_response('weather/current.html', c)
+        return render('weather/current.html', c)
 
 
 def current(request):
@@ -387,12 +385,12 @@ def generate(request):
                     ' from %s to %s.' % (inserted, attempts, str(start), str(end)),
                 },
             )
-            return render_to_response('weather/after_action.html', c)
+            return render('weather/after_action.html', c)
     else:
         form = GenerateWeatherForm()  # An unbound form
 
     c = RequestContext(request, {'form': form})
-    return render_to_response('weather/generate.html', c)
+    return render('weather/generate.html', c)
 
 
 class DeleteWeatherForm(forms.Form):
@@ -442,12 +440,12 @@ def delete(request):
                 },
             )
 
-            return render_to_response('weather/after_action.html', c)
+            return render('weather/after_action.html', c)
     else:
         form = DeleteWeatherForm()  # An unbound form
 
     c = RequestContext(request, {'form': form})
-    return render_to_response('weather/delete.html', c)
+    return render('weather/delete.html', c)
 
 
 def output_data(request):
@@ -486,12 +484,12 @@ def output_data(request):
         # Force both of these to be type 'str', as dateutil parser
         # does not seem to parse unicode (as retrieved from GET dict).
         start = dateparse(str(start_str))
-    except ValueError, e:
+    except ValueError as e:
         return HttpResponse(content='start date error: %s' % e)
 
     try:
         end = dateparse(str(end_str))
-    except ValueError, e:
+    except ValueError as e:
         return HttpResponse(content='end date error: %s' % e)
 
     target = datetime.date(start.year, start.month, start.day)
@@ -552,9 +550,9 @@ def output_data(request):
                 target += interval
             return response
         elif type == 'hourly':
-            from utils import weather_on_date
-
             from fc3.gchart import periodic_samples
+
+            from .utils import weather_on_date
 
             output = ['date']
             output.extend([datetime.time(n).strftime("%H:%M") for n in range(0, 24)])
@@ -573,7 +571,7 @@ def output_data(request):
                     else:
                         return str(record.temp)
 
-                temps = map(temp_string_or_blank, day_recs)
+                temps = list(map(temp_string_or_blank, day_recs))
                 output = [str(target)]
                 output.extend(temps)
                 writer.writerow(output)

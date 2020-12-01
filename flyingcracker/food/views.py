@@ -1,12 +1,10 @@
-from __future__ import absolute_import
-
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
+from django.urls import reverse
 from django.views.generic.base import RedirectView
 
-from .models import Recipe, Foodstuff, Category
+from .models import Category, Foodstuff, Recipe
 
 
 class FoodRedirectView(RedirectView):
@@ -50,16 +48,16 @@ def recipe_list(request, recipe_type=""):
                                      'recipe_type': recipe_type,
                                      })
         if 'snippet' in request.GET:
-            return render_to_response('food/iphone/recipe_snippet.html', c)
+            return render('food/iphone/recipe_snippet.html', c)
         elif 'iui' in request.GET:
-            return render_to_response('food/iphone/recipe.html', c)
+            return render('food/iphone/recipe.html', c)
         else:
-            return render_to_response('food/iphone/recipe_initial.html', c)
+            return render('food/iphone/recipe_initial.html', c)
     else:
         c = RequestContext(request, {'all_recipes': all_recipes,
                                      'recipe_type': recipe_type,
                                      })
-        return render_to_response('food/recipe_list.html', c)
+        return render('food/recipe_list.html', c)
 
 
 def recipe_detail(request, slug, recipe_type=""):
@@ -86,13 +84,13 @@ def recipe_detail(request, slug, recipe_type=""):
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'snippet' in request.GET:
-            return render_to_response('food/iphone/recipe_snippet.html', c)
+            return render('food/iphone/recipe_snippet.html', c)
         elif 'iui' in request.GET:
-            return render_to_response('food/iphone/recipe.html', c)
+            return render('food/iphone/recipe.html', c)
         else:
-            return render_to_response('food/iphone/recipe_initial.html', c)
+            return render('food/iphone/recipe_initial.html', c)
     else:
-        return render_to_response('food/recipe_detail.html', c)
+        return render('food/recipe_detail.html', c)
 
 
 def foodstuff_list(request, recipe_type=""):
@@ -104,16 +102,16 @@ def foodstuff_list(request, recipe_type=""):
                                      'recipe_type': recipe_type,
                                      })
         if 'snippet' in request.GET:
-            return render_to_response('food/iphone/foodstuff_snippet.html', c)
+            return render('food/iphone/foodstuff_snippet.html', c)
         elif 'iui' in request.GET:
-            return render_to_response('food/iphone/foodstuff.html', c)
+            return render('food/iphone/foodstuff.html', c)
         else:
-            return render_to_response('food/iphone/foodstuff_initial.html', c)
+            return render('food/iphone/foodstuff_initial.html', c)
     else:
         c = RequestContext(request, {'all_foodstuff': all_foodstuff,
                                      'recipe_type': recipe_type,
                                      })
-        return render_to_response('food/foodstuff_list.html', c)
+        return render('food/foodstuff_list.html', c)
 
 
 def foodstuff_detail(request, slug, recipe_type=""):
@@ -130,16 +128,16 @@ def foodstuff_detail(request, slug, recipe_type=""):
                                      'recipes': recipe_list,
                                      })
         if 'snippet' in request.GET:
-            return render_to_response('food/iphone/foodstuff_snippet.html', c)
+            return render('food/iphone/foodstuff_snippet.html', c)
         elif 'iui' in request.GET:
-            return render_to_response('food/iphone/foodstuff.html', c)
+            return render('food/iphone/foodstuff.html', c)
         else:
-            return render_to_response('food/iphone/foodstuff_initial.html', c)
+            return render('food/iphone/foodstuff_initial.html', c)
     else:
         c = RequestContext(request, {'foodstuff': f,
                                      'recipes': recipe_list,
                                      })
-        return render_to_response('food/foodstuff_detail.html', c)
+        return render('food/foodstuff_detail.html', c)
 
 
 def category_list(request, recipe_type, slug):
@@ -156,7 +154,7 @@ def category_list(request, recipe_type, slug):
                                  'recipe_type': recipe_type,
                                  'category': category,
                                  })
-    return render_to_response('food/recipe_list.html', c)
+    return render('food/recipe_list.html', c)
 
 
 def get_all_lists(recipe_type):

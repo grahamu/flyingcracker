@@ -1,6 +1,6 @@
 from django.contrib.syndication.feeds import Feed
 from django.utils.feedgenerator import Atom1Feed
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from miniblog.models import Post
 
 

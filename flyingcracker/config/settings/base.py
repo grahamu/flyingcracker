@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 from unipath import Path
 
 from .secrets import get_secret
@@ -86,7 +85,6 @@ ROOT_URLCONF = 'config.urls'
 APPEND_SLASH = True
 
 PREREQ_APPS = [
-    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -97,22 +95,17 @@ PREREQ_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'django_comments',
     'django_extensions',
-    'django_mailer',
     'markup_deprecated',
-    'timezones',
+    'timezone_field',
 ]
 
 PROJECT_APPS = [
     'cam',
-    'fantasy',
     'fcprofile',
     'food',
     'grill',
     'home',
-    'miniblog',
-    'scoresys',
     'weather',
     'weatherstation',
 ]

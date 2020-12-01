@@ -1,11 +1,11 @@
 import datetime
-from dateutil import parser as dateutilparser
 import os
-from urllib import urlopen
+from urllib.request import urlopen
 
+from dateutil import parser as dateutilparser
 from django.conf import settings
 
-from forecast import Forecast
+from .forecast import Forecast
 
 #
 # This code parses weather data from NOAA
@@ -249,11 +249,11 @@ def save_NOAA_data(state, zname):
 
 def test():
     forecast = get_NOAA_forecast('CO', 12)
-    print(repr(forecast))
+    print((repr(forecast)))
     forecast = get_NOAA_forecast('CA', 1)
-    print(repr(forecast))
+    print((repr(forecast)))
     forecast = get_NOAA_forecast('OR', 1)
-    print(repr(forecast))
+    print((repr(forecast)))
 
 
 if __name__ == '__main__':
@@ -273,4 +273,4 @@ if __name__ == '__main__':
                 save_NOAA_data(state, state + "Z%03d" % options.zone)
             elif cmd.lower() == 'get':
                 state = options.state.upper()
-                print(get_NOAA_data(state, state + "Z%03d" % options.zone))
+                print((get_NOAA_data(state, state + "Z%03d" % options.zone)))
