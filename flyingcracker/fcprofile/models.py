@@ -13,7 +13,7 @@ class FCProfile(models.Model):
     active = models.BooleanField(default=True)  # is the user active?
     timezone = TimeZoneField()
 
-    def __unicode__(self):
+    def __str__(self):
         return f'{self.user}'
 
     def get_absolute_url(self):

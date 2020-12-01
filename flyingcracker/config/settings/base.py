@@ -12,8 +12,8 @@ STATICFILES_DIRS = (
     BASE_DIR.child("static"),
 )
 
-MEDIA_URL = '/media/'
-STATIC_URL = '/static/'
+MEDIA_URL = 'media/'
+STATIC_URL = 'static/'
 
 ADMINS = (
     ('Graham Ullrich', 'graham@flyingcracker.com'),
@@ -47,7 +47,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR.child("templates")],
         'OPTIONS': {
-            'allowed_include_roots': [BASE_DIR],
             'context_processors': [
                 'fc3.context_processors.yui_version',
                 'fc3.context_processors.miniblog',
@@ -55,20 +54,16 @@ TEMPLATES = [
                 'fc3.context_processors.login_url_with_redirect',
                 'django.contrib.messages.context_processors.messages',
                 'django.contrib.auth.context_processors.auth',
-                'django.core.context_processors.debug',
-                'django.core.context_processors.i18n',
-                'django.core.context_processors.media',
-                'django.core.context_processors.request',
-            ],
-            'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.request',
             ],
         },
     },
 ]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -117,9 +112,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
         'LOCATION': '127.0.0.1:11211',
         'TIMEOUT': '300',
-        'OPTIONS': {
-            'MAX_ENTRIES': 100
-        }
     }
 }
 

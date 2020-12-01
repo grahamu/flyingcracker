@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from fcprofile.models import FCProfile
+from .models import FCProfile
 
 attrs_dict = {'class': 'required'}
 

@@ -30,7 +30,7 @@ class ChartUrl(models.Model):
     PLOT_YESTERDAY = 'D'
     PLOT_YEAR_AGO = 'Y'
 
-    def __unicode__(self):
+    def __str__(self):
         return (
             str(self.date)
             + '-'

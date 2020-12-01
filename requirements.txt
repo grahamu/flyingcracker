@@ -13,7 +13,7 @@ django-debug-toolbar==3.1.1
 django-extensions==3.1.0
 django-localflavor==3.0.1
 django-markup-deprecated==0.0.3
-django-registration==2.0.4
+django-registration==3.1.1
 django-timezone-field==4.1.1
 docutils==0.16
 markdown==3.3.3

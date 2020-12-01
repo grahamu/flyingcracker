@@ -3,8 +3,9 @@ from xml.etree.ElementTree import XML, ParseError
 from xml.parsers.expat import ExpatError
 
 from django.conf import settings
-from forecast import Forecast
-from utils import get_URL_data, save_URL_data
+
+from .forecast import Forecast
+from .utils import get_URL_data, save_URL_data
 
 
 class CBTV(Forecast):

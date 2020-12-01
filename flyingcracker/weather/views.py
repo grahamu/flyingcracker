@@ -5,16 +5,15 @@ from decimal import ROUND_HALF_EVEN, Decimal
 from django import forms
 from django.forms import ModelForm
 from django.http import Http404, HttpResponse
-from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_page
 from pytz import timezone
 
-import weather.utils as utils
 from fc3.myjson import JsonResponse
 from fc3.utils import ElapsedTime
 from weatherstation.models import Weather
 
+from . import utils
 from .cbtv import CBTV
 from .models import ChartUrl
 from .noaa import get_NOAA_forecast

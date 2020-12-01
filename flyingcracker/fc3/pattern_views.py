@@ -1,5 +1,5 @@
-from django.core import urlresolvers
 from django.http import HttpResponse
+from django.urls import get_resolver
 
 intro_text = """Named URL patterns for the {% url %} tag
 ========================================
@@ -21,7 +21,7 @@ def show_url_patterns(request):
 
 def _get_named_patterns():
     "Returns list of (pattern-name, pattern) tuples"
-    resolver = urlresolvers.get_resolver(None)
+    resolver = get_resolver(None)
     patterns = sorted([
         (key, value[0][0][0])
         for key, value in list(resolver.reverse_dict.items())

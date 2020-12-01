@@ -1,10 +1,10 @@
 import json
 from decimal import Decimal
 
-from django.core.serializers.json import DateTimeAwareJSONEncoder
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.http import HttpResponse
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
 
@@ -44,7 +44,7 @@ def json_encode2(data):
             ret = str(data)
         # see http://code.djangoproject.com/ticket/5868
         elif isinstance(data, Promise):
-            ret = force_unicode(data)
+            ret = force_text(data)
         else:
             ret = data
         return ret
@@ -76,4 +76,4 @@ def json_encode2(data):
 
     ret = _any(data)
 
-    return json.dumps(ret, cls=DateTimeAwareJSONEncoder)
+    return json.dumps(ret, cls=DjangoJSONEncoder)

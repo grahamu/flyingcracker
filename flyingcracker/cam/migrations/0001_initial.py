@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cam',
             name='category',
-            field=models.ForeignKey(to='cam.Category'),
+            field=models.ForeignKey(to='cam.Category', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

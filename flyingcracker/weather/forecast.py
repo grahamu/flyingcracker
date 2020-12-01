@@ -1,9 +1,9 @@
 import datetime
+
 from dateutil import parser as dateutilparser
 from dateutil.tz import tzlocal
+from django.utils.encoding import smart_bytes
 from pytz import timezone
-
-from django.utils.encoding import smart_str
 
 
 class DataBlock(object):
@@ -52,13 +52,13 @@ class Forecast(DataBlock):
         if self.timestamp:
             s += "Forecast timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
         if self.area:
-            s += "Forecast Area: " + smart_str(self.area) + "\n"
+            s += "Forecast Area: " + smart_bytes(self.area) + "\n"
         if self.warning:
-            s += "Warning: " + smart_str(self.warning) + "\n"
+            s += "Warning: " + smart_bytes(self.warning) + "\n"
         for sec in self.sections:
-            s += smart_str(sec['title']) + ": " + smart_str(sec['body']) + "\n"
+            s += smart_bytes(sec['title']) + ": " + smart_bytes(sec['body']) + "\n"
         if self.reported_by:
-            s += "Reported by: " + smart_str(self.reported_by) + "\n"
+            s += "Reported by: " + smart_bytes(self.reported_by) + "\n"
         if self.error:
             s += "Data Error\n"
         return s

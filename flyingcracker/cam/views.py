@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 
 from fc3.myjson import JsonResponse
@@ -18,12 +18,15 @@ def cam_view(request):
 
     c_list, image, category = get_cam_list(category_id, cam_id)
 
-    c = RequestContext(request, {
-        'catlist': cat_list,
-        'category': category,
-        'camlist': c_list,
-        'image': image,
-    })
+    c = RequestContext(
+        request,
+        {
+            'catlist': cat_list,
+            'category': category,
+            'camlist': c_list,
+            'image': image,
+        },
+    )
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
@@ -36,10 +39,10 @@ def cam_view(request):
 
 
 def cam_list(request):
-    '''
+    """
     Get a list of webcam images associated with a Category.
 
-    '''
+    """
     if request.is_ajax():
         cat_id = request.POST.get('cat', None)
         if cat_id:
@@ -71,10 +74,10 @@ def cam_list(request):
 
 
 def cam_image(request):
-    '''
+    """
     Get a specific image URL.
 
-    '''
+    """
     if request.is_ajax() or request.GET.get('xhr'):
         try:
             id = request.POST.get('id')
@@ -92,10 +95,10 @@ def cam_image(request):
 
 
 def get_cam_list(cat_id, cam_id=None):
-    '''
+    """
     Returns a list of images, a "default" image,
     and the category these images are in.
-    '''
+    """
     # Set the image first
     if cam_id:
         try:

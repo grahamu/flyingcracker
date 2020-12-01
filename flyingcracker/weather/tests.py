@@ -2,10 +2,8 @@ import datetime
 
 from fc3.gchart import periodic_samples
 from fc3.test import TestCase
-from weather.utils import (
-    weather_on_date,
-    get_today_timestamp,
-)
+
+from .utils import get_today_timestamp, weather_on_date
 
 
 class PeriodicRecordsTestCase(TestCase):

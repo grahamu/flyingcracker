@@ -19,7 +19,7 @@ class Weather(models.Model):
     baro_trend = models.DecimalField(max_digits=3, decimal_places=2, null=True)
     windchill = models.DecimalField(max_digits=5, decimal_places=2, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.timestamp is not None:
             return datetime.ctime(self.timestamp)
         else:

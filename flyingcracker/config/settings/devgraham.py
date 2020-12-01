@@ -2,7 +2,7 @@ from .local import *
 
 DATABASES = {
     'default': {
-        'NAME': 'fc3',
+        'NAME': 'graham',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': 'graham',
         'PASSWORD': '',

@@ -3,9 +3,10 @@ from decimal import Decimal
 
 import pytz
 
-import fc3.gchart as gchart
-from weather.models import ChartUrl
+from fc3 import gchart
 from weatherstation.models import Weather
+
+from .models import ChartUrl
 
 TEMP_F = 'F'
 TEMP_C = 'C'

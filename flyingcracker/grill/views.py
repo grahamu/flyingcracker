@@ -1,16 +1,11 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 
-from .models import (
-    Food,
-    Doneness,
-    Grilling,
-    Hardware,
-)
+from .models import Doneness, Food, Grilling, Hardware
 
 
 def grill(request):
-    '''
+    """
     Passes to the main template:
     `food_list` - a list of all Food items
     `food` - currently selected Food object
@@ -20,7 +15,7 @@ def grill(request):
     `more_done` - Doneness id or None
     `grill_items` - list of dicts containing a Cut, Method,
                     and Grilling.details
-    '''
+    """
     food_list = Food.objects.all()
     hardware_list = Hardware.objects.all()
 
@@ -38,24 +33,27 @@ def grill(request):
     food = Food.objects.get(id=food_id)
     doneness = Doneness.objects.get(id=doneness_id)
     hardware = Hardware.objects.get(id=hardware_id)
-    doneness_list = (Doneness.objects.filter(grilling__food=food,
-                                             grilling__hardware=hardware)
-                     .distinct())
-    grill_items = Grilling.objects.filter(food=food, doneness=doneness,
-                                          hardware=hardware)
+    doneness_list = Doneness.objects.filter(
+        grilling__food=food, grilling__hardware=hardware
+    ).distinct()
+    grill_items = Grilling.objects.filter(food=food, doneness=doneness, hardware=hardware)
     if not grill_items:
         if doneness_list:
             doneness = doneness_list[0]
             grill_items = Grilling.objects.filter(food=food, doneness=doneness)
 
-    c = RequestContext(request, {'food_list': food_list,
-                                 'doneness_list': doneness_list,
-                                 'hardware_list': hardware_list,
-                                 'food': food,
-                                 'doneness': doneness,
-                                 'hardware': hardware,
-                                 'grill_items': grill_items,
-                                 })
+    c = RequestContext(
+        request,
+        {
+            'food_list': food_list,
+            'doneness_list': doneness_list,
+            'hardware_list': hardware_list,
+            'food': food,
+            'doneness': doneness,
+            'hardware': hardware,
+            'grill_items': grill_items,
+        },
+    )
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
@@ -78,6 +76,10 @@ def grill(request):
 
 def doneness_detail(request, slug):
     doneness = Doneness.objects.get(slug=slug)
-    c = RequestContext(request, {'doneness': doneness,
-                                 })
+    c = RequestContext(
+        request,
+        {
+            'doneness': doneness,
+        },
+    )
     return render('grill/iphone/doneness_detail.html', c)
