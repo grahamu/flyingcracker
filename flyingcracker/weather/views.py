@@ -1,30 +1,23 @@
-from __future__ import absolute_import
 import datetime
-from decimal import (
-    Decimal,
-    ROUND_HALF_EVEN,
-)
 import json
-from pytz import timezone
+from decimal import ROUND_HALF_EVEN, Decimal
 
 from django import forms
 from django.forms import ModelForm
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.http import Http404, HttpResponse
+from django.template import RequestContext
 from django.views.decorators.cache import cache_page
+from pytz import timezone
 
+from fc3.myjson import JsonResponse
+from fc3.utils import ElapsedTime
+from weatherstation.models import Weather
+
+from . import utils
 from .cbtv import CBTV
 from .models import ChartUrl
 from .noaa import get_NOAA_forecast
-from .sunmoon import (
-    SunMoon,
-    MoonPhases,
-)
-from fc3.myjson import JsonResponse
-from fc3.utils import ElapsedTime
-import weather.utils as utils
-from weatherstation.models import Weather
+from .sunmoon import MoonPhases, SunMoon
 
 
 @cache_page(60 * 5)  # cache for 5 minutes
@@ -52,20 +45,19 @@ def weather(request):
 
     et = ElapsedTime()
 
-    noaa = get_NOAA_forecast('CO', 12)     # Crested Butte area
+    noaa = get_NOAA_forecast('CO', 12)  # Crested Butte area
 
     cbtv = CBTV()
     if cbtv:
         # Don't display CBTV stuff if older than 36 hours.
         # In this case they are probably down.
-        if (not cbtv.timestamp or
-                (now - cbtv.timestamp) > datetime.timedelta(hours=36)):
+        if not cbtv.timestamp or (now - cbtv.timestamp) > datetime.timedelta(hours=36):
             cbtv = None
 
     et.mark_time('forecasts')
 
     # powcam
-#     powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
+    #     powcam = "http://skicb.server310.com/ftp/powcam/pow.jpg"
     powcam = None
 
     sunmoon = SunMoon(user=request.user)
@@ -73,34 +65,34 @@ def weather(request):
     # want to show current phase name "waxing gibbous, 14%"
     # want to display ISS overhead transit info if available that night
 
-
     current_dict, current = get_current_weather(request)
     weather_dict = dict(current_dict)
-    weather_dict.update({
-        'current': current,
-        'show_titles': show_titles,
-        'title_state': title_state,
-        'show_units': show_units,
-        'unit_state': unit_state,
-        'noaa': noaa,
-        'cbtv': cbtv,
-        'powcam': powcam,
-        'sunmoon': sunmoon,
-        'moonphases': moonphases,
-        'elapsed': et.list(),
-        'json_weather': json.dumps(current_dict,
-                                   cls=DjangoJSONEncoder),
-    })
+    weather_dict.update(
+        {
+            'current': current,
+            'show_titles': show_titles,
+            'title_state': title_state,
+            'show_units': show_units,
+            'unit_state': unit_state,
+            'noaa': noaa,
+            'cbtv': cbtv,
+            'powcam': powcam,
+            'sunmoon': sunmoon,
+            'moonphases': moonphases,
+            'elapsed': et.list(),
+            'json_weather': json.dumps(current_dict, cls=DjangoJSONEncoder),
+        }
+    )
     c = RequestContext(request, weather_dict)
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'iui' in request.GET:
-            return render_to_response('weather/iphone/weather-iui.html', c)
+            return render('weather/iphone/weather-iui.html', c)
         else:
-            return render_to_response('weather/iphone/weather.html', c)
+            return render('weather/iphone/weather.html', c)
     else:
-        return render_to_response('weather/current.html', c)
+        return render('weather/current.html', c)
 
 
 def current(request):
@@ -119,8 +111,8 @@ def get_current_weather(request):
     If no Weather record is found, returns an empty
     dictionary.
     """
-    from templatetags.as_timezone import as_timezone
     from django.template.defaultfilters import date as date_filter
+    from templatetags.as_timezone import as_timezone
 
     # get latest weather reading
     try:
@@ -130,7 +122,7 @@ def get_current_weather(request):
 
     # Force this timestamp to be Mountain Time
     timestamp = as_timezone(current.timestamp, "US/Mountain")
-    timestamp = date_filter(timestamp, "H:i \M\T D M j")
+    timestamp = date_filter(timestamp, "H:i \M\T D M j")  # noqa:W605
 
     temp_unit = request.COOKIES.get("temp_unit")
     if temp_unit is None:
@@ -181,65 +173,74 @@ def get_current_weather(request):
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         for unit in utils.temp_units:
-            t_chart.append(get_chart(utils.get_today(request),
-                                     ChartUrl.DATA_TEMP,
-                                     ChartUrl.SIZE_IPHONE,
-                                     (ChartUrl.PLOT_TODAY +
-                                      ChartUrl.PLOT_YESTERDAY +
-                                      ChartUrl.PLOT_YEAR_AGO),
-                                     unit))
+            t_chart.append(
+                get_chart(
+                    utils.get_today(request),
+                    ChartUrl.DATA_TEMP,
+                    ChartUrl.SIZE_IPHONE,
+                    (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+                    unit,
+                )
+            )
         for unit in utils.baro_units:
-            b_chart.append(get_chart(utils.get_today(request),
-                                     ChartUrl.DATA_PRESS,
-                                     ChartUrl.SIZE_IPHONE,
-                                     (ChartUrl.PLOT_TODAY +
-                                      ChartUrl.PLOT_YESTERDAY +
-                                      ChartUrl.PLOT_YEAR_AGO),
-                                     unit))
+            b_chart.append(
+                get_chart(
+                    utils.get_today(request),
+                    ChartUrl.DATA_PRESS,
+                    ChartUrl.SIZE_IPHONE,
+                    (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+                    unit,
+                )
+            )
     else:
         for unit in utils.temp_units:
-            t_chart.append(get_chart(utils.get_today(request),
-                                     ChartUrl.DATA_TEMP,
-                                     ChartUrl.SIZE_NORMAL,
-                                     (ChartUrl.PLOT_TODAY +
-                                      ChartUrl.PLOT_YESTERDAY +
-                                      ChartUrl.PLOT_YEAR_AGO),
-                                     unit))
+            t_chart.append(
+                get_chart(
+                    utils.get_today(request),
+                    ChartUrl.DATA_TEMP,
+                    ChartUrl.SIZE_NORMAL,
+                    (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+                    unit,
+                )
+            )
         for unit in utils.baro_units:
-            b_chart.append(get_chart(utils.get_today(request),
-                                     ChartUrl.DATA_PRESS,
-                                     ChartUrl.SIZE_NORMAL,
-                                     (ChartUrl.PLOT_TODAY +
-                                      ChartUrl.PLOT_YESTERDAY +
-                                      ChartUrl.PLOT_YEAR_AGO),
-                                     unit))
+            b_chart.append(
+                get_chart(
+                    utils.get_today(request),
+                    ChartUrl.DATA_PRESS,
+                    ChartUrl.SIZE_NORMAL,
+                    (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+                    unit,
+                )
+            )
     temp_chart_val = t_chart[utils.temp_units.index(temp_unit)]
     baro_chart_val = b_chart[utils.baro_units.index(baro_unit)]
-    response_dict = {'timestamp': timestamp,
-                     'temp_units': utils.temp_units,
-                     'baro_units': utils.baro_units,
-                     'speed_units': wind_units,
-                     'temp_val': temp_val,
-                     'baro_val': baro_val,
-                     'trend_val': trend_val,
-                     'temp_unit': temp_unit,
-                     'baro_unit': baro_unit,
-                     'speed_unit': speed_unit,
-                     'temp': temp_list,
-                     'baro': baro_list,
-                     'trend': trend_list,
-                     'wind': wind_list,
-                     'wind_val': wind_val,
-                     'wind_dir': wind_dir,
-                     'windchill': windchill_list,
-                     'windchill_val': windchill_val,
-                     'humidity': current.humidity,
-                     'temp_chart': t_chart,
-                     'baro_chart': b_chart,
-                     'temp_chart_val': temp_chart_val,
-                     'baro_chart_val': baro_chart_val,
-                     'morning': morning,
-                     }
+    response_dict = {
+        'timestamp': timestamp,
+        'temp_units': utils.temp_units,
+        'baro_units': utils.baro_units,
+        'speed_units': wind_units,
+        'temp_val': temp_val,
+        'baro_val': baro_val,
+        'trend_val': trend_val,
+        'temp_unit': temp_unit,
+        'baro_unit': baro_unit,
+        'speed_unit': speed_unit,
+        'temp': temp_list,
+        'baro': baro_list,
+        'trend': trend_list,
+        'wind': wind_list,
+        'wind_val': wind_val,
+        'wind_dir': wind_dir,
+        'windchill': windchill_list,
+        'windchill_val': windchill_val,
+        'humidity': current.humidity,
+        'temp_chart': t_chart,
+        'baro_chart': b_chart,
+        'temp_chart_val': temp_chart_val,
+        'baro_chart_val': baro_chart_val,
+        'morning': morning,
+    }
     return response_dict, current
 
 
@@ -275,28 +276,29 @@ def get_chart(date, data_type, size, plots, unit, force_create=False):
     now = datetime.datetime.now(mountain_timezone)
 
     try:
-        chart = ChartUrl.objects.get(date=date, data_type=data_type,
-                                     size=size, plots=plots, unit=unit)
+        chart = ChartUrl.objects.get(
+            date=date, data_type=data_type, size=size, plots=plots, unit=unit
+        )
     except ChartUrl.DoesNotExist:
         # create url
-        chart = ChartUrl(date=date, timestamp=now, data_type=data_type,
-                         size=size, plots=plots, unit=unit)
+        chart = ChartUrl(
+            date=date, timestamp=now, data_type=data_type, size=size, plots=plots, unit=unit
+        )
         # BUGBUG - 2008-11-20 - move the following line up above
         #          the previous line, once we figure out the correct
         #          exception for a save overwrite.
         #          Restore the 'try' block when we have that exception type.
         url = utils.create_chart_url(date, data_type, size, plots, unit)
         chart.url = url
-#        try:
+        #        try:
         chart.save()
-#        except: # someone else got it done first
-#            pass
+    #        except: # someone else got it done first
+    #            pass
     else:
         # recreate url if timestamp hour is different than now
         if now.hour != chart.timestamp.hour:
             # re-create url
-            chart.url = utils.create_chart_url(date, data_type,
-                                               size, plots, unit)
+            chart.url = utils.create_chart_url(date, data_type, size, plots, unit)
             chart.timestamp = now
             chart.save()
     return chart.url
@@ -317,19 +319,22 @@ class GenerateWeatherForm(WeatherForm):
         end = self.cleaned_data.get('end_date')
         if start and end:
             if end < start:
-                raise forms.ValidationError('Start date/time (%s) must be '
-                                            'prior to end date/time (%s)' %
-                                            (str(start), str(end)))
+                raise forms.ValidationError(
+                    'Start date/time (%s) must be '
+                    'prior to end date/time (%s)' % (str(start), str(end))
+                )
         return self.cleaned_data
 
     class Meta(WeatherForm.Meta):
-        exclude = ('station_id',
-                   'timestamp',
-                   'temp_inside',
-                   'rain',
-                   'wind_peak',
-                   'dewpoint',
-                   'windchill')
+        exclude = (
+            'station_id',
+            'timestamp',
+            'temp_inside',
+            'rain',
+            'wind_peak',
+            'dewpoint',
+            'windchill',
+        )
 
 
 def generate(request):
@@ -346,41 +351,45 @@ def generate(request):
             inserted = attempts = 0
             et = ElapsedTime()
             while curr <= end:
-                obj = Weather(station_id='GENERATED',
-                              timestamp=curr,
-                              wind_dir=cd['wind_dir'],
-                              wind_speed=cd['wind_speed'],
-                              wind_peak=0,
-                              humidity=cd['humidity'],
-                              temp=cd['temp'],
-                              rain=0,
-                              barometer=cd['barometer'],
-                              dewpoint=0,
-                              temp_inside=0,
-                              baro_trend=cd['baro_trend'],
-                              windchill=0)
+                obj = Weather(
+                    station_id='GENERATED',
+                    timestamp=curr,
+                    wind_dir=cd['wind_dir'],
+                    wind_speed=cd['wind_speed'],
+                    wind_peak=0,
+                    humidity=cd['humidity'],
+                    temp=cd['temp'],
+                    rain=0,
+                    barometer=cd['barometer'],
+                    dewpoint=0,
+                    temp_inside=0,
+                    baro_trend=cd['baro_trend'],
+                    windchill=0,
+                )
                 try:
                     obj.save()
                 except Weather.IntegrityError:
-                    pass    # leave the existing record in place
+                    pass  # leave the existing record in place
                 else:
                     inserted += 1
                 curr += interval
                 attempts += 1
 
             et.mark_time('insertions')
-            c = RequestContext(request, {
-                'elapsed': et.list(),
-                'message': 'Added %d Weather records in %d attempts,'
-                           ' from %s to %s.'
-                           % (inserted, attempts, str(start), str(end)),
-            })
-            return render_to_response('weather/after_action.html', c)
+            c = RequestContext(
+                request,
+                {
+                    'elapsed': et.list(),
+                    'message': 'Added %d Weather records in %d attempts,'
+                    ' from %s to %s.' % (inserted, attempts, str(start), str(end)),
+                },
+            )
+            return render('weather/after_action.html', c)
     else:
         form = GenerateWeatherForm()  # An unbound form
 
     c = RequestContext(request, {'form': form})
-    return render_to_response('weather/generate.html', c)
+    return render('weather/generate.html', c)
 
 
 class DeleteWeatherForm(forms.Form):
@@ -392,9 +401,10 @@ class DeleteWeatherForm(forms.Form):
         end = self.cleaned_data.get('end_date')
         if start and end:
             if end < start:
-                raise forms.ValidationError('Start date/time (%s) must be'
-                                            ' prior to end date/time (%s)' %
-                                            (str(start), str(end)))
+                raise forms.ValidationError(
+                    'Start date/time (%s) must be'
+                    ' prior to end date/time (%s)' % (str(start), str(end))
+                )
         return self.cleaned_data
 
 
@@ -413,26 +423,28 @@ def delete(request):
             for obj in records:
                 try:
                     obj.delete()
-                except:
+                except Weather.DoesNotExist:
                     pass
                 else:
                     deleted += 1
                 attempts += 1
 
             et.mark_time('deletions')
-            c = RequestContext(request, {
-                'elapsed': et.list(),
-                'message': 'Deleted %d Weather records in %d attempts,'
-                           ' from %s to %s..' %
-                           (deleted, attempts, str(start), str(end)),
-            })
+            c = RequestContext(
+                request,
+                {
+                    'elapsed': et.list(),
+                    'message': 'Deleted %d Weather records in %d attempts,'
+                    ' from %s to %s..' % (deleted, attempts, str(start), str(end)),
+                },
+            )
 
-            return render_to_response('weather/after_action.html', c)
+            return render('weather/after_action.html', c)
     else:
         form = DeleteWeatherForm()  # An unbound form
 
     c = RequestContext(request, {'form': form})
-    return render_to_response('weather/delete.html', c)
+    return render('weather/delete.html', c)
 
 
 def output_data(request):
@@ -447,6 +459,7 @@ def output_data(request):
     Subsequent lines contain data values.
     """
     import csv
+
     from dateutil.parser import parse as dateparse
 
     item = request.GET.get('item')
@@ -457,10 +470,11 @@ def output_data(request):
     elif item == 'temp' or item == 'humidity' or item == 'windchill':
         attr = item
     else:
-        return HttpResponse(content='Unsupported data item: "%s".'
-                            ' Valid data items: "temp", "pressure",'
-                            ' "humidity", "windchill" and "wind".' %
-                            str(item))
+        return HttpResponse(
+            content='Unsupported data item: "%s".'
+            ' Valid data items: "temp", "pressure",'
+            ' "humidity", "windchill" and "wind".' % str(item)
+        )
 
     today_str = datetime.date.today().strftime('%Y-%m-%d')
     start_str = request.GET.get('start', today_str)
@@ -469,12 +483,12 @@ def output_data(request):
         # Force both of these to be type 'str', as dateutil parser
         # does not seem to parse unicode (as retrieved from GET dict).
         start = dateparse(str(start_str))
-    except ValueError, e:
+    except ValueError as e:
         return HttpResponse(content='start date error: %s' % e)
 
     try:
         end = dateparse(str(end_str))
-    except ValueError, e:
+    except ValueError as e:
         return HttpResponse(content='end date error: %s' % e)
 
     target = datetime.date(start.year, start.month, start.day)
@@ -482,8 +496,9 @@ def output_data(request):
     interval = datetime.timedelta(days=1)
 
     if target > end:
-        return HttpResponse(content='start date cannot be later than'
-                                    ' end date' % (str(target), str(end)))
+        return HttpResponse(
+            content='start date {} cannot be later than end date {}'.format(target, end)
+        )
 
     type = request.GET.get('type')
 
@@ -495,16 +510,17 @@ def output_data(request):
 
     if item == 'temp':
         if type == 'average':
-            writer.writerow(['date',
-                             '%s:low (F)' % attr,
-                             '%s:high (F)' % attr,
-                             '%s:average (F)' % attr])
+            writer.writerow(
+                ['date', '%s:low (F)' % attr, '%s:high (F)' % attr, '%s:average (F)' % attr]
+            )
 
             # Get the high and low temp for each date.
             while target <= end:
-                qs = Weather.objects.filter(timestamp__year=target.year,
-                                            timestamp__month=target.month,
-                                            timestamp__day=target.day)
+                qs = Weather.objects.filter(
+                    timestamp__year=target.year,
+                    timestamp__month=target.month,
+                    timestamp__day=target.day,
+                )
                 vals = [rec.__getattribute__(attr) for rec in qs]
                 total = Decimal('0')
                 if vals:
@@ -514,38 +530,39 @@ def output_data(request):
                         total += temp
                     avg = total / len(vals)
                     writer.writerow(
-                        [str(target),
-                         str(low),
-                         str(high),
-                         str(avg.quantize(Decimal('0.1'),
-                                          rounding=ROUND_HALF_EVEN)),
-                         ])
+                        [
+                            str(target),
+                            str(low),
+                            str(high),
+                            str(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
+                        ]
+                    )
                 else:
-                    writer.writerow([str(target),
-                                     'N/A',
-                                     'N/A',
-                                     'N/A',
-                                     ])
+                    writer.writerow(
+                        [
+                            str(target),
+                            'N/A',
+                            'N/A',
+                            'N/A',
+                        ]
+                    )
                 target += interval
             return response
         elif type == 'hourly':
             from fc3.gchart import periodic_samples
-            from utils import weather_on_date
+
+            from .utils import weather_on_date
 
             output = ['date']
-            output.extend([datetime.time(n).strftime("%H:%M")
-                           for n in range(0, 24)])
+            output.extend([datetime.time(n).strftime("%H:%M") for n in range(0, 24)])
             writer.writerow(output)
 
             while target <= end:
                 qs = weather_on_date(target)
-                start = datetime.datetime(target.year,
-                                          target.month,
-                                          target.day)
-                day_recs = periodic_samples(qs, start,
-                                            datetime.timedelta(minutes=5),
-                                            datetime.timedelta(hours=1),
-                                            24)
+                start = datetime.datetime(target.year, target.month, target.day)
+                day_recs = periodic_samples(
+                    qs, start, datetime.timedelta(minutes=5), datetime.timedelta(hours=1), 24
+                )
 
                 def temp_string_or_blank(record):
                     if not record:
@@ -553,54 +570,58 @@ def output_data(request):
                     else:
                         return str(record.temp)
 
-                temps = map(temp_string_or_blank, day_recs)
+                temps = list(map(temp_string_or_blank, day_recs))
                 output = [str(target)]
                 output.extend(temps)
                 writer.writerow(output)
                 target += interval
             return response
         else:
-            return HttpResponse(content='Unsupported report type: "%s".'
-                                        ' Valid report types: "average".' %
-                                        str(type))
+            return HttpResponse(
+                content='Unsupported report type: "%s".'
+                ' Valid report types: "average".' % str(type)
+            )
     elif item == 'wind':
         if type == 'average':
-            writer.writerow(['date',
-                             '%s:average (mph)' % attr,
-                             '%s:peak (mph)' % attr])
+            writer.writerow(['date', '%s:average (mph)' % attr, '%s:peak (mph)' % attr])
 
             # Get the average and peak windspeed for each date.
             while target <= end:
-                qs = Weather.objects.filter(timestamp__year=target.year,
-                                            timestamp__month=target.month,
-                                            timestamp__day=target.day)
+                qs = Weather.objects.filter(
+                    timestamp__year=target.year,
+                    timestamp__month=target.month,
+                    timestamp__day=target.day,
+                )
                 speed_vals = [rec.__getattribute__(attr) for rec in qs]
                 total = Decimal('0')
                 if speed_vals:
                     for speed in speed_vals:
                         total += speed
                     avg = total / len(speed_vals)
-                    peak = max([rec.__getattribute__('wind_peak')
-                                for rec in qs])
+                    peak = max([rec.__getattribute__('wind_peak') for rec in qs])
                     writer.writerow(
-                        [str(target),
-                         str(avg.quantize(Decimal('0.1'),
-                                          rounding=ROUND_HALF_EVEN)),
-                         str(peak.quantize(Decimal('0.1'),
-                                           rounding=ROUND_HALF_EVEN)),
-                         ])
+                        [
+                            str(target),
+                            str(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
+                            str(peak.quantize(Decimal('0.1'), rounding=ROUND_HALF_EVEN)),
+                        ]
+                    )
                 else:
-                    writer.writerow([str(target),
-                                     'N/A',
-                                     'N/A',
-                                     ])
+                    writer.writerow(
+                        [
+                            str(target),
+                            'N/A',
+                            'N/A',
+                        ]
+                    )
 
                 target += interval
             return response
         else:
-            return HttpResponse(content='Unsupported report type: "%s".'
-                                        ' Valid report types: "average".' %
-                                        str(type))
+            return HttpResponse(
+                content='Unsupported report type: "%s".'
+                ' Valid report types: "average".' % str(type)
+            )
 
 
 def chart(request):
@@ -621,9 +642,10 @@ def chart(request):
 
     item = request.GET.get('item')
     if item not in item_list:
-        return HttpResponse(content='Unsupported data item: "%s".'
-                                    ' Valid data items are: %s.' %
-                                    (str(item), ', '.join(item_list)))
+        return HttpResponse(
+            content='Unsupported data item: "%s".'
+            ' Valid data items are: %s.' % (str(item), ', '.join(item_list))
+        )
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
@@ -639,75 +661,79 @@ def chart(request):
 
     if item == 'temp':
         if units not in utils.temp_units:
-            return HttpResponse(content='Unsupported temp units: "%s".'
-                                        ' Valid units: %s.' %
-                                        (str(units),
-                                         ', '.join(utils.temp_units)))
+            return HttpResponse(
+                content='Unsupported temp units: "%s".'
+                ' Valid units: %s.' % (str(units), ', '.join(utils.temp_units))
+            )
         if type != 'multiday':
-            return HttpResponse(content='Unsupported chart type: "%s".'
-                                        ' Valid chart types: "multiday".' %
-                                        str(type))
+            return HttpResponse(
+                content='Unsupported chart type: "%s".'
+                ' Valid chart types: "multiday".' % str(type)
+            )
 
-        chart = get_chart(chart_date,
-                          ChartUrl.DATA_TEMP,
-                          size,
-                          (ChartUrl.PLOT_TODAY +
-                           ChartUrl.PLOT_YESTERDAY +
-                           ChartUrl.PLOT_YEAR_AGO),
-                          units,
-                          force_create=force_create)
+        chart = get_chart(
+            chart_date,
+            ChartUrl.DATA_TEMP,
+            size,
+            (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+            units,
+            force_create=force_create,
+        )
     elif item == 'pressure':
         if units not in utils.baro_units:
-            return HttpResponse(content='Unsupported pressure units: "%s".'
-                                        ' Valid units: %s.' %
-                                        (str(units),
-                                         ', '.join(utils.baro_units)))
+            return HttpResponse(
+                content='Unsupported pressure units: "%s".'
+                ' Valid units: %s.' % (str(units), ', '.join(utils.baro_units))
+            )
         if type != 'multiday':
-            return HttpResponse(content='Unsupported chart type: "%s".'
-                                        ' Valid chart types: "multiday".' %
-                                        str(type))
+            return HttpResponse(
+                content='Unsupported chart type: "%s".'
+                ' Valid chart types: "multiday".' % str(type)
+            )
 
-        chart = get_chart(chart_date,
-                          ChartUrl.DATA_PRESS,
-                          size,
-                          (ChartUrl.PLOT_TODAY +
-                           ChartUrl.PLOT_YESTERDAY +
-                           ChartUrl.PLOT_YEAR_AGO),
-                          units,
-                          force_create=force_create)
+        chart = get_chart(
+            chart_date,
+            ChartUrl.DATA_PRESS,
+            size,
+            (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+            units,
+            force_create=force_create,
+        )
     elif item == 'humidity':
         if type != 'multiday':
-            return HttpResponse(content='Unsupported chart type: "%s".'
-                                        ' Valid chart types: "multiday".' %
-                                        str(type))
+            return HttpResponse(
+                content='Unsupported chart type: "%s".'
+                ' Valid chart types: "multiday".' % str(type)
+            )
 
-        chart = get_chart(chart_date,
-                          ChartUrl.DATA_HUMIDITY,
-                          size,
-                          (ChartUrl.PLOT_TODAY +
-                           ChartUrl.PLOT_YESTERDAY +
-                           ChartUrl.PLOT_YEAR_AGO),
-                          '%',
-                          force_create=force_create)
+        chart = get_chart(
+            chart_date,
+            ChartUrl.DATA_HUMIDITY,
+            size,
+            (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+            '%',
+            force_create=force_create,
+        )
     elif item == 'wind':
         if units not in utils.speed_units:
-            return HttpResponse(content='Unsupported speed units: "%s".'
-                                        ' Valid units: %s.' %
-                                        (str(units),
-                                         ', '.join(utils.speed_units)))
+            return HttpResponse(
+                content='Unsupported speed units: "%s".'
+                ' Valid units: %s.' % (str(units), ', '.join(utils.speed_units))
+            )
         if type != 'multiday':
-            return HttpResponse(content='Unsupported chart type: "%s".'
-                                        ' Valid chart types: "multiday".' %
-                                        str(type))
+            return HttpResponse(
+                content='Unsupported chart type: "%s".'
+                ' Valid chart types: "multiday".' % str(type)
+            )
 
-        chart = get_chart(chart_date,
-                          ChartUrl.DATA_WIND,
-                          size,
-                          (ChartUrl.PLOT_TODAY +
-                           ChartUrl.PLOT_YESTERDAY +
-                           ChartUrl.PLOT_YEAR_AGO),
-                          units,
-                          force_create=force_create)
+        chart = get_chart(
+            chart_date,
+            ChartUrl.DATA_WIND,
+            size,
+            (ChartUrl.PLOT_TODAY + ChartUrl.PLOT_YESTERDAY + ChartUrl.PLOT_YEAR_AGO),
+            units,
+            force_create=force_create,
+        )
     else:
         chart = 'none'
     return HttpResponse(content=chart)

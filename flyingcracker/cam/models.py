@@ -5,7 +5,7 @@ from localflavor.us.models import USStateField
 class Category(models.Model):
     title = models.CharField(max_length=30)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -35,7 +35,7 @@ class Cam(models.Model):
     state = USStateField(default="CO")
     objects = CamManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:

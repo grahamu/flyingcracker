@@ -1,9 +1,12 @@
 import datetime
-import pytz
 from decimal import Decimal
+
+import pytz
+
+from fc3 import gchart
 from weatherstation.models import Weather
-from weather.models import ChartUrl
-import fc3.gchart as gchart
+
+from .models import ChartUrl
 
 TEMP_F = 'F'
 TEMP_C = 'C'
@@ -22,10 +25,10 @@ speed_units = [SPEED_MPH, SPEED_KTS, SPEED_KMH, SPEED_MS, SPEED_FTS]
 
 
 def create_chart_url(date, data_type, size, plots, unit):
-    '''
+    """
     Return a chart URL for the given parameters.
 
-    '''
+    """
     if type(date) == datetime.date:
         date = datetime.datetime(date.year, date.month, date.day)
     mountain_timezone = pytz.timezone('US/Mountain')
@@ -87,8 +90,7 @@ def create_chart_url(date, data_type, size, plots, unit):
             width = WIDTH_DEFAULT
             height = HEIGHT_DEFAULT
             plot_func = gchart.day_chart_normal
-        chart = day_temp_chart(qs_list, unit, plot_func,
-                               width, height, plot_colors)
+        chart = day_temp_chart(qs_list, unit, plot_func, width, height, plot_colors)
 
     elif data_type == ChartUrl.DATA_PRESS:
         if size == ChartUrl.SIZE_IPHONE:
@@ -103,8 +105,7 @@ def create_chart_url(date, data_type, size, plots, unit):
             width = WIDTH_DEFAULT
             height = HEIGHT_DEFAULT
             plot_func = gchart.day_chart_normal
-        chart = day_baro_chart(qs_list, unit, plot_func,
-                               width, height, plot_colors)
+        chart = day_baro_chart(qs_list, unit, plot_func, width, height, plot_colors)
 
     elif data_type == ChartUrl.DATA_HUMIDITY:
         if size == ChartUrl.SIZE_IPHONE:
@@ -119,8 +120,7 @@ def create_chart_url(date, data_type, size, plots, unit):
             width = WIDTH_DEFAULT
             height = HEIGHT_DEFAULT
             plot_func = gchart.day_chart_normal
-        chart = day_humidity_chart(qs_list, plot_func,
-                                   width, height, plot_colors)
+        chart = day_humidity_chart(qs_list, plot_func, width, height, plot_colors)
 
     elif data_type == ChartUrl.DATA_WIND:
         if size == ChartUrl.SIZE_IPHONE:
@@ -135,8 +135,7 @@ def create_chart_url(date, data_type, size, plots, unit):
             width = WIDTH_DEFAULT
             height = HEIGHT_DEFAULT
             plot_func = gchart.day_chart_normal
-        chart = day_wind_chart(qs_list, unit, plot_func,
-                               width, height, plot_colors)
+        chart = day_wind_chart(qs_list, unit, plot_func, width, height, plot_colors)
 
     else:
         return ''
@@ -144,10 +143,10 @@ def create_chart_url(date, data_type, size, plots, unit):
 
 
 def day_temp_chart(qs_list, unit, plot_func, width, height, colors):
-    '''
+    """
     Returns a URL which plots one line for each queryset in `qs_list`.
 
-    '''
+    """
     data_list = []  # list of value lists
     for date_qs in qs_list:
         if date_qs:  # only work on this if the queryset is not empty
@@ -162,17 +161,16 @@ def day_temp_chart(qs_list, unit, plot_func, width, height, colors):
         # determine the lowest and highest values seen for this unit type
         floor = gchart.int_floor(val_list, floor)
         ceil = gchart.int_ceil(val_list, ceil)
-    chart = plot_func(plot_list, floor, ceil,
-                      width, height, colors, [4, 2, 2])
+    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4, 2, 2])
     return chart
 
 
 def convert_qs_temps(qs, unit):
-    '''
+    """
     Returns a list of values converted to `unit` if necessary
     from a queryset of Weather records.
 
-    '''
+    """
     temps = []
     for rec in qs:
         if rec is None:
@@ -200,10 +198,10 @@ def round_temp(val):
 
 
 def day_baro_chart(qs_list, unit, plot_func, width, height, colors):
-    '''
+    """
     Returns a URL which produces one line for each queryset.
 
-    '''
+    """
     data_list = []  # list of value lists
     for date_qs in qs_list:
         if date_qs:  # only work on this if the queryset is not empty
@@ -218,23 +216,22 @@ def day_baro_chart(qs_list, unit, plot_func, width, height, colors):
         # determine the lowest and highest values seen for this unit type
         floor = gchart.flex_floor(val_list, floor)
         ceil = gchart.flex_ceil(val_list, ceil)
-    chart = plot_func(plot_list, floor, ceil,
-                      width, height, colors, [4, 2, 2])
+    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4, 2, 2])
     return chart
 
 
 def convert_qs_pressures(qs, unit):
-    '''
+    """
     Returns a list of values converted to `unit` if necessary
     from a queryset of Weather records.
 
-    '''
+    """
     press = []
     for rec in qs:
         if rec is None:
             press.append(None)
         else:
-            if unit == PRESS_IN:    # default units
+            if unit == PRESS_IN:  # default units
                 press.append(float(rec.barometer))
             else:
                 press.append(in_to_mb(rec.barometer))
@@ -250,10 +247,10 @@ def in_to_mb(val):
 
 
 def day_humidity_chart(qs_list, plot_func, width, height, colors):
-    '''
+    """
     Returns a URL which produces one line for each queryset.
 
-    '''
+    """
     data_list = []  # list of value lists
     for date_qs in qs_list:
         humidity = []
@@ -273,10 +270,10 @@ def day_humidity_chart(qs_list, plot_func, width, height, colors):
 
 
 def day_wind_chart(qs_list, unit, plot_func, width, height, colors):
-    '''
+    """
     Returns a URL which produces one line for each queryset.
 
-    '''
+    """
     data_list = []  # list of value lists
     for date_qs in qs_list:
         if date_qs:  # only work on this if the queryset is not empty
@@ -295,11 +292,11 @@ def day_wind_chart(qs_list, unit, plot_func, width, height, colors):
 
 
 def convert_qs_speeds(qs, unit):
-    '''
+    """
     Returns a list of values converted to `unit` if necessary
     from a queryset of Weather records.
 
-    '''
+    """
     speed = []
     for rec in qs:
         if rec is None:
@@ -310,11 +307,11 @@ def convert_qs_speeds(qs, unit):
 
 
 def calc_temp_values(value):
-    '''
+    """
     Return a list of temperature values equal to the given value,
     where each value in the list corresponds with a different temperature unit.
 
-    '''
+    """
     vlist = []
     for unit in temp_units:
         if unit == TEMP_C:
@@ -326,11 +323,11 @@ def calc_temp_values(value):
 
 
 def calc_baro_values(value):
-    '''
+    """
     Return a list of pressure values equal to the given value,
     where each value in the list corresponds with a different pressure unit.
 
-    '''
+    """
     vlist = []
     for unit in baro_units:
         if unit == PRESS_MB:
@@ -411,23 +408,23 @@ dir_table = {
     'West': 270,
     'WNW': 292.5,
     'NW': 315,
-    'NNW': 337.5
+    'NNW': 337.5,
 }
 
 
 def wind_dir_to_english(dir):
-    for key, val in dir_table.items():
-        #TODO make this value a named constant
+    for key, val in list(dir_table.items()):
+        # TODO make this value a named constant
         if dir >= (val - 11.25) and dir < (val + 11.25):
             return key
     return 'North'
 
 
 def weather_on_date(date):
-    '''
+    """
     Return all Weather records for a specific date.
 
-    '''
+    """
     mountain_timezone = pytz.timezone('US/Mountain')
     if type(date) == datetime.datetime:
         date = date.date()
@@ -444,20 +441,22 @@ def request_is_local(request):
         remote = request.META.get('REMOTE_ADDR')
     else:
         remote = None
-    if (remote is None or
-            remote.startswith("192.168.5.") or
-            remote.startswith("192.168.1.") or
-            remote.startswith("10.0.1.")):
+    if (
+        remote is None
+        or remote.startswith("192.168.5.")
+        or remote.startswith("192.168.1.")
+        or remote.startswith("10.0.1.")
+    ):
         return True
     else:
         return False
 
 
 def get_date(request=None, date=None):
-    '''
+    """
     Returns a datetime.date object corresponding to `date`.
     If the date is not provided or is invalid, today is returned.
-    '''
+    """
     mountain_timezone = pytz.timezone('US/Mountain')
     today = datetime.datetime.now(mountain_timezone).date()
 
@@ -469,7 +468,7 @@ def get_date(request=None, date=None):
             year = int(date[0:4])
             month = int(date[4:6])
             day = int(date[6:8])
-        except:
+        except ValueError:
             return today
         else:
             try:
@@ -481,17 +480,17 @@ def get_date(request=None, date=None):
 
 
 def get_today(request=None):
-    '''
+    """
     Returns a datetime.date object corresponding to today.
-    '''
+    """
     mountain_timezone = pytz.timezone('US/Mountain')
     return datetime.datetime.now(mountain_timezone).date()
 
 
 def get_today_timestamp(request=None):
-    '''
+    """
     Returns a datetime.datetime object corresponding to today.
-    '''
+    """
     mountain_timezone = pytz.timezone('US/Mountain')
     return datetime.datetime.now(mountain_timezone)
 
@@ -505,19 +504,26 @@ def baro_chart_filename(unit, date, type, extra):
 
 
 def weather_chart_filename(unit, date, title, type, extra):
-    return '%d-%02d-%02d_%s_%s_%s%s.png' % \
-           (date.year, date.month, date.day, title, unit, type, extra)
+    return '%d-%02d-%02d_%s_%s_%s%s.png' % (
+        date.year,
+        date.month,
+        date.day,
+        title,
+        unit,
+        type,
+        extra,
+    )
 
 
-def temp_dict(l):
-    '''
+def temp_dict(weather_records):
+    """
     Return a dictionary of temperature lists from a list of Weather
     records.
     The dictionary is keyed by temp_units and each value is a list
     of temperatures in that unit.
-    '''
+    """
     data = []
-    for rec in l:
+    for rec in weather_records:
         if rec is None or rec.temp is None:
             v = None
         else:
@@ -525,7 +531,7 @@ def temp_dict(l):
         data.append(calc_temp_values(v))
 
     # transpose the 2-dimensional array, p.161 Python Cookbook
-    data = map(list, zip(*data))
+    data = list(map(list, zip(*data)))
 
     i = 0
     unit_dict = {}
@@ -536,13 +542,13 @@ def temp_dict(l):
     return unit_dict
 
 
-def baro_dict(l):
-    '''
+def baro_dict(weather_records):
+    """
     Return a list of pressure lists from a list of Weather records.
     Each list corresponds to a unit type.
-    '''
+    """
     data = []
-    for rec in l:
+    for rec in weather_records:
         if rec is None or rec.barometer is None:
             v = None
         else:
@@ -561,38 +567,38 @@ def baro_dict(l):
 
 
 def get_URL_data(url, filename, max_file_age=60):
-    '''
+    """
     Given a URL and a filename, if the file exists and it's timestamp
     is not older than 'max_file_age' minutes, return file contents.
     If the file does not exist or is older than 'max_file_age' minutes
     obtain data from the URL and save in filename before returning.
 
-    '''
+    """
     import os
+
     if not os.path.isfile(filename):
         return save_URL_data(url, filename)
 
     filetime_t = os.path.getmtime(filename)
     filestamp = datetime.datetime.fromtimestamp(filetime_t)
     now = datetime.datetime.now()
-    if ((now - filestamp) > datetime.timedelta(minutes=max_file_age) or
-            (now < filestamp)):
+    if (now - filestamp) > datetime.timedelta(minutes=max_file_age) or (now < filestamp):
         return save_URL_data(url, filename)
 
     try:
         f = open(filename, 'r')
-    except:
+    except IOError:
         lines = save_URL_data(url, filename)
     else:
         try:
             lines = f.read()
-        except:
+        except IOError:
             lines = save_URL_data(url, filename)
     return lines
 
 
 def save_URL_data(url, filename):
-    from urllib import urlopen
+    from urllib.request import urlopen
 
     try:
         text = urlopen(url).read()

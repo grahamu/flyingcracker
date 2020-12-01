@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from unipath import Path
-
 from .base import *
 
 DEBUG = True

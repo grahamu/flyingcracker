@@ -1,7 +1,7 @@
 from datetime import date
 
-from django.core.urlresolvers import reverse
 from django.db import models
+from django.urls import reverse
 
 
 class Foodstuff(models.Model):
@@ -9,12 +9,11 @@ class Foodstuff(models.Model):
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('ingredient-detail',
-                       kwargs={'slug': self.slug})
+        return reverse('ingredient-detail', kwargs={'slug': self.slug})
 
     class Meta:
         ordering = ['title']
@@ -23,7 +22,7 @@ class Foodstuff(models.Model):
 class Attribute(models.Model):
     title = models.CharField(max_length=20)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -35,7 +34,7 @@ class Category(models.Model):
     slug = models.SlugField()
     description = models.TextField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -46,8 +45,7 @@ class Category(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField()
-    pub_date = models.DateField('date published', null=True,
-                                default=date.today)
+    pub_date = models.DateField('date published', null=True, default=date.today)
     directions = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     teaser = models.CharField(max_length=100, blank=True, null=True)
@@ -62,10 +60,9 @@ class Recipe(models.Model):
         (EAT_CLASS, 'Eat'),
         (INGREDIENT_CLASS, 'Ingredient'),
     )
-    rclass = models.CharField(max_length=1, choices=CLASS_CHOICES,
-                              default=DRINK_CLASS, blank=False)
+    rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, default=DRINK_CLASS, blank=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):
@@ -73,32 +70,30 @@ class Recipe(models.Model):
             recipe_type = 'drink'
         else:
             recipe_type = 'food'
-        return reverse('food:recipe-detail',
-                       kwargs={'slug': self.slug,
-                               'recipe_type': recipe_type})
+        return reverse('food:recipe-detail', kwargs={'slug': self.slug, 'recipe_type': recipe_type})
 
     class Meta:
         ordering = ['title']
 
 
 class Ingredient(models.Model):
-    foodstuff = models.ForeignKey(Foodstuff, related_name="ingredients",
-                                  on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, related_name="ingredients",
-                               on_delete=models.CASCADE)
+    foodstuff = models.ForeignKey(Foodstuff, related_name="ingredients", on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, related_name="ingredients", on_delete=models.CASCADE)
     quantity = models.CharField(max_length=20, blank=True, null=True)
     modifier = models.CharField(max_length=50, blank=True, null=True)
     rank = models.IntegerField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.foodstuff.title
 
     def _get_title(self):
         return self.foodstuff.title
+
     title = property(_get_title)
 
     def _get_slug(self):
         return self.foodstuff.slug
+
     slug = property(_get_slug)
 
     class Meta:
@@ -112,7 +107,7 @@ class Link(models.Model):
     url = models.CharField(max_length=250)
     rank = models.IntegerField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:

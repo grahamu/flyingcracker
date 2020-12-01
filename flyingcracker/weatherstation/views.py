@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from datetime import datetime
 from decimal import Decimal
 from pytz import timezone
@@ -30,8 +28,7 @@ def upload_data(request):
     elif dateutc is not None:
         dateutc = dateutc.replace(':', ' ').replace('-', ' ').replace('+', ' ')
         year, month, day, hour, minute, second = dateutc.split()
-        dbtimestamp = datetime(int(year), int(month), int(day),
-                               int(hour), int(minute), int(second))
+        dbtimestamp = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
         dbtimestamp = mountain_tz.localize(dbtimestamp)
 
     if dbtimestamp:
@@ -50,70 +47,42 @@ def upload_data(request):
 
         defaults = {}
         if wind_dir:
-            defaults['wind_dir'] = wind_dir
+            defaults['wind_dir'] = int(wind_dir)
         if wind_speed:
-            defaults['wind_speed'] = wind_speed
+            defaults['wind_speed'] = Decimal(wind_speed)
         if wind_peak:
-            defaults['wind_peak'] = wind_peak
+            defaults['wind_peak'] = Decimal(wind_peak)
         if temp:
-            defaults['temp'] = temp
+            defaults['temp'] = Decimal(temp)
         if barometer:
-            defaults['barometer'] = barometer
+            defaults['barometer'] = Decimal(barometer)
         if dewpoint:
-            defaults['dewpoint'] = dewpoint
+            defaults['dewpoint'] = Decimal(dewpoint)
         if humidity:
-            defaults['humidity'] = humidity
+            defaults['humidity'] = int(humidity)
         if temp_inside:
-            defaults['temp_inside'] = temp_inside
+            defaults['temp_inside'] = Decimal(temp_inside)
         if baro_trend:
-            defaults['baro_trend'] = baro_trend
+            defaults['baro_trend'] = Decimal(baro_trend)
         if windchill:
-            defaults['windchill'] = windchill
+            defaults['windchill'] = Decimal(windchill)
         if rain:
             defaults['rain'] = rain
         if station_id:
             defaults['station_id'] = station_id
         try:
-            rec, created = Weather.objects.get_or_create(
+            rec, created = Weather.objects.update_or_create(
                 timestamp=dbtimestamp,
                 defaults=defaults,
             )
             if created is not True:
-                # Record already exists, replace with good values and save.
-                if wind_dir:
-                    rec.wind_dir = int(wind_dir)
-                if wind_speed:
-                    rec.wind_speed = Decimal(wind_speed)
-                if wind_peak:
-                    rec.wind_peak = Decimal(wind_peak)
-                if temp:
-                    rec.temp = Decimal(temp)
-                if barometer:
-                    rec.barometer = Decimal(barometer)
-                if dewpoint:
-                    rec.dewpoint = Decimal(dewpoint)
-                if humidity:
-                    rec.humidity = int(humidity)
-                if temp_inside:
-                    rec.temp_inside = Decimal(temp_inside)
-                if baro_trend:
-                    rec.baro_trend = Decimal(baro_trend)
-                if windchill:
-                    rec.windchill = Decimal(windchill)
-                if rain:
-                    rec.rain = rain
-                if station_id:
-                    rec.station_id = station_id
-                rec.save()
                 success_str = "weather record updated"
             else:
                 success_str = "weather record created"
-        except:
-            response = HttpResponse("upload_data failed: '%s'"
-                                    % traceback.format_exc())
+        except Weather.MultipleObjectReturned:
+            response = HttpResponse("upload_data failed: '%s'" % traceback.format_exc())
         else:
             response = HttpResponse(success_str)
     else:
-        response = HttpResponse('failed: missing "datemtn" '
-                                'or "timestamp" field in URL')
+        response = HttpResponse('failed: missing "datemtn" ' 'or "timestamp" field in URL')
     return response

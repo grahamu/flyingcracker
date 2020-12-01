@@ -1,6 +1,5 @@
-from django.conf import settings
 from django.contrib import admin
-from django.db import models
+from django.contrib.admin.options import InlineModelAdmin
 
 from . import models as food
 
@@ -10,7 +9,6 @@ class FoodstuffAdmin(admin.ModelAdmin):
 
 
 admin.site.register(food.Foodstuff, FoodstuffAdmin)
-user = models.ForeignKey(settings.AUTH_USER_MODEL)
 admin.site.register(food.Attribute)
 
 
@@ -43,14 +41,15 @@ class RecipeAdmin(admin.ModelAdmin):
 admin.site.register(food.Recipe, RecipeAdmin)
 
 
-class FoodstuffInline(admin.ModelAdmin):
-    model = food.Foodstuff
+# class FoodstuffInline(InlineModelAdmin):
+#     model = food.Foodstuff
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    inlines = [
-        FoodstuffInline,
-    ]
+    pass
+    # inlines = [
+    #     FoodstuffInline,
+    # ]
 
 
 admin.site.register(food.Ingredient, IngredientAdmin)

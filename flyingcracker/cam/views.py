@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-
+from django.shortcuts import render
 from django.template import RequestContext
-from django.shortcuts import render_to_response
 
-from .models import (
-    Cam,
-    Category,
-)
 from fc3.myjson import JsonResponse
+
+from .models import Cam, Category
 
 CAM_CATEGORY = "cam_category"
 CAM_ID = "cam_id"
@@ -22,28 +18,31 @@ def cam_view(request):
 
     c_list, image, category = get_cam_list(category_id, cam_id)
 
-    c = RequestContext(request, {
-        'catlist': cat_list,
-        'category': category,
-        'camlist': c_list,
-        'image': image,
-    })
+    c = RequestContext(
+        request,
+        {
+            'catlist': cat_list,
+            'category': category,
+            'camlist': c_list,
+            'image': image,
+        },
+    )
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'iui' in request.GET:
-            return render_to_response('cam/iphone/cam.html', c)
+            return render('cam/iphone/cam.html', c)
         else:
-            return render_to_response('cam/iphone/cam_initial.html', c)
+            return render('cam/iphone/cam_initial.html', c)
     else:
-        return render_to_response('cam/cam.html', c)
+        return render('cam/cam.html', c)
 
 
 def cam_list(request):
-    '''
+    """
     Get a list of webcam images associated with a Category.
 
-    '''
+    """
     if request.is_ajax():
         cat_id = request.POST.get('cat', None)
         if cat_id:
@@ -75,10 +74,10 @@ def cam_list(request):
 
 
 def cam_image(request):
-    '''
+    """
     Get a specific image URL.
 
-    '''
+    """
     if request.is_ajax() or request.GET.get('xhr'):
         try:
             id = request.POST.get('id')
@@ -96,10 +95,10 @@ def cam_image(request):
 
 
 def get_cam_list(cat_id, cam_id=None):
-    '''
+    """
     Returns a list of images, a "default" image,
     and the category these images are in.
-    '''
+    """
     # Set the image first
     if cam_id:
         try:

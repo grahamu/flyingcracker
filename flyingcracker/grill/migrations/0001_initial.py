@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.db import models, migrations
 from django.conf import settings
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -15,17 +13,26 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Cut',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID', serialize=False, auto_created=True, primary_key=True
+                    ),
+                ),
                 ('title', models.CharField(max_length=40)),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Doneness',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID', serialize=False, auto_created=True, primary_key=True
+                    ),
+                ),
                 ('title', models.CharField(max_length=20)),
                 ('slug', models.SlugField()),
                 ('doneness', models.IntegerField()),
@@ -40,60 +47,83 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Food',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID', serialize=False, auto_created=True, primary_key=True
+                    ),
+                ),
                 ('title', models.CharField(max_length=20)),
                 ('description', models.TextField(null=True, blank=True)),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Grilling',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID', serialize=False, auto_created=True, primary_key=True
+                    ),
+                ),
                 ('details', models.CharField(max_length=100)),
-                ('cut', models.ForeignKey(blank=True, to='grill.Cut', null=True)),
-                ('doneness', models.ForeignKey(to='grill.Doneness')),
-                ('food', models.ForeignKey(to='grill.Food')),
+                (
+                    'cut',
+                    models.ForeignKey(
+                        blank=True, to='grill.Cut', null=True, on_delete=models.CASCADE
+                    ),
+                ),
+                ('doneness', models.ForeignKey(to='grill.Doneness', on_delete=models.CASCADE)),
+                ('food', models.ForeignKey(to='grill.Food', on_delete=models.CASCADE)),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Hardware',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID', serialize=False, auto_created=True, primary_key=True
+                    ),
+                ),
                 ('make', models.CharField(max_length=20)),
                 ('model', models.CharField(max_length=20)),
                 ('description', models.TextField(null=True, blank=True)),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Method',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                (
+                    'id',
+                    models.AutoField(
+                        verbose_name='ID', serialize=False, auto_created=True, primary_key=True
+                    ),
+                ),
                 ('title', models.CharField(max_length=20)),
                 ('description', models.TextField()),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='grilling',
             name='hardware',
-            field=models.ForeignKey(blank=True, to='grill.Hardware', null=True),
+            field=models.ForeignKey(
+                blank=True, to='grill.Hardware', null=True, on_delete=models.CASCADE
+            ),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='grilling',
             name='method',
-            field=models.ForeignKey(to='grill.Method'),
+            field=models.ForeignKey(to='grill.Method', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(

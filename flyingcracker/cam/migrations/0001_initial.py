@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.db import models, migrations
 import localflavor.us.models
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -40,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cam',
             name='category',
-            field=models.ForeignKey(to='cam.Category'),
+            field=models.ForeignKey(to='cam.Category', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]
