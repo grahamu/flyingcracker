@@ -21,7 +21,7 @@ class NOAAForecastPreamble(object):
         self.zname = zname
 
     def parse_line(self, line, forecast):
-        if line.startswith(self.zname):
+        if str(line).startswith(self.zname):
             return NOAAForecastArea, False
         else:
             return False, False
@@ -215,7 +215,7 @@ def get_NOAA_data(state, zname):
         return save_NOAA_data(state, zname)
 
     try:
-        f = open(filename, 'r')
+        f = open(filename, 'rb')
     except IOError:
         lines = save_NOAA_data(state, zname)
     else:

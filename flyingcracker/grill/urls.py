@@ -1,9 +1,9 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
 app_name = 'grill'
 urlpatterns = [
-    url(r'^d/(?P<slug>[\w_-]+)/$', views.doneness_detail, name='doneness-detail'),
-    url(r'^$', views.grill, name='grill'),
+    re_path(r'^d/(?P<slug>[\w_-]+)/$', views.doneness_detail, name='doneness-detail'),
+    re_path(r'^$', views.grill, name='grill'),
 ]

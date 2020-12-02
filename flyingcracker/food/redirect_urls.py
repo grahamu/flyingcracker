@@ -1,11 +1,10 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
-
 urlpatterns = [
-    url(r'^$', views.RecipeListRedirectView.as_view()),
-    url(r'^ingredients/$', views.IngredientListRedirectView.as_view()),
-    url(r'^(?P<slug>[\w_-]+)/$', views.RecipeDetailRedirectView.as_view()),
-    url(r'^c/(?P<slug>[\w_-]+)/$', views.CategoryListRedirectView.as_view()),
+    re_path(r'^$', views.RecipeListRedirectView.as_view()),
+    re_path(r'^ingredients/$', views.IngredientListRedirectView.as_view()),
+    re_path(r'^(?P<slug>[\w_-]+)/$', views.RecipeDetailRedirectView.as_view()),
+    re_path(r'^c/(?P<slug>[\w_-]+)/$', views.CategoryListRedirectView.as_view()),
 ]
