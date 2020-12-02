@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.template import RequestContext
 
 from .models import Doneness, Food, Grilling, Hardware
 
@@ -42,8 +41,7 @@ def grill(request):
             doneness = doneness_list[0]
             grill_items = Grilling.objects.filter(food=food, doneness=doneness)
 
-    c = RequestContext(
-        request,
+    context = (
         {
             'food_list': food_list,
             'doneness_list': doneness_list,
@@ -58,28 +56,25 @@ def grill(request):
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'snippet' in request.GET:
-            return render('grill/iphone/snippet.html', c)
+            return render(request, 'grill/iphone/snippet.html', context)
         elif 'iui' in request.GET:
-            return render('grill/iphone/iui.html', c)
+            return render(request, 'grill/iphone/iui.html', context)
         else:
-            return render('grill/iphone/grill.html', c)
+            return render(request, 'grill/iphone/grill.html', context)
     else:
         # BUGBUG 2008-11-13 - Should be using "normal" browser templates,
         #        if they are different from the iPhone templates.
         if 'snippet' in request.GET:
-            return render('grill/iphone/snippet.html', c)
+            return render(request, 'grill/iphone/snippet.html', context)
         elif 'iui' in request.GET:
-            return render('grill/iphone/iui.html', c)
+            return render(request, 'grill/iphone/iui.html', context)
         else:
-            return render('grill/iphone/grill.html', c)
+            return render(request, 'grill/iphone/grill.html', context)
 
 
 def doneness_detail(request, slug):
     doneness = Doneness.objects.get(slug=slug)
-    c = RequestContext(
-        request,
-        {
-            'doneness': doneness,
-        },
-    )
-    return render('grill/iphone/doneness_detail.html', c)
+    context = {
+        'doneness': doneness,
+    }
+    return render(request, 'grill/iphone/doneness_detail.html', context)

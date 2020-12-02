@@ -1,5 +1,5 @@
 {% extends "food/iphone/food.html" %}
-{% load markup %}
+{% load markup_tags %}
 
 {% block bd %}
 {% if foodstuff %}
@@ -10,7 +10,7 @@
 
     <div class="yui-b" id="ingredient_description">
     {% if foodstuff.description %}
-        {{ foodstuff.description|markdown }}
+        {{ foodstuff.description|apply_markup:"markdown" }}
     {% endif %}
     </div>
 

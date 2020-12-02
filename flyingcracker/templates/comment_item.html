@@ -1,9 +1,9 @@
 {% load user_time %}
-{% load markup %}
+{% load markup_tags %}
 
 <div class="comment-item">
     <p>
-    {{ comment.comment|markdown }}
+    {{ comment.comment|apply_markup:"markdown" }}
     </p>
     <div class="comment-posted">
     Posted by: <span class="comment-user">{{ comment.user }}</span> on 

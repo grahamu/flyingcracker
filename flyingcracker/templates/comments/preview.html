@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n markup %}
+{% load i18n markup_tags %}
 
 {% block extra_title %}{% trans "Preview your comment" %}{% endblock %}
 
@@ -21,7 +21,7 @@
       <h2>{% trans "Preview your comment" %}</h2>
     <div class="comment-list">
     <div class="comment-item">
-    {{ comment|safe|markdown }}
+    {{ comment|safe|apply_markup:"markdown" }}
     </div>
     </div>
       <p>

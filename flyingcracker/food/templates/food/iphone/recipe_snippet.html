@@ -1,4 +1,4 @@
-{% load markup %}
+{% load markup_tags %}
 
 {% if recipe %}
 <div id="cocktail">
@@ -17,16 +17,16 @@
     </div>
 {% endfor %}
     <div class="yui-b" id="recipe-directions">
-        {{ recipe.directions|markdown }}
+        {{ recipe.directions|apply_markup:"markdown" }}
     </div>
     {% if recipe.description %}
     <div class="yui-b" id="recipe-description">
-        {{ recipe.description|markdown }}
+        {{ recipe.description|apply_markup:"markdown" }}
     </div>
     {% endif %}
     {% if recipe.credit %}
     <div class="yui-b" id="recipe-credit">
-        {{ recipe.credit|markdown }}
+        {{ recipe.credit|apply_markup:"markdown" }}
     </div>
     {% endif %}
 </div>

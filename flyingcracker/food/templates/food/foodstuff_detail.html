@@ -1,5 +1,5 @@
 {% extends "cocktail.html" %}
-{% load markup %}
+{% load markup_tags %}
 
 {% block body %}
 <div class="cocktail">
@@ -12,7 +12,7 @@
 
         <div class="description">
         {% if foodstuff.description %}
-            {{ foodstuff.description|markdown }}
+            {{ foodstuff.description|apply_markup:"markdown" }}
         {% endif %}
         </div>
 

@@ -1,4 +1,4 @@
-{% load markup static %}
+{% load static %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -95,13 +95,6 @@
         {% block header %}
         <div id="user-tools">
             {% block user %}
-            {% if user.is_authenticated %}
-                Welcome, <a href="#">{{ user.username }}</a>{% if user.is_staff %} [staff]{% endif %}</strong>.
-
-                <a href="{% url 'auth_logout' %}">Log out</a>
-            {% else %}
-                <a href="{{ login_url }}">Log in</a> or <a href="{% url 'registration_register' %}">Sign up</a>
-            {% endif %}
             {% endblock user %}
         </div> <!-- user-tools -->
 
@@ -124,7 +117,6 @@
                             <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'cam:root' %}">WebCams</a></li>
                             <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'food:recipe-list' recipe_type="drink" %}">Drink</a></li>
                             <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'food:recipe-list' recipe_type="food" %}">Food</a></li>
-                            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="{% url 'fantasy:root' %}">Fantasy</a></li>
                             {% endblock %}
                         </ul>
                     </div>

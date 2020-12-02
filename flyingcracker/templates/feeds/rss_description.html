@@ -1,2 +1,2 @@
-{% load markup %}
-{{ obj.body|markdown }}
+{% load markup_tags %}
+{{ obj.body|apply_markup:"markdown" }}

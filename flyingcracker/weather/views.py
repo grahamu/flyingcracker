@@ -5,7 +5,7 @@ from decimal import ROUND_HALF_EVEN, Decimal
 from django import forms
 from django.forms import ModelForm
 from django.http import Http404, HttpResponse
-from django.template import RequestContext
+from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 from pytz import timezone
 
@@ -66,8 +66,8 @@ def weather(request):
     # want to display ISS overhead transit info if available that night
 
     current_dict, current = get_current_weather(request)
-    weather_dict = dict(current_dict)
-    weather_dict.update(
+    context = dict(current_dict)
+    context.update(
         {
             'current': current,
             'show_titles': show_titles,
@@ -83,16 +83,15 @@ def weather(request):
             'json_weather': json.dumps(current_dict, cls=DjangoJSONEncoder),
         }
     )
-    c = RequestContext(request, weather_dict)
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'iui' in request.GET:
-            return render('weather/iphone/weather-iui.html', c)
+            return render(request, 'weather/iphone/weather-iui.html', context)
         else:
-            return render('weather/iphone/weather.html', c)
+            return render(request, 'weather/iphone/weather.html', context)
     else:
-        return render('weather/current.html', c)
+        return render(request, 'weather/current.html', context)
 
 
 def current(request):
@@ -376,20 +375,17 @@ def generate(request):
                 attempts += 1
 
             et.mark_time('insertions')
-            c = RequestContext(
-                request,
-                {
-                    'elapsed': et.list(),
-                    'message': 'Added %d Weather records in %d attempts,'
-                    ' from %s to %s.' % (inserted, attempts, str(start), str(end)),
-                },
-            )
-            return render('weather/after_action.html', c)
+            context = {
+                'elapsed': et.list(),
+                'message': 'Added %d Weather records in %d attempts,'
+                ' from %s to %s.' % (inserted, attempts, str(start), str(end)),
+            }
+            return render(request, 'weather/after_action.html', context)
     else:
         form = GenerateWeatherForm()  # An unbound form
 
-    c = RequestContext(request, {'form': form})
-    return render('weather/generate.html', c)
+    context = {'form': form}
+    return render(request, 'weather/generate.html', context)
 
 
 class DeleteWeatherForm(forms.Form):
@@ -430,21 +426,18 @@ def delete(request):
                 attempts += 1
 
             et.mark_time('deletions')
-            c = RequestContext(
-                request,
-                {
-                    'elapsed': et.list(),
-                    'message': 'Deleted %d Weather records in %d attempts,'
-                    ' from %s to %s..' % (deleted, attempts, str(start), str(end)),
-                },
-            )
+            context = {
+                'elapsed': et.list(),
+                'message': 'Deleted %d Weather records in %d attempts,'
+                ' from %s to %s..' % (deleted, attempts, str(start), str(end)),
+            }
 
-            return render('weather/after_action.html', c)
+            return render(request, 'weather/after_action.html', context)
     else:
         form = DeleteWeatherForm()  # An unbound form
 
-    c = RequestContext(request, {'form': form})
-    return render('weather/delete.html', c)
+    context = {'form': form}
+    return render(request, 'weather/delete.html', context)
 
 
 def output_data(request):

@@ -241,7 +241,7 @@ def save_NOAA_data(state, zname):
     else:
         # save the retrieved data
         filename = settings.WEATHER_ROOT.child('noaa-' + zname + '.txt')
-        f = open(filename, "w")
+        f = open(filename, "wb")
         f.writelines(lines)
         f.close()
         return lines

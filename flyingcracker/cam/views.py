@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.template import RequestContext
 
 from fc3.myjson import JsonResponse
 
@@ -18,24 +17,21 @@ def cam_view(request):
 
     c_list, image, category = get_cam_list(category_id, cam_id)
 
-    c = RequestContext(
-        request,
-        {
-            'catlist': cat_list,
-            'category': category,
-            'camlist': c_list,
-            'image': image,
-        },
-    )
+    context = {
+        'catlist': cat_list,
+        'category': category,
+        'camlist': c_list,
+        'image': image,
+    }
 
     agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'iui' in request.GET:
-            return render('cam/iphone/cam.html', c)
+            return render(request, 'cam/iphone/cam.html', context)
         else:
-            return render('cam/iphone/cam_initial.html', c)
+            return render(request, 'cam/iphone/cam_initial.html', context)
     else:
-        return render('cam/cam.html', c)
+        return render(request, 'cam/cam.html', context)
 
 
 def cam_list(request):

@@ -1,4 +1,4 @@
-{% load markup %}
+{% load markup_tags %}
 
 {% if foodstuff %}
 <div id="cocktail">
@@ -8,7 +8,7 @@
 
     <div class="yui-b" id="ingredient-description">
     {% if foodstuff.description %}
-        {{ foodstuff.description|markdown }}
+        {{ foodstuff.description|apply_markup:"markdown" }}
     {% endif %}
     </div>
 

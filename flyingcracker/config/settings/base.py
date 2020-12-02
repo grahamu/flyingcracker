@@ -46,12 +46,12 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR.child("templates")],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'fc3.context_processors.yui_version',
                 'fc3.context_processors.miniblog',
                 'fc3.context_processors.system_version',
-                'fc3.context_processors.login_url_with_redirect',
                 'django.contrib.messages.context_processors.messages',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
@@ -91,7 +91,7 @@ PREREQ_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django_extensions',
-    'markup_deprecated',
+    'django_markup',
     'timezone_field',
 ]
 

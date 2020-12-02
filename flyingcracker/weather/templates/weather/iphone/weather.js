@@ -1,4 +1,4 @@
-{% load markup static %}
+{% load static %}
 
 Array.prototype.has = function(v) {
     // return index of 'v' in the array

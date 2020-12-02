@@ -606,7 +606,7 @@ def save_URL_data(url, filename):
         return None
     else:
         # save the retrieved data
-        f = open(filename, "w")
+        f = open(filename, "wb")
         f.write(text)
         f.close()
         return text
