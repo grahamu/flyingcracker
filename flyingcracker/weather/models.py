@@ -40,5 +40,6 @@ class ChartUrl(models.Model):
         )
 
     class Meta:
+        app_label = 'weather'
         ordering = ['-date']
         unique_together = ("date", "data_type", "unit", "size", "plots")

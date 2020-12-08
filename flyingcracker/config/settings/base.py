@@ -103,7 +103,7 @@ PROJECT_APPS = [
     'grill',
     'home',
     'weather',
-    'weatherstation',
+    'weatherstation.apps.WeatherStationConfig',
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
