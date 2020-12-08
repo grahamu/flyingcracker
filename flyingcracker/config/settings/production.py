@@ -8,7 +8,7 @@ DATABASES = {
     'default': {
         'NAME': 'fc3',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'fc3_grahamu',
+        'USER': 'fc3_graham',
         'PASSWORD': 'PHI-peephole-tavern-aglow',
         'HOST': 'grahamu-1981.postgres.pythonanywhere-services.com',
         'PORT': 11981,
