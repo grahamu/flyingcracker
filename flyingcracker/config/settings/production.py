@@ -6,11 +6,12 @@ DEBUG = False
 
 DATABASES = {
     'default': {
-        'NAME': 'graham_fc3',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'USER': 'graham_fc3',
-        'PASSWORD': '132af5e4',
-        'HOST': 'localhost',
+        'NAME': 'fc3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'USER': 'fc3_grahamu',
+        'PASSWORD': 'PHI-peephole-tavern-aglow',
+        'HOST': 'grahamu-1981.postgres.pythonanywhere-services.com',
+        'PORT': 11981,
     }
 }
 
