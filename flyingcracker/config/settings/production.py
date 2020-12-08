@@ -6,7 +6,7 @@ DEBUG = False
 
 DATABASES = {
     'default': {
-        'NAME': 'fc3',
+        'NAME': 'postgres',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'fc3_graham',
         'PASSWORD': 'PHI-peephole-tavern-aglow',
