@@ -1,11 +1,9 @@
 import datetime
 import math
-from pygooglechart import (
-    Axis,
-    XYLineChart,
-)
+
 from pytz import timezone
 
+from pygooglechart import Axis, XYLineChart
 
 DAY_EVERY_HOUR_DATA = [i for i in range(0, 24 + 1)]
 DAY_EVERY_HALFHOUR_DATA = [i for i in range(0, (24 * 2) + 1)]
@@ -197,7 +195,9 @@ def int_ceil(vals, prev):
     Returns the largest value in vals and prev in integer format.
 
     '''
-    top = max(max(vals), prev)
+    vlist = [i for i in vals if i is not None]
+    vlist.append(prev)
+    top = max(vlist)
     # Round up to nearest ten
     return int(math.ceil(float(top) / 10.0) * 10)
 
@@ -218,7 +218,9 @@ def float_ceil(vals, prev):
     Returns the largest value in vals and prev in float format.
 
     '''
-    top = max(max(vals), prev)
+    vlist = [i for i in vals if i is not None]
+    vlist.append(prev)
+    top = max(vlist)
     # round up to nearest tenth
     return math.ceil(float(top) * 10.0) / 10.0
 
