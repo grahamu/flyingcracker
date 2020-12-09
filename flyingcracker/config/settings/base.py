@@ -4,7 +4,7 @@ from .secrets import get_secret
 
 SECRET_KEY = get_secret('SECRET_KEY')
 
-BASE_DIR = Path(__file__).ancestor(3)
+BASE_DIR = Path(__file__).ancestor(2)
 
 MEDIA_ROOT = BASE_DIR.child("media")
 STATIC_ROOT = BASE_DIR.child("static_media")
