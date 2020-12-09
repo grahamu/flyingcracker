@@ -7,7 +7,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 BASE_DIR = Path(__file__).ancestor(3)
 
 MEDIA_ROOT = BASE_DIR.child("media")
-STATIC_ROOT = BASE_DIR.child("static_media")
+STATIC_ROOT = BASE_DIR.child("staticfiles")
 STATICFILES_DIRS = (
     BASE_DIR.child("static"),
 )
