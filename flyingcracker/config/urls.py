@@ -19,7 +19,6 @@ urlpatterns = [
     re_path(r'^(?P<recipe_type>cocktail)/', include('food.redirect_urls')),
     re_path(r'^weatherstation/', include('weatherstation.urls')),
     re_path(r'^weather/', include('weather.urls')),
-    re_path(r'^grill/', include('grill.urls')),
     re_path(r'^', include('home.urls')),
 ]
 
