@@ -4,4 +4,4 @@ MANIFEST
 .DS_Store
 cron_mail*.*
 secrets.json
-static_media/
+staticfiles/

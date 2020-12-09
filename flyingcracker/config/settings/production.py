@@ -16,14 +16,8 @@ DATABASES = {
 }
 
 # Where are media and weather files?
-MEDIA_DIR = STATIC_DIR = Path("/home/graham/webapps")
-MEDIA_ROOT = MEDIA_DIR.child("media")
+MEDIA_ROOT = BASE_DIR.child("media")
 WEATHER_ROOT = MEDIA_ROOT.child('weather')
-STATIC_ROOT = STATIC_DIR.child('static')
-
-STATICFILES_DIRS = (
-    BASE_DIR.child('static'),
-)
 
 STATIC_URL = 'http://cracklyfinger.com/static/'
 MEDIA_URL = 'http://cracklyfinger.com/media/'
