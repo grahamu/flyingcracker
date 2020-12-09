@@ -98,9 +98,7 @@ PREREQ_APPS = [
 
 PROJECT_APPS = [
     'cam',
-    'fcprofile',
     'food',
-    'grill',
     'home',
     'weather',
     'weatherstation.apps.WeatherStationConfig',
