@@ -215,7 +215,7 @@ def get_NOAA_data(state, zname):
         return save_NOAA_data(state, zname)
 
     try:
-        f = open(filename, 'rb')
+        f = open(filename, 'r')
     except IOError:
         lines = save_NOAA_data(state, zname)
     else:
@@ -236,12 +236,13 @@ def save_NOAA_data(state, zname):
     )
     try:
         lines = urlopen(url).readlines()
+        lines = [raw_line.decode() for raw_line in lines]
     except IOError:
         return None
     else:
         # save the retrieved data
         filename = settings.WEATHER_ROOT.child('noaa-' + zname + '.txt')
-        f = open(filename, "wb")
+        f = open(filename, "w")
         f.writelines(lines)
         f.close()
         return lines
