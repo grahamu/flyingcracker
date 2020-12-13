@@ -19,8 +19,8 @@ DATABASES = {
 MEDIA_ROOT = BASE_DIR.child("media")
 WEATHER_ROOT = MEDIA_ROOT.child('weather')
 
-STATIC_URL = 'http://cracklyfinger.com/static/'
-MEDIA_URL = 'http://cracklyfinger.com/media/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -35,4 +35,4 @@ SYSTEM_NAME = "cracklyfinger.com"
 
 AUTH_PROFILE_MODULE = 'fcprofile.FCProfile'
 
-ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', '*']
+ALLOWED_HOSTS = ['www.cracklyfinger.com', 'cracklyfinger.com', 'www.ullrichsoftware.com', '*']
