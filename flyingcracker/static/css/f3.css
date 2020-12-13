@@ -940,30 +940,6 @@ span.bp-year-ago {
 #user-tools { float:right; padding-right:1em; font-size:85%; text-align:right; }
 #site-owner { font-style: italic; color:#0080c0; }
 
-#fantasy-sponsor {
-    font-size: 120%;
-    padding-bottom: 1em;
-}
-#fantasy-main-container, #profile-main-container {
-}
-#fantasy-main-container .main, #fantasy-main-container .main {
-    padding: 1em;
-}
-#fantasy-main-container h1, #profile-main-container h1 {
-    font-size: 120%;
-    font-weight: bold;
-    padding-bottom: 0.25em;
-}
-#fantasy-main-container h2, #profile-main-container h2 {
-    font-size: 110%;
-    font-weight: bold;
-    padding-bottom: 0.25em;
-}
-#fantasy-main-container h3, #profile-main-container h3 {
-    font-size: 100%;
-    font-weight: bold;
-    padding-bottom: 0.25em;
-}
 .section-header {
     padding: 0.5em;
 }
@@ -973,102 +949,6 @@ span.bp-year-ago {
 }
 .section-tagline {
     font-size: 100%;
-}
-.fantasy-form-help {
-    font-style: italic;
-    padding-left: 1em;
-    color: #555555
-}
-.fantasy-guess-deadline {
-	font-weight: bold;
-	font-size: 110%;
-	float: right;
-}
-.fantasy-guess-deadline .date {
-	color: #f84747;
-}
-.fantasy-list-container {
-    padding-top: 0.5em;
-}
-.fantasy-form-container {
-    padding-top: 1em;
-    padding-bottom: 1em;
-}
-.fantasy-list-table, .fantasy-select-table, .fantasy-pick-options {
-    margin-bottom: 1em;
-	width: 100%;
-}
-.fantasy-list-table th, .fantasy-select-table th {
-	font: bold 11px Arial, Helvetica, Verdana;
-	background: #1F3543;
-	letter-spacing: 2px;
-	text-transform: uppercase;
-	text-align: left;
-	color : #FFFFFF;
-	padding: 6px 6px 6px 12px;
-}
-.fantasy-list-table th.nobg, .fantasy-select-table th.nobg {
-	border-top: 0;
-	border-left: 0;
-	background: none;
-}
-.fantasy-list-table tr.race-complete {
-    background-color: lightGray;
-}
-.fantasy-list-table tr.guess-deadline {
-    background-color: #f84747;
-}
-.fantasy-list-table tr.race-future {
-	background-color: #D0FFD0;
-}
-.fantasy-invisible-table {
-	width: 100%;
-}
-.fantasy-list-table td, .fantasy-invisible-table td {
-	font-family : Arial, Helvetica, Verdana;
-	font-size : 10pt;
-	vertical-align : top;
-	border-bottom: thin solid #666699;
-	padding: 6px 0px 6px 8px;
-}
-.fantasy-invisible-table td {
-	border-bottom: none;
-	padding: 0px 0px 6px 0px;
-}
-.fantasy-list-table td.nobg {
-	border-top: 0;
-	border-left: 0;
-    border-bottom: 0;
-	background: white;
-}
-.fantasy-list-table td.center, .fantasy-list-table th.center {
-    text-align: center;
-}
-.fantasy-select-table td {
-	font-family : Arial, Helvetica, Verdana;
-	font-size : 10pt;
-	vertical-align : top;
-	padding: 6px 6px 6px 12px;
-}
-#fantasy-nav-container {
-    background-color: pink;
-}
-.fantasy-leaders {
-    background-color: pink;
-	border: black thin solid;
-	padding: 1em;
-}
-#fantasy-nav-container .main {
-    padding: 1em;
-}
-.fantasy-nav-item {
-    font: inherit;
-}
-#fantasy-top-ten div.title {
-    font-weight: bold;
-}
-#fantasy-top-ten div.body {
-    padding: 0.5em 0 0.5em 0;
 }
 .event-header {
 	padding: 0.5em;

@@ -105,16 +105,3 @@
     text-align: left;
     margin-left: 50px;
 }
-
-#miniblog {
-    text-align: left;
-    padding: 5px;
-}
-#miniblog .timestamp {
-    font-size: 93%;
-    color: gray;
-}
-#miniblog .post {
-    padding-top: 5px;
-    font-size: 108%
-}

@@ -50,7 +50,6 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'fc3.context_processors.yui_version',
-                'fc3.context_processors.miniblog',
                 'fc3.context_processors.system_version',
                 'django.contrib.messages.context_processors.messages',
                 'django.contrib.auth.context_processors.auth',

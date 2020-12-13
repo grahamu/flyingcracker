@@ -16,13 +16,6 @@ def yui_version(request):
     return yui
 
 
-def miniblog(request):
-
-    # from miniblog.models import Post
-    # posts = Post.objects.all().order_by('-pub_date')[0:7]
-    return {'miniblog': None}
-
-
 def system_version(request):
     from django import get_version
     from django.conf import settings
