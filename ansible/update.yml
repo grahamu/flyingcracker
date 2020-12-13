@@ -1,0 +1,36 @@
+---
+- hosts: pythonanywhere
+
+  vars:
+    home: /home/grahamu/
+    app_path: "{{ home }}flyingcracker/"
+    virtualenv: "{{ home }}.virtualenvs/flyingcracker"
+
+  vars_files:
+    vars.yml
+
+  tasks:
+    - name: update code
+      git:
+        repo: 'https://github.com/grahamu/flyingcracker.git'
+        dest: "{{ app_path }}"
+        update: yes
+
+    - name: update requirements
+      pip:
+        requirements: "{{ app_path }}requirements-prod.txt"
+        virtualenv: "{{ virtualenv }}"
+
+    - name: apply django migrations
+      django_manage:
+        command: migrate
+        app_path: "{{ app_path }}flyingcracker"
+        settings: config.settings.production
+        virtualenv: "{{ virtualenv }}"
+
+    - name: reload web app
+      shell: "{{ virtualenv }}/bin/pa_reload_webapp.py www.ullrichsoftware.com"
+      environment:
+        API_TOKEN: "{{ api_token }}"
+
+# No such file or directory: Path('/home/grahamu/grahamu.pythonanywhere.com/flyingcracker/flyingcracker/config/settings/secrets.json')

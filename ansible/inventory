@@ -1,0 +1,6 @@
+[pythonanywhere]
+ssh.pythonanywhere.com
+
+[pythonanywhere:vars]
+ansible_ssh_user=grahamu
+

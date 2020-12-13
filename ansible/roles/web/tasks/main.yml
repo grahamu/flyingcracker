@@ -1,7 +1,0 @@
----
-
-- include: setup_virtualenv.yml
-- include: fetch_git_repo.yml
-- include: setup_django_app.yml
-- include: setup_apache.yml
-  notify: restart apache
