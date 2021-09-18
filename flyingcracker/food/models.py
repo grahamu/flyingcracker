@@ -6,7 +6,7 @@ from django.urls import reverse
 
 class Foodstuff(models.Model):
     title = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True)
     slug = models.SlugField()
 
     def __str__(self):
@@ -32,7 +32,7 @@ class Attribute(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=20)
     slug = models.SlugField()
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.title
@@ -46,10 +46,10 @@ class Recipe(models.Model):
     title = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField()
     pub_date = models.DateField('date published', null=True, default=date.today)
-    directions = models.TextField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    teaser = models.CharField(max_length=100, blank=True, null=True)
-    credit = models.TextField(blank=True, null=True)
+    directions = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    teaser = models.CharField(max_length=100, blank=True)
+    credit = models.TextField(blank=True)
     attributes = models.ManyToManyField(Attribute)
     categories = models.ManyToManyField(Category)
     DRINK_CLASS = 'D'
@@ -79,8 +79,8 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     foodstuff = models.ForeignKey(Foodstuff, related_name="ingredients", on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, related_name="ingredients", on_delete=models.CASCADE)
-    quantity = models.CharField(max_length=20, blank=True, null=True)
-    modifier = models.CharField(max_length=50, blank=True, null=True)
+    quantity = models.CharField(max_length=20, blank=True)
+    modifier = models.CharField(max_length=50, blank=True)
     rank = models.IntegerField()
 
     def __str__(self):
