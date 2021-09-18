@@ -29,7 +29,7 @@
         virtualenv: "{{ virtualenv }}"
 
     - name: reload web app
-      shell: "{{ virtualenv }}/bin/pa_reload_webapp.py www.ullrichsoftware.com"
+      shell: "{{ virtualenv }}/bin/pa_reload_webapp.py www.cracklyfinger.com"
       environment:
         API_TOKEN: "{{ api_token }}"
 
