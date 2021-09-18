@@ -8,17 +8,17 @@
                 All {{ recipe_type|capfirst }} Ingredients
             </div>
         </div>
-{% if all_foodstuff %}
-    <table>
-    {% for foodstuff in all_foodstuff %}
-        <tr>
-            <td><a href="{% url 'ingredient-detail' slug=foodstuff.slug %}">{{ foodstuff }}</a></td>
-        </tr>
-    {% endfor %}
-    </table>
-{% else %}
-    No ingredients in the database.
-{% endif %}
+        {% if all_foodstuff %}
+        <table>
+            {% for foodstuff in all_foodstuff %}
+            <tr>
+                <td><a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=foodstuff.slug %}">{{ foodstuff }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        No ingredients in the database.
+        {% endif %}
     </div>
 
     <div class="box">
@@ -27,4 +27,3 @@
 </div>
 
 {% endblock %}
-

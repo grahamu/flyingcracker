@@ -16,17 +16,20 @@
         {% endif %}
         </div>
 
-        {% if recipes %}
+        {% if matching_recipes %}
         <br />
         <div class="title">Recipes</div>
         <ul>
-        {% for r in recipes %}
-            <li><a href="{{ r.get_absolute_url }}">{{ r }}</a></li>
-        {% endfor %}
+            {% for recipe in matching_recipes %}
+            <li><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></li>
+            {% endfor %}
          </ul>
         {% else %}
             No recipes use {{ foodstuff }}
         {% endif %}
+        <div>
+            {% include "food/food_select.html" %}
+        </div>
     </div> <!-- box -->
 </div> <!-- cocktail -->
 {% endblock %}

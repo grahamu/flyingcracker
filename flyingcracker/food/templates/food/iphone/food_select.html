@@ -30,29 +30,29 @@
 
 <script type="text/javascript">
 
-function loadSelect(type, args) {
-    snippet_navigation (args[0]);
-};
+    function loadSelect(type, args) {
+        snippet_navigation(args[0]);
+    };
 
-selectChange = new YAHOO.util.CustomEvent('select change');
-selectChange.subscribe(loadSelect);
+    selectChange = new YAHOO.util.CustomEvent('select change');
+    selectChange.subscribe(loadSelect);
 
-function initSelects() {
-    YAHOO.util.Event.addListener(this, "change", newSelect);
-};
+    function initSelects() {
+        YAHOO.util.Event.addListener(this, "change", newSelect);
+    };
 
-function newSelect(e) {
-    var t = YAHOO.util.Event.getTarget(e);
+    function newSelect(e) {
+        var t = YAHOO.util.Event.getTarget(e);
 
-    if (t.selectedIndex != 0) {
-        var value = t.value;
-        t.selectedIndex = 0;    // reset the index
-        selectChange.fire(value);
-        YAHOO.util.Event.preventDefault(e);
-    }
-};
+        if (t.selectedIndex != 0) {
+            var value = t.value;
+            t.selectedIndex = 0;    // reset the index
+            selectChange.fire(value);
+            YAHOO.util.Event.preventDefault(e);
+        }
+    };
 
-YAHOO.util.Event.onAvailable('id-cocktail', initSelects);
-YAHOO.util.Event.onAvailable('id-foodstuff', initSelects);
+    YAHOO.util.Event.onAvailable('id-cocktail', initSelects);
+    YAHOO.util.Event.onAvailable('id-foodstuff', initSelects);
 
 </script>

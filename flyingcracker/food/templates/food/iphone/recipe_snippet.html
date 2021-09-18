@@ -5,17 +5,17 @@
     <div class="yui-b" id="recipe-title">
         {{ recipe.title }}
     </div>
-{% for i in ingredients %}
+    {% for i in ingredients %}
     <div class="yui-gf">
         <div id="ingredient">
             <div class="yui-u first i-qty">{{ i.quantity }}</div>
             <div class="yui-u">
-                <span class="i-title"><a href="{% url 'ingredient-detail' slug=i.slug %}">{{ i.title }}</a></span>
+                <span class="i-title"><a href="{% url 'ingredient-detail' recipe_type=recipe_type slug=i.slug %}">{{ i.title }}</a></span>
                 <span class="i-modifier">{{ i.modifier }}</span>
             </div>
         </div>
     </div>
-{% endfor %}
+    {% endfor %}
     <div class="yui-b" id="recipe-directions">
         {{ recipe.directions|apply_markup:"markdown" }}
     </div>

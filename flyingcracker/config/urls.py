@@ -14,12 +14,12 @@ urlpatterns = [
     # Application URLs
     re_path(r'^cam/', include('cam.urls')),
     re_path(r'^(?P<recipe_type>drink|food)/', include('food.urls')),
-    re_path(r'^ingredient/(?P<slug>[\w_-]+)/$', food_views.foodstuff_detail, name='ingredient-detail'),
-    # deprecated urls
-    re_path(r'^(?P<recipe_type>cocktail)/', include('food.redirect_urls')),
     re_path(r'^weatherstation/', include('weatherstation.urls')),
     re_path(r'^weather/', include('weather.urls')),
     re_path(r'^', include('home.urls')),
+
+    # redirect old urls
+    re_path(r'^(?P<recipe_type>cocktail)/', include('food.redirect_urls')),
 ]
 
 if pattern_views and settings.DEBUG:

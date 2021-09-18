@@ -8,9 +8,9 @@
                 All {% if category %}{{ category|capfirst }} {% endif %}{{ recipe_type|capfirst }} Recipes
             </div>
         </div>
-    {% if all_recipes %}
+    {% if matching_recipes %}
         <div class="bd">
-        {% for recipe in all_recipes %}
+        {% for recipe in matching_recipes %}
             <div class="yui-gd">
                 <div class="yui-u first"><a href="{% url 'food:recipe-detail' recipe_type=recipe_type slug=recipe.slug %}">{{ recipe.title }}</a></div>
                 <div class="yui-u">{{ recipe.teaser }}</div>
@@ -20,10 +20,8 @@
     {% else %}
         <p>No {{ recipe_type }} recipes in the database.</p>
     {% endif %}
-    </div>
-
-    <div class="box">
-        <a href="{% url 'food:ingredient-list' recipe_type=recipe_type %}">All {{ recipe_type|capfirst }} Ingredients</a>
+    <br />
+    {% include "food/food_select.html" %}
     </div>
 </div>
 {% endblock %}
