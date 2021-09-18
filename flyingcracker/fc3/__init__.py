@@ -90,6 +90,6 @@ def get_git_tag(join=' ', *args, **kwargs):
     git_version = '(Git-Version-Not-Found)'
 
     if branch_name is not None and hash is not None:
-        git_version = '(%s @ %s)' % (branch_name, hash)
+        git_version = f'({branch_name.decode("UTF-8")} @{hash.decode("UTF-8")})'
 
     return join.join([get_version(join=join, *args, **kwargs), git_version])
