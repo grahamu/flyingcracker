@@ -19,7 +19,7 @@
                 <select id="id-foodstuff" class="selectLink">
                     <option value="">Select an ingredient</option>
                     {% for item in foodstuff_list %}
-                    <option value="{% url 'ingredient-detail' slug=item.slug %}">
+                    <option value="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=item.slug %}">
                         {{ item.title }}
                     </option>
                     {% endfor %}
@@ -32,7 +32,7 @@
                 <select id="id-category" class="selectLink">
                     <option value="">Select a category</option>
                     {% for item in category_list %}
-                    <option value="{% url 'food:category-list' recipe_type=recipe_type slug=item.slug %}">
+                    <option value="{% url 'food:category-detail' recipe_type=recipe_type slug=item.slug %}">
                         {{ item.title }}
                     </option>
                     {% endfor %}
@@ -44,21 +44,21 @@
 
 <script type="text/javascript">
 
-function initSelects() {
-    YAHOO.util.Event.addListener(this, "change", newSelect);
-};
+    function initSelects() {
+        YAHOO.util.Event.addListener(this, "change", newSelect);
+    };
 
-function newSelect(e) {
-    var t = YAHOO.util.Event.getTarget(e);
+    function newSelect(e) {
+        var t = YAHOO.util.Event.getTarget(e);
 
-    if (t.selectedIndex != 0) {
-        t.parentElement.submit();
-        YAHOO.util.Event.preventDefault(e);
-    }
-};
+        if (t.selectedIndex != 0) {
+            window.location.href = t.value;
+            YAHOO.util.Event.preventDefault(e);
+        }
+    };
 
-YAHOO.util.Event.onAvailable('id-recipe', initSelects);
-YAHOO.util.Event.onAvailable('id-foodstuff', initSelects);
-YAHOO.util.Event.onAvailable('id-category', initSelects);
+    YAHOO.util.Event.onAvailable('id-recipe', initSelects);
+    YAHOO.util.Event.onAvailable('id-foodstuff', initSelects);
+    YAHOO.util.Event.onAvailable('id-category', initSelects);
 
 </script>

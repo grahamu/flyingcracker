@@ -2,46 +2,46 @@
 {% load markup_tags %}
 
 {% block body %}
-	<div class="cocktail">
-		<div class="box">
-			<div class="header">
-				<div class="title">
-					{{ recipe }}
-				</div>
+<div class="cocktail">
+	<div class="box">
+		<div class="header">
+			<div class="title">
+				{{ recipe }}
 			</div>
+		</div>
 
-			<table>
-				{% for i in ingredients %}
-				<tr>
-					<td><span class="qty">{{ i.quantity }}</span></td>
-					<td><span class="name">
-						<a href="{% url 'ingredient-detail' slug=i.slug %}">
-						{{ i.title }}</a>
+		<table>
+			{% for i in ingredients %}
+			<tr>
+				<td><span class="qty">{{ i.quantity }}</span></td>
+				<td><span class="name">
+						<a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=i.slug %}">
+							{{ i.title }}</a>
 					</span></td>
-					<td><span class="modifier">{{ i.modifier }}</span></td>
-				</tr>
-				{% endfor %}
-			</table>
+				<td><span class="modifier">{{ i.modifier }}</span></td>
+			</tr>
+			{% endfor %}
+		</table>
 
-			<div class="directions">
-				{{ recipe.directions|apply_markup:"markdown" }}
-			</div>
-			{% if recipe.description %}
-			<div class="description">
-				{{ recipe.description|apply_markup:"markdown" }}
-			</div>
-			{% endif %}
-			{% if recipe.credit %}
-			<div class="credit">
-				{{ recipe.credit|apply_markup:"markdown" }}
-			</div>
-			{% endif %}
-			<div class="pubdate">
-				added {{ recipe.pub_date|date:"F j, Y" }}
-			</div>
-			<br />
-{% include "food/food_select.html" %}
-		</div> <!-- box -->
-	</div> <!-- cocktail -->
+		<div class="directions">
+			{{ recipe.directions|apply_markup:"markdown" }}
+		</div>
+		{% if recipe.description %}
+		<div class="description">
+			{{ recipe.description|apply_markup:"markdown" }}
+		</div>
+		{% endif %}
+		{% if recipe.credit %}
+		<div class="credit">
+			{{ recipe.credit|apply_markup:"markdown" }}
+		</div>
+		{% endif %}
+		<div class="pubdate">
+			added {{ recipe.pub_date|date:"F j, Y" }}
+		</div>
+		<div>
+			{% include "food/food_select.html" %}
+		</div>
+	</div> <!-- box -->
+</div> <!-- cocktail -->
 {% endblock %}
-
