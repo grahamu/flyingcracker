@@ -12,7 +12,8 @@
         <table>
             {% for foodstuff in all_foodstuff %}
             <tr>
-                <td><a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=foodstuff.slug %}">{{ foodstuff }}</a></td>
+                <td><a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=foodstuff.slug %}">{{
+                        foodstuff }}</a></td>
             </tr>
             {% endfor %}
         </table>

@@ -184,7 +184,7 @@ def category_detail(request, recipe_type, slug):
         'matching_recipes': category_recipes,
         'recipe_type': recipe_type,
     }
-    return render(request, 'food/recipe_list.html', context)
+    return render(request, 'food/category_list.html', context)
 
 
 def get_all_lists(recipe_type):
