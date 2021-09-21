@@ -13,7 +13,7 @@ class Foodstuff(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('ingredient-detail', kwargs={'slug': self.slug})
+        return reverse('food:ingredient-detail', kwargs={'slug': self.slug})
 
     class Meta:
         ordering = ['title']
