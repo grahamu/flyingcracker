@@ -29,9 +29,9 @@
 
     <div class="select-or">or</div>
 
-    <div class="yui-b" id="ingredient-select">
+    <div class="yui-b" id="category-select">
         <form action="." method="post">{% csrf_token %}
-            <select id="id-foodstuff" class="selectLink">
+            <select id="id-category" class="selectLink">
                 <option value="">Select a category</option>
                 {% for item in category_list %}
                 <option value="{% url 'food:category-detail' recipe_type=recipe_type slug=item.slug %}">
