@@ -184,6 +184,7 @@ def category_detail(request, recipe_type, slug):
         'matching_recipes': category_recipes,
         'recipe_type': recipe_type,
     }
+    agent = request.META.get('HTTP_USER_AGENT')
     if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
         if 'snippet' in request.GET:
             return render(request, 'food/iphone/category_snippet.html', context)
