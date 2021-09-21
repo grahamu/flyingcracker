@@ -184,6 +184,14 @@ def category_detail(request, recipe_type, slug):
         'matching_recipes': category_recipes,
         'recipe_type': recipe_type,
     }
+    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
+        if 'snippet' in request.GET:
+            return render(request, 'food/iphone/category_snippet.html', context)
+        elif 'iui' in request.GET:
+            return render(request, 'food/iphone/category.html', context)
+        else:
+            return render(request, 'food/iphone/category_initial.html', context)
+
     return render(request, 'food/category_list.html', context)
 
 
