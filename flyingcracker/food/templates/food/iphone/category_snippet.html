@@ -1,0 +1,20 @@
+{% load markup_tags %}
+
+{% if category %}
+<div id="cocktail">
+    <div class="yui-b" id="ingredient-title">
+        {{ category }}
+    </div>
+
+    {% if matching_recipes %}
+    <strong>Recipes</strong>:
+    <ul>
+        {% for r in matching_recipes %}
+        <li><a href="{{ r.get_absolute_url }}">{{ r }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    No recipes in category {{ category }}
+    {% endif %}
+</div>
+{% endif %}
