@@ -7,20 +7,20 @@
     </div>
 
     <div class="yui-b" id="ingredient-description">
-    {% if foodstuff.description %}
+        {% if foodstuff.description %}
         {{ foodstuff.description|apply_markup:"markdown" }}
-    {% endif %}
+        {% endif %}
     </div>
 
-    {% if recipes %}
+    {% if matching_recipes %}
     <strong>Recipes</strong>:
     <ul>
-	{% for r in recipes %}
+        {% for r in matching_recipes %}
         <li><a href="{{ r.get_absolute_url }}">{{ r }}</a></li>
-	{% endfor %}
+        {% endfor %}
     </ul>
     {% else %}
-        No recipes use {{ foodstuff }}
+    No recipes use {{ foodstuff }}
     {% endif %}
 </div>
 {% endif %}
