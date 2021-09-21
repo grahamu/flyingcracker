@@ -26,6 +26,21 @@
             </select>
         </form>
     </div>
+
+    <div class="select-or">or</div>
+
+    <div class="yui-b" id="ingredient-select">
+        <form action="." method="post">{% csrf_token %}
+            <select id="id-foodstuff" class="selectLink">
+                <option value="">Select a category</option>
+                {% for item in category_list %}
+                <option value="{% url 'food:category-detail' recipe_type=recipe_type slug=item.slug %}">
+                    {{ item.title }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -54,5 +69,6 @@
 
     YAHOO.util.Event.onAvailable('id-cocktail', initSelects);
     YAHOO.util.Event.onAvailable('id-foodstuff', initSelects);
+    YAHOO.util.Event.onAvailable('id-category', initSelects);
 
 </script>
