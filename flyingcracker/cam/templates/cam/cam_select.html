@@ -6,7 +6,7 @@
                     <select id="id-image" class="selectLink">
                         <option value="">--Select webcam--</option>
                         {% for cam in camlist %}
-                        <option value="{{ cam.id }}"{% ifequal cam.id image.id %} selected="selected"{% endifequal %}>
+                        <option value="{{ cam.id }}"{% if cam.id == image.id %} selected="selected"{% endif %}>
                             {{ cam.title }}
                         </option>
                         {% endfor %}
@@ -19,7 +19,7 @@
                     <select id="id-category" class="selectLink">
                         <option value="">--Select category--</option>
                         {% for cat in catlist %}
-                        <option value="{{ cat.id }}"{% ifequal cat category %} selected="selected"{% endifequal %}>
+                        <option value="{{ cat.id }}"{% if cat == category %} selected="selected"{% endif %}>
                             {{ cat.title }}
                         </option>
                         {% endfor %}
