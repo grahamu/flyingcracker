@@ -5,7 +5,6 @@ from django.urls import re_path
 from django.views import static as static_views
 
 from fc3 import pattern_views
-from food import views as food_views
 
 urlpatterns = [
     # Admin URLs

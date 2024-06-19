@@ -212,7 +212,7 @@ def flex_floor(vals, prev):
     if not vlist:
         return prev
     else:
-        if type(vlist[0]) == int:
+        if type(vlist[0]) is int:
             return int_floor(vals, prev)
         else:
             return float_floor(vals, prev)
@@ -228,7 +228,7 @@ def flex_ceil(vals, prev):
     if not vlist:
         return prev
     else:
-        if type(vlist[0]) == int:
+        if type(vlist[0]) is int:
             return int_ceil(vals, prev)
         else:
             return float_ceil(vals, prev)

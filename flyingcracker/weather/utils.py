@@ -29,7 +29,7 @@ def create_chart_url(date, data_type, size, plots, unit):
     Return a chart URL for the given parameters.
 
     """
-    if type(date) == datetime.date:
+    if type(date) is datetime.date:
         date = datetime.datetime(date.year, date.month, date.day)
     mountain_timezone = pytz.timezone("US/Mountain")
     db_date = mountain_timezone.localize(date)
@@ -349,7 +349,7 @@ def calc_baro_strings(value):
     vlist = []
     vals = calc_baro_values(value)
     for v in vals:
-        if type(v) == int:
+        if type(v) is int:
             vlist.append("%d" % v)
         else:
             vlist.append("%4.2f" % v)
@@ -426,7 +426,7 @@ def weather_on_date(date):
 
     """
     mountain_timezone = pytz.timezone("US/Mountain")
-    if type(date) == datetime.datetime:
+    if type(date) is datetime.datetime:
         date = date.date()
     start = datetime.datetime.combine(date, datetime.time.min)
     start = mountain_timezone.localize(start)
