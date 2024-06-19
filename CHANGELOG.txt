@@ -1,5 +1,12 @@
 Changes
 =======
+version 0.4.0 - June 19, 2024
+----------------------------
+  - Upgrade to Django 4.2.11
+  - Update code and templates for compliance with v4.2.11
+  - Update requirements for v4.2.11
+  - Remove pymemcache in favor of LocMemCache
+  - Add django-silk for SQL analysis
 
 version 0.3.0 - May 27, 2015
 ----------------------------
