@@ -5,7 +5,7 @@ from . import models as food
 
 
 class FoodstuffAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
+    prepopulated_fields = {"slug": ("title",)}
 
 
 admin.site.register(food.Foodstuff, FoodstuffAdmin)
@@ -13,7 +13,7 @@ admin.site.register(food.Attribute)
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
+    prepopulated_fields = {"slug": ("title",)}
 
 
 admin.site.register(food.Category, CategoryAdmin)
@@ -25,14 +25,28 @@ class IngredientInline(admin.TabularInline):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('title',)}
+    prepopulated_fields = {"slug": ("title",)}
     fieldsets = (
-        (None, {'fields': ('title', 'slug', 'teaser', 'attributes',
-                           'categories', 'rclass', 'pub_date')}),
-        ('directions, description, credit',
-         {'fields': ('directions', 'description', 'credit')}),
+        (
+            None,
+            {
+                "fields": (
+                    "title",
+                    "slug",
+                    "teaser",
+                    "attributes",
+                    "categories",
+                    "rclass",
+                    "pub_date",
+                )
+            },
+        ),
+        (
+            "directions, description, credit",
+            {"fields": ("directions", "description", "credit")},
+        ),
     )
-    list_filter = ['rclass']
+    list_filter = ["rclass"]
     inlines = [
         IngredientInline,
     ]

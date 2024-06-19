@@ -13,10 +13,10 @@ class Foodstuff(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('food:ingredient-detail', kwargs={'slug': self.slug})
+        return reverse("food:ingredient-detail", kwargs={"slug": self.slug})
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
 
 
 class Attribute(models.Model):
@@ -26,7 +26,7 @@ class Attribute(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
 
 
 class Category(models.Model):
@@ -38,47 +38,55 @@ class Category(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
         verbose_name_plural = "categories"
 
 
 class Recipe(models.Model):
     title = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField()
-    pub_date = models.DateField('date published', null=True, default=date.today)
+    pub_date = models.DateField("date published", null=True, default=date.today)
     directions = models.TextField(blank=True)
     description = models.TextField(blank=True)
     teaser = models.CharField(max_length=100, blank=True)
     credit = models.TextField(blank=True)
     attributes = models.ManyToManyField(Attribute)
     categories = models.ManyToManyField(Category)
-    DRINK_CLASS = 'D'
-    EAT_CLASS = 'E'
-    INGREDIENT_CLASS = 'I'
+    DRINK_CLASS = "D"
+    EAT_CLASS = "E"
+    INGREDIENT_CLASS = "I"
     CLASS_CHOICES = (
-        (DRINK_CLASS, 'Drink'),
-        (EAT_CLASS, 'Eat'),
-        (INGREDIENT_CLASS, 'Ingredient'),
+        (DRINK_CLASS, "Drink"),
+        (EAT_CLASS, "Eat"),
+        (INGREDIENT_CLASS, "Ingredient"),
     )
-    rclass = models.CharField(max_length=1, choices=CLASS_CHOICES, default=DRINK_CLASS, blank=False)
+    rclass = models.CharField(
+        max_length=1, choices=CLASS_CHOICES, default=DRINK_CLASS, blank=False
+    )
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
         if self.rclass == self.DRINK_CLASS:
-            recipe_type = 'drink'
+            recipe_type = "drink"
         else:
-            recipe_type = 'food'
-        return reverse('food:recipe-detail', kwargs={'slug': self.slug, 'recipe_type': recipe_type})
+            recipe_type = "food"
+        return reverse(
+            "food:recipe-detail", kwargs={"slug": self.slug, "recipe_type": recipe_type}
+        )
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
 
 
 class Ingredient(models.Model):
-    foodstuff = models.ForeignKey(Foodstuff, related_name="ingredients", on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, related_name="ingredients", on_delete=models.CASCADE)
+    foodstuff = models.ForeignKey(
+        Foodstuff, related_name="ingredients", on_delete=models.CASCADE
+    )
+    recipe = models.ForeignKey(
+        Recipe, related_name="ingredients", on_delete=models.CASCADE
+    )
     quantity = models.CharField(max_length=20, blank=True)
     modifier = models.CharField(max_length=50, blank=True)
     rank = models.IntegerField()
@@ -97,7 +105,7 @@ class Ingredient(models.Model):
     slug = property(_get_slug)
 
     class Meta:
-        ordering = ['rank']
+        ordering = ["rank"]
         verbose_name = "recipe ingredient"
         verbose_name_plural = "recipe ingredients"
 
@@ -111,4 +119,4 @@ class Link(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['rank']
+        ordering = ["rank"]

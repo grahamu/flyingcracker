@@ -1,11 +1,12 @@
 import os
-__import__('pkg_resources').declare_namespace(__name__)
+
+__import__("pkg_resources").declare_namespace(__name__)
 
 
 VERSION = (0, 3, 0)
 
 
-def get_version(join=' ', short=False):
+def get_version(join=" ", short=False):
     """
     Return the version of this package as a string.
 
@@ -46,40 +47,38 @@ def get_version(join=' ', short=False):
             remainder = [str(bit) for bit in VERSION[i:]]
             break
     if number:
-        version.append('.'.join(number))
+        version.append(".".join(number))
     if not short:
-        if remainder == ['alpha', 0]:
-            version.append('pre-alpha')
-        elif 'final' not in remainder:
+        if remainder == ["alpha", 0]:
+            version.append("pre-alpha")
+        elif "final" not in remainder:
             version.extend(remainder)
     return join.join(version)
 
 
-def get_git_tag(join=' ', *args, **kwargs):
-    ''' Gets the most recent git tag name and returns it
-        with the version number '''
-    from subprocess import Popen, PIPE
+def get_git_tag(join=" ", *args, **kwargs):
+    """Gets the most recent git tag name and returns it
+    with the version number"""
+    from subprocess import PIPE, Popen
 
-    loc = os.path.dirname(
-        os.path.dirname(
-            os.path.realpath(__file__)))
+    loc = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
     p = Popen(
         'cd "%s" && git name-rev --name-only HEAD' % loc,
         shell=True,
         stdout=PIPE,
-        stderr=PIPE
+        stderr=PIPE,
     )
     branch_name = p.communicate()[0].rstrip()
 
-    if branch_name == '':
+    if branch_name == "":
         branch_name = None
 
     p = Popen(
         'cd "%s" && git rev-parse --verify HEAD' % loc,
         shell=True,
         stdout=PIPE,
-        stderr=PIPE
+        stderr=PIPE,
     )
     hash = p.communicate()[0].rstrip()
     if len(hash) == 40:
@@ -87,7 +86,7 @@ def get_git_tag(join=' ', *args, **kwargs):
     else:
         hash = None
 
-    git_version = '(Git-Version-Not-Found)'
+    git_version = "(Git-Version-Not-Found)"
 
     if branch_name is not None and hash is not None:
         git_version = f'({branch_name.decode("UTF-8")} @{hash.decode("UTF-8")})'

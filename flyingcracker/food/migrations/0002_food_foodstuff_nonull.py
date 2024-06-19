@@ -7,24 +7,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('food', '0001_initial'),
+        ("food", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='foodstuff',
-            name='description',
-            field=models.TextField(blank=True, default=''),
+            model_name="foodstuff",
+            name="description",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='pub_date',
-            field=models.DateField(default=datetime.date.today, null=True, verbose_name='date published'),
+            model_name="recipe",
+            name="pub_date",
+            field=models.DateField(
+                default=datetime.date.today, null=True, verbose_name="date published"
+            ),
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='rclass',
-            field=models.CharField(choices=[('D', 'Drink'), ('E', 'Eat'), ('I', 'Ingredient')], default='D', max_length=1),
+            model_name="recipe",
+            name="rclass",
+            field=models.CharField(
+                choices=[("D", "Drink"), ("E", "Eat"), ("I", "Ingredient")],
+                default="D",
+                max_length=1,
+            ),
         ),
     ]

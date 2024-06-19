@@ -9,16 +9,16 @@ class Category(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
         verbose_name_plural = "categories"
 
 
 class CamManager(models.Manager):
 
     def belongs_to_category(self, cat=None):
-        '''
+        """
         Returns a queryset of all Cams associated with specified Category.
-        '''
+        """
         qs = super(type(self), self).get_query_set()
         if cat:
             qs = qs.filter(category=cat)
@@ -39,4 +39,4 @@ class Cam(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['title', 'url']
+        ordering = ["title", "url"]

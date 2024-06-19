@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import datetime
-import ephem
 from operator import itemgetter
-import pytz
 
+import ephem
+import pytz
 from django.conf import settings
 
 from .forecast import DataBlock
@@ -26,7 +26,7 @@ class EphemMixin(object):
         observer.pressure = 0
         # Location is hard coded to Crested Butte for now
         # Someday convert to user's location.
-        observer.lat, observer.lon = '38.813125', '-106.8972617'
+        observer.lat, observer.lon = "38.813125", "-106.8972617"
         observer.elevation = 2600  # meters ASL
         return observer
 
@@ -39,7 +39,7 @@ class EphemMixin(object):
         # Convert to Mountain Time
         # Someday convert to user's timezone, as seen in
         # fcprofile.user_tags.user_time.
-        mt_date = utc_date.astimezone(pytz.timezone('US/Mountain'))
+        mt_date = utc_date.astimezone(pytz.timezone("US/Mountain"))
         return mt_date
 
 
@@ -53,7 +53,7 @@ class SunMoon(DataBlock, EphemMixin):
         Obtain "Rise Set Transit Times" for Sun and Moon, based
         on user location.
         """
-        self.user = kwargs.pop('user')
+        self.user = kwargs.pop("user")
         super(SunMoon, self).__init__(**kwargs)
 
         today = datetime.date.today()
@@ -67,11 +67,11 @@ class SunMoon(DataBlock, EphemMixin):
     def set_times(self, times, date):
         """"""
         observer = self._get_observer(self.user)
-        observer.date = date.strftime('%Y/%m/%d 19:00')  # 7pm UTC, mid-day in Colorado
+        observer.date = date.strftime("%Y/%m/%d 19:00")  # 7pm UTC, mid-day in Colorado
 
         # sun rise and set
         # See http://rhodesmill.org/pyephem/rise-set.html#naval-observatory-risings-and-settings
-        observer.horizon = '-0:34'
+        observer.horizon = "-0:34"
         times.sunrise = self.observed_time(observer.previous_rising(ephem.Sun()))
         times.sunset = self.observed_time(observer.next_setting(ephem.Sun()))
 
@@ -83,20 +83,26 @@ class SunMoon(DataBlock, EphemMixin):
         # As per PyEphem suggestion, get time when Sun is 6 degrees
         # below the horizon, and use center of the Sun.
         # http://rhodesmill.org/pyephem/rise-set.html#computing-twilight
-        observer.horizon = '-6'
+        observer.horizon = "-6"
         times.twilight_begin = self.observed_time(
             observer.previous_rising(ephem.Sun(), use_center=True)
         )
-        times.twilight_end = self.observed_time(observer.next_setting(ephem.Sun(), use_center=True))
+        times.twilight_end = self.observed_time(
+            observer.next_setting(ephem.Sun(), use_center=True)
+        )
 
-        times.pubdate = date.strftime('%Y-%m-%d 00:00:01 -0700')
+        times.pubdate = date.strftime("%Y-%m-%d 00:00:01 -0700")
 
     def __repr__(self):
-        s = ''
+        s = ""
         if self.pubdate:
             s += "SunMoon pubdate: " + self.pubdate + "\n"
         if self.timestamp:
-            s += "SunMoon timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
+            s += (
+                "SunMoon timestamp: "
+                + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y")
+                + "\n"
+            )
         if self.error:
             s += "Data Error\n"
         return s
@@ -113,14 +119,14 @@ class MoonPhaseData(object):
 
 class MoonPhases(DataBlock, EphemMixin):
 
-    url_pattern = 'http://api.usno.navy.mil/moon/phase?ID=CBSOUTH' '&date={date}&nump=4'
-    filename = settings.WEATHER_ROOT.child('moonphases.txt')
+    url_pattern = "http://api.usno.navy.mil/moon/phase?ID=CBSOUTH" "&date={date}&nump=4"
+    filename = settings.WEATHER_ROOT.child("moonphases.txt")
 
     def __init__(self, **kwargs):
         """
         Obtain latest aa.usno.navy.mil "Phases of the Moon".
         """
-        self.user = kwargs.pop('user')
+        self.user = kwargs.pop("user")
         super(MoonPhases, self).__init__(**kwargs)
 
         today = datetime.date.today()
@@ -160,11 +166,15 @@ class MoonPhases(DataBlock, EphemMixin):
             self.phases.append(phase_data)
 
     def __repr__(self):
-        s = ''
+        s = ""
         if self.pubdate:
             s += "MoonPhases pubdate: " + self.pubdate + "\n"
         if self.timestamp:
-            s += "MoonPhases timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
+            s += (
+                "MoonPhases timestamp: "
+                + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y")
+                + "\n"
+            )
         if self.error:
             s += "Data Error\n"
         return s

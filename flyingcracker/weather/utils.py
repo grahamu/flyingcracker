@@ -8,19 +8,19 @@ from weatherstation.models import Weather
 
 from .models import ChartUrl
 
-TEMP_F = 'F'
-TEMP_C = 'C'
+TEMP_F = "F"
+TEMP_C = "C"
 temp_units = [TEMP_F, TEMP_C]
 
-PRESS_IN = 'in'
-PRESS_MB = 'mb'
+PRESS_IN = "in"
+PRESS_MB = "mb"
 baro_units = [PRESS_IN, PRESS_MB]
 
-SPEED_MPH = 'mph'
-SPEED_KTS = 'kts'
-SPEED_KMH = 'km/h'
-SPEED_MS = 'm/s'
-SPEED_FTS = 'ft/s'
+SPEED_MPH = "mph"
+SPEED_KTS = "kts"
+SPEED_KMH = "km/h"
+SPEED_MS = "m/s"
+SPEED_FTS = "ft/s"
 speed_units = [SPEED_MPH, SPEED_KTS, SPEED_KMH, SPEED_MS, SPEED_FTS]
 
 
@@ -31,7 +31,7 @@ def create_chart_url(date, data_type, size, plots, unit):
     """
     if type(date) == datetime.date:
         date = datetime.datetime(date.year, date.month, date.day)
-    mountain_timezone = pytz.timezone('US/Mountain')
+    mountain_timezone = pytz.timezone("US/Mountain")
     db_date = mountain_timezone.localize(date)
 
     plot_colors = []
@@ -41,15 +41,15 @@ def create_chart_url(date, data_type, size, plots, unit):
         wx_records = weather_on_date(db_date)
         qs_list.append(gchart.hourly_data(wx_records, db_date))
         if data_type == ChartUrl.DATA_TEMP:
-            plot_colors.append('0000FF')
+            plot_colors.append("0000FF")
         elif data_type == ChartUrl.DATA_PRESS:
-            plot_colors.append('D96C00')
+            plot_colors.append("D96C00")
         elif data_type == ChartUrl.DATA_HUMIDITY:
-            plot_colors.append('00CC00')
+            plot_colors.append("00CC00")
         elif data_type == ChartUrl.DATA_WIND:
-            plot_colors.append('6A006A')
+            plot_colors.append("6A006A")
         else:
-            plot_colors.append('000000')
+            plot_colors.append("000000")
 
     if ChartUrl.PLOT_YESTERDAY in plots:
         one_day = datetime.timedelta(days=1)
@@ -57,22 +57,22 @@ def create_chart_url(date, data_type, size, plots, unit):
         wx_records = weather_on_date(db_yesterday)
         qs_list.append(gchart.hourly_data(wx_records, db_yesterday))
         if data_type == ChartUrl.DATA_TEMP:
-            plot_colors.append('87CEEB')
+            plot_colors.append("87CEEB")
         elif data_type == ChartUrl.DATA_PRESS:
-            plot_colors.append('FFCC99')
+            plot_colors.append("FFCC99")
         elif data_type == ChartUrl.DATA_HUMIDITY:
-            plot_colors.append('88FF88')
+            plot_colors.append("88FF88")
         elif data_type == ChartUrl.DATA_WIND:
-            plot_colors.append('FF00FF')
+            plot_colors.append("FF00FF")
         else:
-            plot_colors.append('888888')
+            plot_colors.append("888888")
 
     if ChartUrl.PLOT_YEAR_AGO in plots:
         one_year = datetime.timedelta(days=365)  # don't worry about leap years
         db_year_ago = db_date - one_year
         wx_records = weather_on_date(db_year_ago)
         qs_list.append(gchart.hourly_data(wx_records, db_year_ago))
-        plot_colors.append('BEBEBE')
+        plot_colors.append("BEBEBE")
 
     WIDTH_DEFAULT = 300
     HEIGHT_DEFAULT = 110
@@ -138,7 +138,7 @@ def create_chart_url(date, data_type, size, plots, unit):
         chart = day_wind_chart(qs_list, unit, plot_func, width, height, plot_colors)
 
     else:
-        return ''
+        return ""
     return chart.get_url()
 
 
@@ -359,9 +359,9 @@ def calc_baro_strings(value):
 def calc_trend_strings(value):
     vlist = calc_baro_strings(value)
     if value > Decimal(0):
-        vlist = ['+' + v for v in vlist]
+        vlist = ["+" + v for v in vlist]
     elif value < Decimal("-0.09"):
-        vlist = ['<span class="warning">' + v + '</span>' for v in vlist]
+        vlist = ['<span class="warning">' + v + "</span>" for v in vlist]
     return vlist
 
 
@@ -370,7 +370,7 @@ def calc_speeds(value):
     vlist = []
     for unit in speed_units:
         if value == 0:
-            vlist.append('Calm')
+            vlist.append("Calm")
         else:
             nv = convert_speed(value, unit)
             vlist.append("%d" % int(round(nv)))
@@ -394,21 +394,21 @@ def convert_speed(value, unit):
 
 
 dir_table = {
-    'NNE': 22.5,
-    'NE': 45,
-    'ENE': 67.5,
-    'East': 90,
-    'ESE': 112.5,
-    'SE': 135,
-    'SSE': 157.5,
-    'South': 180,
-    'SSW': 202.5,
-    'SW': 225,
-    'WSW': 247.5,
-    'West': 270,
-    'WNW': 292.5,
-    'NW': 315,
-    'NNW': 337.5,
+    "NNE": 22.5,
+    "NE": 45,
+    "ENE": 67.5,
+    "East": 90,
+    "ESE": 112.5,
+    "SE": 135,
+    "SSE": 157.5,
+    "South": 180,
+    "SSW": 202.5,
+    "SW": 225,
+    "WSW": 247.5,
+    "West": 270,
+    "WNW": 292.5,
+    "NW": 315,
+    "NNW": 337.5,
 }
 
 
@@ -417,7 +417,7 @@ def wind_dir_to_english(dir):
         # TODO make this value a named constant
         if dir >= (val - 11.25) and dir < (val + 11.25):
             return key
-    return 'North'
+    return "North"
 
 
 def weather_on_date(date):
@@ -425,7 +425,7 @@ def weather_on_date(date):
     Return all Weather records for a specific date.
 
     """
-    mountain_timezone = pytz.timezone('US/Mountain')
+    mountain_timezone = pytz.timezone("US/Mountain")
     if type(date) == datetime.datetime:
         date = date.date()
     start = datetime.datetime.combine(date, datetime.time.min)
@@ -438,7 +438,7 @@ def weather_on_date(date):
 
 def request_is_local(request):
     if request:
-        remote = request.META.get('REMOTE_ADDR')
+        remote = request.META.get("REMOTE_ADDR")
     else:
         remote = None
     if (
@@ -457,7 +457,7 @@ def get_date(request=None, date=None):
     Returns a datetime.date object corresponding to `date`.
     If the date is not provided or is invalid, today is returned.
     """
-    mountain_timezone = pytz.timezone('US/Mountain')
+    mountain_timezone = pytz.timezone("US/Mountain")
     today = datetime.datetime.now(mountain_timezone).date()
 
     if not date:
@@ -483,7 +483,7 @@ def get_today(request=None):
     """
     Returns a datetime.date object corresponding to today.
     """
-    mountain_timezone = pytz.timezone('US/Mountain')
+    mountain_timezone = pytz.timezone("US/Mountain")
     return datetime.datetime.now(mountain_timezone).date()
 
 
@@ -491,20 +491,20 @@ def get_today_timestamp(request=None):
     """
     Returns a datetime.datetime object corresponding to today.
     """
-    mountain_timezone = pytz.timezone('US/Mountain')
+    mountain_timezone = pytz.timezone("US/Mountain")
     return datetime.datetime.now(mountain_timezone)
 
 
 def temp_chart_filename(unit, date, type, extra):
-    return weather_chart_filename(unit, date, 'temp', type, extra)
+    return weather_chart_filename(unit, date, "temp", type, extra)
 
 
 def baro_chart_filename(unit, date, type, extra):
-    return weather_chart_filename(unit, date, 'baro', type, extra)
+    return weather_chart_filename(unit, date, "baro", type, extra)
 
 
 def weather_chart_filename(unit, date, title, type, extra):
-    return '%d-%02d-%02d_%s_%s_%s%s.png' % (
+    return "%d-%02d-%02d_%s_%s_%s%s.png" % (
         date.year,
         date.month,
         date.day,
@@ -582,11 +582,13 @@ def get_URL_data(url, filename, max_file_age=60):
     filetime_t = os.path.getmtime(filename)
     filestamp = datetime.datetime.fromtimestamp(filetime_t)
     now = datetime.datetime.now()
-    if (now - filestamp) > datetime.timedelta(minutes=max_file_age) or (now < filestamp):
+    if (now - filestamp) > datetime.timedelta(minutes=max_file_age) or (
+        now < filestamp
+    ):
         return save_URL_data(url, filename)
 
     try:
-        f = open(filename, 'r')
+        f = open(filename, "r")
     except IOError:
         lines = save_URL_data(url, filename)
     else:

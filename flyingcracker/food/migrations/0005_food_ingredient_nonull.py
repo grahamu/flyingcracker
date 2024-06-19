@@ -6,20 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('food', '0004_food_recipe_nonull'),
+        ("food", "0004_food_recipe_nonull"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ingredient',
-            name='modifier',
-            field=models.CharField(blank=True, default='', max_length=50),
+            model_name="ingredient",
+            name="modifier",
+            field=models.CharField(blank=True, default="", max_length=50),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='ingredient',
-            name='quantity',
-            field=models.CharField(blank=True, default='', max_length=20),
+            model_name="ingredient",
+            name="quantity",
+            field=models.CharField(blank=True, default="", max_length=20),
             preserve_default=False,
         ),
     ]

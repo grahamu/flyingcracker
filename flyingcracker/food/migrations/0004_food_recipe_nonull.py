@@ -6,32 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('food', '0003_food_category_nonull'),
+        ("food", "0003_food_category_nonull"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='recipe',
-            name='credit',
-            field=models.TextField(blank=True, default=''),
+            model_name="recipe",
+            name="credit",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='description',
-            field=models.TextField(blank=True, default=''),
+            model_name="recipe",
+            name="description",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='directions',
-            field=models.TextField(blank=True, default=''),
+            model_name="recipe",
+            name="directions",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='teaser',
-            field=models.CharField(blank=True, default='', max_length=100),
+            model_name="recipe",
+            name="teaser",
+            field=models.CharField(blank=True, default="", max_length=100),
             preserve_default=False,
         ),
     ]

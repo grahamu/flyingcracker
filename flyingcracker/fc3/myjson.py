@@ -10,7 +10,9 @@ from django.utils.functional import Promise
 
 class JsonResponse(HttpResponse):
     def __init__(self, data):
-        super(JsonResponse, self).__init__(json_encode2(data), content_type='text/javascript')
+        super(JsonResponse, self).__init__(
+            json_encode2(data), content_type="text/javascript"
+        )
 
 
 def json_encode2(data):
@@ -58,7 +60,7 @@ def json_encode2(data):
         fields = dir(data.__class__) + list(ret.keys())
         add_ons = [k for k in dir(data) if k not in fields]
         for k in add_ons:
-            if k[0] != '_':
+            if k[0] != "_":
                 ret[k] = _any(getattr(data, k))
         return ret
 
