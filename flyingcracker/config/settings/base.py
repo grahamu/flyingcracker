@@ -68,6 +68,7 @@ MIDDLEWARE = (
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.contrib.admindocs.middleware.XViewMiddleware",
+    "silk.middleware.SilkyMiddleware",
     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
@@ -90,6 +91,7 @@ PREREQ_APPS = [
     "django.contrib.humanize",
     "django_extensions",
     "django_markup",
+    "silk",
     "timezone_field",
 ]
 
@@ -105,8 +107,7 @@ INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-        "LOCATION": "127.0.0.1:11211",
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
 
@@ -130,7 +131,6 @@ ALLOWED_HOSTS = ["www.cracklyfinger.com", "cracklyfinger.com", "*"]
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 NOSE_ARGS = [
     "--logging-filter=-django.request",
-    "--with-progressive",
 ]
 
 # Email service credentials are secret.
@@ -142,3 +142,16 @@ EMAIL_PORT = 25
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "cracklyfinger@flyingcracker.com"
 SERVER_EMAIL = "graham@flyingcracker.com"
+
+# Silk Profiler
+SILKY_PYTHON_PROFILER = True
+
+SILKY_ANALYZE_QUERIES = True  # Set to True to analyze queries
+SILKY_AUTHENTICATION = True  # Set to True to restrict access to logged in users
+SILKY_AUTHORISATION = True  # Set to True to restrict access to staff users
+SILKY_IGNORE_PATHS = ["/ht"]  # Ignore these paths - this is an undocumented setting!
+SILKY_MAX_RECORDED_REQUESTS = 10**4  # Store up to 10k requests
+SILKY_MAX_REQUEST_BODY_SIZE = -1  # Silk takes anything <0 as no limit
+SILKY_MAX_RESPONSE_BODY_SIZE = 1024  # If response body>1024 bytes, ignore
+SILKY_META = True  # Record and display silky overhead
+SILKY_PYTHON_PROFILER = True  # Set to False to use another profiler
