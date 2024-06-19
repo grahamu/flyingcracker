@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include
 from django.contrib import admin
-from django.urls import re_path
+from django.urls import path, re_path
 from django.views import static as static_views
 
 from fc3 import pattern_views
@@ -19,6 +19,8 @@ urlpatterns = [
     # redirect old urls
     re_path(r"^(?P<recipe_type>cocktail)/", include("food.redirect_urls")),
 ]
+
+urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 
 if pattern_views and settings.DEBUG:
     urlpatterns += [
