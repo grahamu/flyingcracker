@@ -36,14 +36,14 @@ class NOAAForecastArea(object):
         self.area = []
 
     def parse_line(self, line, forecast):
-        if line.startswith('.'):
+        if line.startswith("."):
             self.parse_area(forecast)
             # recycle this line because it is the start
             # of a different section.
             return NOAAForecastBody, True
         else:
             line = line.strip()
-            if len(line) > 0 and not line.startswith('$$'):
+            if len(line) > 0 and not line.startswith("$$"):
                 self.area.append(line)
             return False, False
 
@@ -55,36 +55,36 @@ class NOAAForecastArea(object):
         Next is a timestamp.
         """
         pubdate = self.area.pop()  # last item is pubdate
-        time_of_day, remainder = pubdate.split(' ', 1)
+        time_of_day, remainder = pubdate.split(" ", 1)
         # insert colon so parser recognizes the time string
-        time_of_day = time_of_day[0:-2] + ':' + time_of_day[-2:]
-        pubdate = ' '.join([time_of_day, remainder])
+        time_of_day = time_of_day[0:-2] + ":" + time_of_day[-2:]
+        pubdate = " ".join([time_of_day, remainder])
         forecast.pubdate = pubdate
         forecast.timestamp = dateutilparser.parse(forecast.pubdate)
 
         area = self.area.pop(0).capitalize()  # first item is area
-        if area.endswith('-'):
+        if area.endswith("-"):
             area = area[:-1]
 
         if len(self.area) > 0:  # middle is cities of interest
-            interest = ''.join(self.area)
-            interest = interest.split('...')
+            interest = "".join(self.area)
+            interest = interest.split("...")
             city_list = []
             for city in interest[1:]:
                 city_list.append(capitalize_all(city))
-            cities = ', '.join(city_list)
+            cities = ", ".join(city_list)
             area_list = [area]
             area_list.append(interest[0].lower())
             area_list.append(cities)
-            area = ' '.join(area_list)
+            area = " ".join(area_list)
 
         forecast.area = area
 
 
 def capitalize_all(str):
-    word_list = str.split(' ')
+    word_list = str.split(" ")
     word_list = [word.capitalize() for word in word_list]
-    return ' '.join(word_list)
+    return " ".join(word_list)
 
 
 class NOAAForecastBody(object):
@@ -93,29 +93,29 @@ class NOAAForecastBody(object):
     """
 
     def __init__(self):
-        self.title = ''
+        self.title = ""
         self.body = []
 
     def parse_line(self, line, forecast):
         if len(line) == 0:  # ignore this line
             return False, False
 
-        if line.startswith('...'):
+        if line.startswith("..."):
             # recycle this line, it starts a warning.
             return NOAAForecastWarning, True
 
-        if line == '$$':  # end of the forecast sections
+        if line == "$$":  # end of the forecast sections
             self.add_section(forecast)
             return False, False
 
-        if line == '&&':
+        if line == "&&":
             # Indicates some extra NOAA data, ignore all subsequent lines.
             self.add_section(forecast)
             return NOAAForecastIgnore, False
 
-        if line[0] == '.' and line[1] != ' ':  # start of a new section
+        if line[0] == "." and line[1] != " ":  # start of a new section
             self.add_section(forecast)
-            title, body = line.split('...', 1)
+            title, body = line.split("...", 1)
             self.title = title[1:]
             self.body.append(body)
         else:
@@ -123,15 +123,15 @@ class NOAAForecastBody(object):
         return False, False
 
     def add_section(self, forecast):
-        if self.title != '':
-            body_str = ' '.join(self.body)
-            sentences = body_str.split('. ')
+        if self.title != "":
+            body_str = " ".join(self.body)
+            sentences = body_str.split(". ")
             sentences = [s.capitalize() for s in sentences]
-            body_str = '. '.join(sentences)
+            body_str = ". ".join(sentences)
             forecast.add_section(self.title.capitalize(), body_str)
             # reset temporary section info
             self.body = []
-            self.title = ''
+            self.title = ""
 
 
 class NOAAForecastWarning(object):
@@ -145,9 +145,9 @@ class NOAAForecastWarning(object):
 
     def parse_line(self, line, forecast):
         self.warning.append(line)
-        if line.endswith('...'):
-            self.warning = ' '.join(self.warning)
-            self.warning.replace('...', '')
+        if line.endswith("..."):
+            self.warning = " ".join(self.warning)
+            self.warning.replace("...", "")
             forecast.warning = self.warning
             return NOAAForecastBody, False  # done with the warning
         else:
@@ -204,7 +204,7 @@ def get_NOAA_data(state, zname):
     Get data from disk file if it exists, but
     ignore the data if it is more than 4 hours old.
     """
-    filename = settings.WEATHER_ROOT.child('noaa-' + zname + '.txt')
+    filename = settings.WEATHER_ROOT.child("noaa-" + zname + ".txt")
     if not os.path.isfile(filename):
         return save_NOAA_data(state, zname)
 
@@ -215,7 +215,7 @@ def get_NOAA_data(state, zname):
         return save_NOAA_data(state, zname)
 
     try:
-        f = open(filename, 'r')
+        f = open(filename, "r")
     except IOError:
         lines = save_NOAA_data(state, zname)
     else:
@@ -228,11 +228,11 @@ def get_NOAA_data(state, zname):
 
 def save_NOAA_data(state, zname):
     url = (
-        'http://tgftp.nws.noaa.gov/data/forecasts/zone/'
+        "http://tgftp.nws.noaa.gov/data/forecasts/zone/"
         + state.lower()
-        + '/'
+        + "/"
         + zname.lower()
-        + '.txt'
+        + ".txt"
     )
     try:
         lines = urlopen(url).readlines()
@@ -241,7 +241,7 @@ def save_NOAA_data(state, zname):
         return None
     else:
         # save the retrieved data
-        filename = settings.WEATHER_ROOT.child('noaa-' + zname + '.txt')
+        filename = settings.WEATHER_ROOT.child("noaa-" + zname + ".txt")
         f = open(filename, "w")
         f.writelines(lines)
         f.close()
@@ -249,29 +249,29 @@ def save_NOAA_data(state, zname):
 
 
 def test():
-    forecast = get_NOAA_forecast('CO', 12)
+    forecast = get_NOAA_forecast("CO", 12)
     print((repr(forecast)))
-    forecast = get_NOAA_forecast('CA', 1)
+    forecast = get_NOAA_forecast("CA", 1)
     print((repr(forecast)))
-    forecast = get_NOAA_forecast('OR', 1)
+    forecast = get_NOAA_forecast("OR", 1)
     print((repr(forecast)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import optparse
 
     p = optparse.OptionParser()
-    p.add_option('--zone', '-z', type="int", default=12)
-    p.add_option('--state', '-s', default='CO')
+    p.add_option("--zone", "-z", type="int", default=12)
+    p.add_option("--state", "-s", default="CO")
     options, arguments = p.parse_args()
 
     if not arguments:
         test()
     else:
         for cmd in arguments:
-            if cmd.lower() == 'save':
+            if cmd.lower() == "save":
                 state = options.state.upper()
                 save_NOAA_data(state, state + "Z%03d" % options.zone)
-            elif cmd.lower() == 'get':
+            elif cmd.lower() == "get":
                 state = options.state.upper()
                 print((get_NOAA_data(state, state + "Z%03d" % options.zone)))

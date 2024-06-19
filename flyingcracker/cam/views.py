@@ -18,20 +18,20 @@ def cam_view(request):
     c_list, image, category = get_cam_list(category_id, cam_id)
 
     context = {
-        'catlist': cat_list,
-        'category': category,
-        'camlist': c_list,
-        'image': image,
+        "catlist": cat_list,
+        "category": category,
+        "camlist": c_list,
+        "image": image,
     }
 
-    agent = request.META.get('HTTP_USER_AGENT')
-    if (agent and agent.find('iPhone') != -1) or 'iphone' in request.GET:
-        if 'iui' in request.GET:
-            return render(request, 'cam/iphone/cam.html', context)
+    agent = request.META.get("HTTP_USER_AGENT")
+    if (agent and agent.find("iPhone") != -1) or "iphone" in request.GET:
+        if "iui" in request.GET:
+            return render(request, "cam/iphone/cam.html", context)
         else:
-            return render(request, 'cam/iphone/cam_initial.html', context)
+            return render(request, "cam/iphone/cam_initial.html", context)
     else:
-        return render(request, 'cam/cam.html', context)
+        return render(request, "cam/cam.html", context)
 
 
 def cam_list(request):
@@ -40,7 +40,7 @@ def cam_list(request):
 
     """
     if request.is_ajax():
-        cat_id = request.POST.get('cat', None)
+        cat_id = request.POST.get("cat", None)
         if cat_id:
             try:
                 category = Category.objects.get(id=cat_id)
@@ -58,12 +58,12 @@ def cam_list(request):
         index = 0
         obj_dict = {}
         for obj in c_list:
-            obj_dict[index] = dict({'id': obj.id, 'title': obj.title})
+            obj_dict[index] = dict({"id": obj.id, "title": obj.title})
             index = index + 1
 
-        obj_dict['length'] = index
-        obj_dict['category'] = cat_id
-        response_dict['images'] = obj_dict
+        obj_dict["length"] = index
+        obj_dict["category"] = cat_id
+        response_dict["images"] = obj_dict
         return JsonResponse(response_dict)
     else:
         return cam_view(request)
@@ -74,18 +74,18 @@ def cam_image(request):
     Get a specific image URL.
 
     """
-    if request.is_ajax() or request.GET.get('xhr'):
+    if request.is_ajax() or request.GET.get("xhr"):
         try:
-            id = request.POST.get('id')
+            id = request.POST.get("id")
             if not id:
-                id = request.GET.get('id')
+                id = request.GET.get("id")
             image = Cam.objects.get(id=id)
         except Cam.DoesNotExist:
             image = None
             valid = False
         else:
             valid = True
-        return JsonResponse({'image': image, 'valid': valid})
+        return JsonResponse({"image": image, "valid": valid})
     else:
         return cam_view(request)
 

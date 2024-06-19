@@ -2,5 +2,6 @@ from django.apps import AppConfig
 
 
 class WeatherStationConfig(AppConfig):
-    name = 'weatherstation'
-    verbose_name = 'WeatherStation app'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "weatherstation"
+    verbose_name = "WeatherStation app"

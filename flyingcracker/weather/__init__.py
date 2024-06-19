@@ -1,1 +1,1 @@
-default_app_config = 'weather.apps.WeatherConfig'
+default_app_config = "weather.apps.WeatherConfig"

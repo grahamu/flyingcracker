@@ -15,13 +15,13 @@ class DataBlock(object):
         self.error = False
 
     def add_section(self, title, body):
-        self.sections.append({'title': title, 'body': body})
+        self.sections.append({"title": title, "body": body})
 
     def set_timestamp(self, pubdate=None):
         if pubdate is None:
             pubdate = self.pubdate
         if pubdate:
-            mountain_tz = timezone('US/Mountain')
+            mountain_tz = timezone("US/Mountain")
             timestamp = dateutilparser.parse(pubdate)
             self.timestamp = timestamp.astimezone(mountain_tz)
 
@@ -32,9 +32,9 @@ class DataBlock(object):
 
     def report_error(self, error_str):
         self.error = True
-        self.add_section('Problem obtaining valid data', error_str)
+        self.add_section("Problem obtaining valid data", error_str)
         self.timestamp = datetime.datetime.now(tzlocal())
-        mountain_tz = timezone('US/Mountain')
+        mountain_tz = timezone("US/Mountain")
         self.timestamp = self.timestamp.astimezone(mountain_tz)
 
 
@@ -46,17 +46,21 @@ class Forecast(DataBlock):
         self.reported_by = None
 
     def __repr__(self):
-        s = ''
+        s = ""
         if self.pubdate:
             s += "Forecast pubdate: " + self.pubdate + "\n"
         if self.timestamp:
-            s += "Forecast timestamp: " + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y") + "\n"
+            s += (
+                "Forecast timestamp: "
+                + self.timestamp.strftime("%H:%M %Z %a %b %d, %Y")
+                + "\n"
+            )
         if self.area:
             s += "Forecast Area: " + smart_bytes(self.area) + "\n"
         if self.warning:
             s += "Warning: " + smart_bytes(self.warning) + "\n"
         for sec in self.sections:
-            s += smart_bytes(sec['title']) + ": " + smart_bytes(sec['body']) + "\n"
+            s += smart_bytes(sec["title"]) + ": " + smart_bytes(sec["body"]) + "\n"
         if self.reported_by:
             s += "Reported by: " + smart_bytes(self.reported_by) + "\n"
         if self.error:

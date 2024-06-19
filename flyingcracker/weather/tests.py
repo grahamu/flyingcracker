@@ -11,7 +11,7 @@ class PeriodicRecordsTestCase(TestCase):
     Verify correct number of records from `periodic_samples` function.
     """
 
-    fixtures = ['fc3']
+    fixtures = ["fc3"]
 
     def setUp(self):
         self.start = get_today_timestamp(None)
@@ -41,17 +41,17 @@ class CurrentWeather(TestCase):
         """
         import json
 
-        response = self.get('weather:current')
+        response = self.get("weather:current")
         self.response_404(response)
 
-        response = self.post('weather:current')
+        response = self.post("weather:current")
         self.response_404(response)
 
         # EXPENSE Account list
         response = self.post(
-            'weather:current',
+            "weather:current",
             data={
-                'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest',
+                "HTTP_X_REQUESTED_WITH": "XMLHttpRequest",
             },
         )
         self.response_200(response)

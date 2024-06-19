@@ -1,7 +1,7 @@
 import json
-from unipath import Path
 
 from django.core.exceptions import ImproperlyConfigured
+from unipath import Path
 
 SECRETS_DIR = Path(__file__).parent
 

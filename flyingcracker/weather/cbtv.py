@@ -10,8 +10,8 @@ from .utils import get_URL_data, save_URL_data
 
 class CBTV(Forecast):
 
-    url = 'http://www.cbtv.tv/RSS/CrestedButteCurrentWeatherReport.xml'
-    filename = settings.WEATHER_ROOT.child('cbtv.txt')
+    url = "http://www.cbtv.tv/RSS/CrestedButteCurrentWeatherReport.xml"
+    filename = settings.WEATHER_ROOT.child("cbtv.txt")
 
     def __init__(self, **kwargs):
         """
@@ -23,30 +23,30 @@ class CBTV(Forecast):
         xml_text = get_URL_data(CBTV.url, CBTV.filename, max_file_age=10)
         if not xml_text:
             self.error = True
-            self.add_section('Origin Data Error', 'No XML text found')
+            self.add_section("Origin Data Error", "No XML text found")
             return
 
         try:
             xml = XML(xml_text)
         except ExpatError:
-            self.report_error('Bad XML')
+            self.report_error("Bad XML")
             return
         except ParseError:
-            self.report_error('Cannot parse XML')
+            self.report_error("Cannot parse XML")
             return
 
         rss = xml
-        channel = rss.find('channel')
+        channel = rss.find("channel")
         if channel is None:
             self.report_error('No "channel"')
             return
-        item = channel.find('item')
+        item = channel.find("item")
         if item is None:
             self.report_error('No "item"')
             return
 
         # Get the data we want
-        pubdate = item.findtext('pubDate')
+        pubdate = item.findtext("pubDate")
         if not pubdate:
             self.report_error('No "pubdate"')
             return
@@ -55,7 +55,7 @@ class CBTV(Forecast):
 
         self.pubdate = pubdate
         self.set_timestamp()
-        self.add_section('Synopsis', synopsis.strip())
+        self.add_section("Synopsis", synopsis.strip())
 
 
 def save_data():
@@ -67,7 +67,7 @@ def test():
     print((repr(cbtv)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import optparse
 
     p = optparse.OptionParser()
@@ -77,5 +77,5 @@ if __name__ == '__main__':
         test()
     else:
         for cmd in arguments:
-            if cmd.lower() == 'save':
+            if cmd.lower() == "save":
                 save_data()
