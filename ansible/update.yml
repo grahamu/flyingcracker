@@ -18,6 +18,8 @@
 
     - name: update requirements
       pip:
+        executable: "{{ virtualenv }}/bin/pip"
+        extra_args: --upgrade
         requirements: "{{ app_path }}requirements-prod.txt"
         virtualenv: "{{ virtualenv }}"
 
@@ -32,5 +34,3 @@
       shell: "{{ virtualenv }}/bin/pa_reload_webapp.py www.cracklyfinger.com"
       environment:
         API_TOKEN: "{{ api_token }}"
-
-# No such file or directory: Path('/home/grahamu/grahamu.pythonanywhere.com/flyingcracker/flyingcracker/config/settings/secrets.json')
