@@ -92,7 +92,7 @@ PREREQ_APPS = [
     "django_extensions",
     "django_markup",
     "silk",
-    "timezone_field",
+    # "timezone_field",
 ]
 
 PROJECT_APPS = [
