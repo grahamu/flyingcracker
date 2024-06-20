@@ -4,7 +4,7 @@
   vars:
     home: /home/grahamu/
     app_path: "{{ home }}flyingcracker/"
-    virtualenv: "{{ home }}.virtualenvs/flyingcracker"
+    virtualenv: "{{ home }}.virtualenvs/flyingcracker4"
 
   vars_files:
     vars.yml
