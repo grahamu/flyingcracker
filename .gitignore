@@ -3,5 +3,6 @@ dist
 MANIFEST
 .DS_Store
 cron_mail*.*
+node_modules/
 secrets.json
 staticfiles/
