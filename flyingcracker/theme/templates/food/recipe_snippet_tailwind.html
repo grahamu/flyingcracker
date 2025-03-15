@@ -1,0 +1,56 @@
+{% load markup_tags %}
+
+{% if recipe %}
+<div id="cocktail" class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div id="recipe-title" class="bg-cocktail-orange-500 text-white px-4 py-3 text-xl font-semibold">
+        {{ recipe.title }}
+    </div>
+
+    <div class="p-4">
+        <h2 class="text-lg font-medium text-gray-700 mb-2">Ingredients</h2>
+        <ul class="space-y-2 mb-6">
+            {% for i in ingredients %}
+            <li class="flex">
+                <div class="w-1/4 pr-4 text-right text-gray-600">{{ i.quantity }}</div>
+                <div class="w-3/4">
+                    <span class="font-medium">
+                        <a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=i.slug %}"
+                           class="text-flyingcracker-blue-600 hover:text-flyingcracker-blue-800 hover:underline">
+                            {{ i.title }}
+                        </a>
+                    </span>
+                    {% if i.modifier %}
+                    <span class="text-gray-600 italic">{{ i.modifier }}</span>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div id="recipe-directions" class="mb-6">
+            <h2 class="text-lg font-medium text-gray-700 mb-2">Directions</h2>
+            <div class="prose max-w-none">
+                {{ recipe.directions|apply_markup:"markdown" }}
+            </div>
+        </div>
+
+        {% if recipe.description %}
+        <div id="recipe-description" class="mb-6">
+            <h2 class="text-lg font-medium text-gray-700 mb-2">Description</h2>
+            <div class="prose max-w-none">
+                {{ recipe.description|apply_markup:"markdown" }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if recipe.credit %}
+        <div id="recipe-credit" class="text-gray-600 text-sm italic">
+            <h2 class="text-lg font-medium text-gray-700 mb-2">Credit</h2>
+            <div class="prose max-w-none">
+                {{ recipe.credit|apply_markup:"markdown" }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

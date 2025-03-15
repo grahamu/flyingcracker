@@ -55,6 +55,7 @@ TEMPLATES = [
                 "django.template.context_processors.i18n",
                 "django.template.context_processors.media",
                 "django.template.context_processors.request",
+                "theme.context_processors.theme_settings",
             ],
         },
     },
@@ -93,6 +94,10 @@ PREREQ_APPS = [
     "django_markup",
     "silk",
     # "timezone_field",
+
+    # Tailwind CSS
+    "tailwind",
+    "compressor",
 ]
 
 PROJECT_APPS = [
@@ -101,6 +106,7 @@ PROJECT_APPS = [
     "home",
     "weather",
     "weatherstation.apps.WeatherStationConfig",
+    "theme.apps.ThemeConfig",  # New Tailwind theme app
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
@@ -155,3 +161,20 @@ SILKY_MAX_REQUEST_BODY_SIZE = -1  # Silk takes anything <0 as no limit
 SILKY_MAX_RESPONSE_BODY_SIZE = 1024  # If response body>1024 bytes, ignore
 SILKY_META = True  # Record and display silky overhead
 SILKY_PYTHON_PROFILER = True  # Set to False to use another profiler
+
+# Additional settings for Tailwind CSS
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+# Static files settings for Tailwind
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)

@@ -1,0 +1,16 @@
+{
+  "name": "flyingcracker",
+  "version": "1.0.0",
+  "description": "Weather and Cocktails from Crested Butte, Colorado",
+  "scripts": {
+    "build": "tailwindcss -i ./flyingcracker/theme/static/css/tailwind.css -o ./flyingcracker/static/css/tailwind.min.css --minify",
+    "dev": "tailwindcss -i ./flyingcracker/theme/static/css/tailwind.css -o ./flyingcracker/static/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.9",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.23",
+    "tailwindcss": "^3.3.2"
+  }
+}

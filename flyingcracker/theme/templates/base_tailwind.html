@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Weather and Cocktails from Crested Butte, Colorado">
+    <meta name="keywords" content="cracklyfinger, weather, forecast, current conditions, cocktail, webcam">
+    <meta name="author" content="Graham Ullrich">
+
+    <title>CracklyFinger {% block extra_title %}{% endblock %}</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+    <!-- Tailwind CSS -->
+    <link href="{% static 'css/tailwind.min.css' %}" rel="stylesheet">
+
+    {% block extrastyle %}
+    <!-- Custom styles -->
+    {% endblock extrastyle %}
+
+    {% block javascript %}
+    <!-- Alpine.js for simple interactions (lightweight alternative to jQuery) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Axios for AJAX (replacement for YUI Connection) -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    {% endblock javascript %}
+
+    {% block my_source %}
+    <!-- Site-specific JavaScript -->
+    {% endblock my_source %}
+
+    {% block extrahead %}{% endblock extrahead %}
+
+    {% block analytics %}
+    <!-- Modern Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    {% endblock analytics %}
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <div class="page-container flex flex-col min-h-screen">
+        <!-- Header -->
+        <header class="site-header">
+            <div class="container mx-auto px-4">
+                {% block header %}
+                <div class="flex justify-between items-center">
+                    <div class="branding">
+                        <h1 class="site-title">
+                            {% block branding %}
+                            {{ system_name }}
+                            <span class="site-subtitle">- test site for <a href="http://www.flyingcracker.com" class="underline hover:text-white">flyingcracker.com</a></span>
+                            {% endblock branding %}
+                        </h1>
+                    </div>
+
+                    <div id="user-tools" class="text-right">
+                        {% block user %}
+                        {% endblock user %}
+                    </div>
+                </div>
+                {% endblock header %}
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow">
+            <div class="container mx-auto">
+                <div class="two-column-layout">
+                    <!-- Main Column -->
+                    <div class="main-column">
+                        <!-- Navigation Menu -->
+                        <nav class="main-nav" x-data="{ open: false }">
+                            <div class="container mx-auto">
+                                <!-- Mobile menu button -->
+                                <div class="md:hidden">
+                                    <button @click="open = !open" class="text-white p-2">
+                                        <span x-show="!open">☰ Menu</span>
+                                        <span x-show="open">✕ Close</span>
+                                    </button>
+                                </div>
+
+                                <!-- Desktop Menu -->
+                                <ul class="nav-list hidden md:flex">
+                                    {% block navmenu %}
+                                    <li><a class="nav-item" href="{% url 'weather:root' %}">Weather</a></li>
+                                    <li><a class="nav-item" href="{% url 'cam:root' %}">WebCams</a></li>
+                                    <li><a class="nav-item" href="{% url 'food:recipe-list' recipe_type='drink' %}">Drink</a></li>
+                                    <li><a class="nav-item" href="{% url 'food:recipe-list' recipe_type='food' %}">Food</a></li>
+                                    {% endblock navmenu %}
+                                </ul>
+
+                                <!-- Mobile Menu -->
+                                <div x-show="open" class="md:hidden">
+                                    <ul class="flex flex-col space-y-2 mt-2">
+                                        {% block navmenu_mobile %}
+                                        <li><a class="nav-item block py-1" href="{% url 'weather:root' %}">Weather</a></li>
+                                        <li><a class="nav-item block py-1" href="{% url 'cam:root' %}">WebCams</a></li>
+                                        <li><a class="nav-item block py-1" href="{% url 'food:recipe-list' recipe_type='drink' %}">Drink</a></li>
+                                        <li><a class="nav-item block py-1" href="{% url 'food:recipe-list' recipe_type='food' %}">Food</a></li>
+                                        {% endblock navmenu_mobile %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+
+                        <!-- Main Content Area -->
+                        <div class="main-content">
+                            {% block body %}
+                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                            {% endblock body %}
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="side-column">
+                        <div class="sidebar">
+                            {% block leftbar %}
+                            {% endblock leftbar %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer mt-auto">
+            <div class="container mx-auto">
+                <p class="text-center">[{{ system_name }} v{{ system_version }} Django v{{ django_version }}]</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

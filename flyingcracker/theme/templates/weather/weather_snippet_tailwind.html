@@ -1,0 +1,150 @@
+{% load humanize static %}
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <a id="current"></a>
+    <div class="bg-flyingcracker-blue-600 text-white px-4 py-2 flex justify-between items-center">
+        <h2 class="text-xl font-bold">Crested Butte, CO</h2>
+        <span id="curr_timestamp" class="text-sm">{{ timestamp }}</span>
+    </div>
+
+    <div class="p-4">
+        <div id="curr_weather" class="space-y-6">
+            <!-- Temperature Panel -->
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Temperature -->
+                <div id="curr-temp-block" class="bg-cover bg-no-repeat p-4 rounded-lg bg-gradient-to-r from-blue-100 to-blue-200"
+                     style="background-image: url({{ temp_chart_val|safe }})">
+                    <div id="curr_temp" class="text-center {% if morning %}bg-yellow-100 bg-opacity-60 rounded-lg p-2{% else %}bg-indigo-100 bg-opacity-60 rounded-lg p-2{% endif %}">
+                        <span class="temp_value text-4xl font-bold">{{ temp_val }}&#186;</span>
+                        <span class="curr_units temp_units text-lg ml-1" style="display: {{ show_units }}">{{ temp_unit }}</span>
+                    </div>
+                </div>
+
+                <!-- Barometer -->
+                <div id="curr-barometer-block" class="bg-cover bg-no-repeat p-4 rounded-lg bg-gradient-to-r from-green-100 to-green-200"
+                     style="background-image: url({{ baro_chart_val|safe }})">
+                    <div class="{% if morning %}bg-yellow-100 bg-opacity-60 rounded-lg p-2{% else %}bg-indigo-100 bg-opacity-60 rounded-lg p-2{% endif %}">
+                        <div id="curr_baro" class="text-center">
+                            <span class="baro_value text-3xl font-medium">{{ baro_val }}</span>
+                            <span class="curr_units baro_units text-sm ml-1" style="display: {{ show_units }}">{{ baro_unit }}</span>
+                            <div class="text-sm text-gray-600" x-show="showTitles">barometer</div>
+                        </div>
+
+                        <div id="curr_trend" class="text-center mt-2">
+                            <span class="baro_value text-2xl">{{ trend_val|safe }}</span>
+                            <span class="curr_units baro_units text-sm ml-1" style="display: {{ show_units }}">{{ baro_unit }}</span>
+                            <div class="text-sm text-gray-600" x-show="showTitles">3-hour trend</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wind, Windchill, Humidity -->
+            <div class="grid grid-cols-3 gap-4 mt-4">
+                <!-- Wind -->
+                <div id="curr_wind" class="text-center bg-cover bg-no-repeat p-2 rounded-lg"
+                     {% if wind_dir %}style="background-image: url({% static wind_dir %})"{% endif %}>
+                    <span class="speed_value text-2xl font-medium">{{ wind_val }}</span>
+                    <div><span class="curr_units speed_units text-sm" id="wind_units" style="display: {{ show_units }}">{{ speed_unit }}</span></div>
+                    <div class="text-sm text-gray-600" x-show="showTitles">wind</div>
+                </div>
+
+                <!-- Windchill -->
+                <div id="curr_windchill" class="text-center p-2">
+                    {% if temp_val != windchill_val %}
+                    <span class="temp_value text-2xl font-medium">{{ windchill_val }}&#186;</span>
+                    <span class="curr_units temp_units text-sm" style="display: {{ show_units }}">{{ temp_unit }}</span>
+                    <div class="text-sm text-gray-600" x-show="showTitles">windchill</div>
+                    {% endif %}
+                </div>
+
+                <!-- Humidity -->
+                <div id="curr_humidity" class="text-center p-2">
+                    <span id="humidity_value" class="humidity_value text-2xl font-medium">{{ humidity }}%</span>
+                    <div class="text-sm text-gray-600" x-show="showTitles">humidity</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="mt-6 space-y-3 border-t pt-4 border-gray-200" x-data="{ units: '{{ unit_state }}', labels: '{{ title_state }}' }">
+                <div class="flex justify-between items-center">
+                    <label class="text-gray-700">Units</label>
+                    <button
+                        @click="units = units === 'true' ? 'false' : 'true'; toggleUnits($el)"
+                        :class="units === 'true' ? 'bg-green-500' : 'bg-gray-300'"
+                        class="relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none">
+                        <span :class="units === 'true' ? 'translate-x-6' : 'translate-x-1'"
+                              class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <label class="text-gray-700">Labels</label>
+                    <button
+                        @click="labels = labels === 'true' ? 'false' : 'true'; toggleLabels($el)"
+                        :class="labels === 'true' ? 'bg-green-500' : 'bg-gray-300'"
+                        class="relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus:outline-none">
+                        <span :class="labels === 'true' ? 'translate-x-6' : 'translate-x-1'"
+                              class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if cbtv %}
+<div class="bg-white rounded-lg shadow-md overflow-hidden mt-6">
+    <a id="cbtv"></a>
+    <div class="bg-flyingcracker-blue-600 text-white px-4 py-2 flex justify-between items-center">
+        <h2 class="text-xl font-bold">CBTV-10 Forecast <span class="text-sm ml-2 bg-green-500 px-2 py-0.5 rounded">Local!</span></h2>
+        <span class="text-sm">
+            {{ cbtv.timestamp|date:"H:i \M\T" }}&nbsp;
+            {% if cbtv.stale %}<span class="text-red-300">{% endif %}
+            {{ cbtv.timestamp|date:"D M j" }}
+            {% if cbtv.stale %}</span>{% endif %}
+        </span>
+    </div>
+
+    <div class="p-4">
+        <div id="cbtv_forecast" class="prose max-w-none">
+            {% for sec in cbtv.sections %}
+            <div class="mb-4">
+                <div>{{ sec.body|safe }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if cbac %}
+<div class="bg-white rounded-lg shadow-md overflow-hidden mt-6">
+    <a id="cbac"></a>
+    <div class="bg-flyingcracker-blue-600 text-white px-4 py-2 flex justify-between items-center">
+        <h2 class="text-xl font-bold">CBAC Forecast <span class="text-sm ml-2 bg-green-500 px-2 py-0.5 rounded">Local!</span></h2>
+        <span class="text-sm">
+            {{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;
+            {% if cbac.stale %}<span class="text-red-300">{% endif %}
+            {{ cbac.timestamp|date:"D M j" }}
+            {% if cbac.stale %}</span>{% endif %}
+        </span>
+    </div>
+
+    <div class="p-4">
+        <div id="cbac_forecast" class="prose max-w-none">
+            {% for sec in cbac.sections %}
+            <div class="mb-4">
+                <h3 class="font-bold text-lg">{{ sec.title }}</h3>
+                <div>{{ sec.body }}</div>
+            </div>
+            {% endfor %}
+            {% if cbac.reported_by %}
+            <div id="cbac_reporter" class="text-sm text-gray-600 mt-4 italic">
+                reported by: {{ cbac.reported_by|slugify|capfirst }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}

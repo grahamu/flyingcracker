@@ -25,3 +25,7 @@ python-dateutil==2.9.0.post0
 pytz==2024.1
 unipath==1.1
 whitenoise==6.6.0
+# Tailwind CSS
+django-tailwind==3.6.0
+# Required for Tailwind CSS
+django-compressor==4.4

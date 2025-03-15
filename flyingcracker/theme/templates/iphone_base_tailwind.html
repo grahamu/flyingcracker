@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="description" content="Weather and Cocktails from Crested Butte, Colorado - Mobile Version">
+
+    <title>CracklyFinger {% block extra_title %}{% endblock %}</title>
+
+    <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+    <!-- Tailwind CSS -->
+    <link href="{% static 'css/tailwind.min.css' %}" rel="stylesheet">
+
+    {% block extrastyle %}
+    <!-- Mobile-specific styles -->
+    <style>
+        /* Prevent iOS text size adjustment after orientation change */
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Remove tap highlight on iOS */
+        * {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+    {% endblock extrastyle %}
+
+    {% block javascript %}
+    <!-- Alpine.js for interactions -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Axios for AJAX -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    {% endblock javascript %}
+
+    {% block extrahead %}{% endblock extrahead %}
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-flyingcracker-blue-500 text-white">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-xl font-bold">
+                        {% block title %}CracklyFinger{% endblock %}
+                    </h1>
+
+                    {% if request.user.is_authenticated %}
+                    <div class="text-sm">
+                        {{ request.user.username }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <nav class="bg-flyingcracker-blue-600 text-white">
+            <div class="container mx-auto px-4 py-2">
+                <div class="flex justify-between space-x-1">
+                    <a href="{% url 'weather:root' %}" class="flex-1 text-center py-1 rounded hover:bg-flyingcracker-blue-700">Weather</a>
+                    <a href="{% url 'cam:root' %}" class="flex-1 text-center py-1 rounded hover:bg-flyingcracker-blue-700">Cams</a>
+                    <a href="{% url 'food:recipe-list' recipe_type='drink' %}" class="flex-1 text-center py-1 rounded hover:bg-flyingcracker-blue-700">Drink</a>
+                    <a href="{% url 'food:recipe-list' recipe_type='food' %}" class="flex-1 text-center py-1 rounded hover:bg-flyingcracker-blue-700">Food</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="flex-grow">
+            <div class="content" id="content">
+                {% block body %}
+                <p class="p-4">Default content</p>
+                {% endblock body %}
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-gray-300 text-xs py-2 px-4 text-center">
+            <p>CracklyFinger Mobile v{{ system_version }}</p>
+        </footer>
+    </div>
+</body>
+</html>
