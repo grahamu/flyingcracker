@@ -2,330 +2,296 @@
 {% load humanize static %}
 
 {% block javascript %}
-{{ block.super }}
-<script type="text/javascript" src="{{ yui_path }}/build/utilities/utilities.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 {% endblock %}
 
 {% block body %}
-	<div class="box">
-    	<div class="weatherItem">
-			<div class="header">
-				<div class="title">
-					Crested Butte South Current Conditions
-				</div> <!-- title -->
+<div class="space-y-6">
 
-				<div class="date">
-					{{ timestamp }}
-				</div> <!-- date -->
-			</div> <!-- header -->
+    <!-- Current Conditions -->
+    <div class="border rounded-lg p-4">
+        <div class="flex justify-between items-baseline mb-4">
+            <h2 class="text-xl font-semibold">Crested Butte South Current Conditions</h2>
+            <span class="text-sm text-gray-500">{{ timestamp }}</span>
+        </div>
 
-			<div class="body">
-                <div id="curr_weather">
-				    Temperature - <b><span class="temp-today">Today</span></b>, <b><span class="temp-yesterday">Yesterday</span></b>, and <b><span class="temp-year-ago">One Year Ago</span></b><br />
-                    <div id="curr-temp-block" style="background: url({{ temp_chart_val|safe }}) no-repeat top">
-                        <div id="curr_temp" class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
-                            <span class="temp_value">{{ temp_val }}&#186;</span>
-                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
-                        </div>
-                    </div>
-				    Barometric Pressure - <b><span class="bp-today">Today</span></b>, <b><span class="bp-yesterday">Yesterday</span></b>, and <b><span class="bp-year-ago">One Year Ago</span></b><br />
-                    <div id="curr-barometer-block" style="background: url({{ baro_chart_val|safe }}) no-repeat top">
-                        <div class="{% if morning %}chart_am{% else %}chart_pm{% endif %}">
-                            <div id="curr_baro">
-                                <span class="baro_value">{{ baro_val }}</span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ baro_unit }}</span>
-                            </div>
-                            <div class="weather_title">
-                                    <span class="curr_title" style="visibility: {{ show_titles }}">barometer</span>
-                            </div>
-                            <div id="curr_trend">
-                                <span class="baro_value">{{ trend_val|safe }}</span>
-                                <span class="curr_units baro_units" style="display: {{ show_units }}">{{ baro_unit }}</span>
-                            </div>
-                            <div class="weather_title">
-                                    <span class="curr_title" style="visibility: {{ show_titles }}">3-hour &#916;</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="yui-gb">
-                        <div id="curr_wind" class="yui-u first"{% if wind_dir %} style="background: url({% static wind_dir %}) no-repeat top"{% endif %}>
-                            <span class="speed_value">{{ wind_val }}</span>
-                            <div><span class="curr_units speed_units" id="wind_units" style="display: {{ show_units }}">{{ speed_unit }}</span></div>
-                        </div>
-                        <div id="curr_windchill" class="yui-u">
-                            {% if current.temp != current.windchill %}
-                            <span class="temp_value">{{ windchill_val }}&#186;</span>
-                            <span class="curr_units temp_units" style="display: {{ show_units }}">{{ temp_unit }}</span>
-                            <div>
-                                <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">windchill</span>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <div id="curr_humidity" class="yui-u">
-                            <span id="humidity_value" class="humidity_value">{{ humidity }}%</span>
-                            <div>
-                                <span class="curr_title" style="visibility: {{ show_titles }}; font-size: 50%">humidity</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="yui-gb weather_title">
-                        <div class="yui-u first">
-                            <span class="curr_title" style="visibility: {{ show_titles }}">wind</span>
-                        </div>
-                        <div class="yui-u">
-                            &nbsp;
-                        </div>
-                        <div class="yui-u">
-                            &nbsp;
-                        </div>
-                    </div>
-                    <div class="yui-g">
-                        <div class="yui-u first toggle" onclick="toggleUnits(this)" toggled="{{ unit_state }}">
-                            <button id="units-button">Units</button>
-                        </div>
-                        <div class="yui-u toggle" onclick="toggleLabels(this)" toggled="{{ unit_state }}">
-                            <button id="labels-button">Labels</button>
-                        </div>
-                    </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <!-- Temperature -->
+            <div class="bg-blue-50 rounded-lg p-4 text-center cursor-pointer" onclick="cycleUnit('temp')">
+                <div class="text-3xl font-bold text-blue-700">
+                    <span id="temp-value">{{ temp_val }}&deg;</span>
                 </div>
-                {% if elapsed %}
-                <div class="elapsed">
-                    {% for e in elapsed %}
-                    {{ e.label }}: {{ e.elapsed }} sec.<br />
-                    {% endfor %}
+                <div class="text-sm text-blue-500">
+                    <span id="temp-unit">{{ temp_unit }}</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">temperature</div>
+            </div>
+
+            <!-- Barometer -->
+            <div class="bg-orange-50 rounded-lg p-4 text-center cursor-pointer" onclick="cycleUnit('baro')">
+                <div class="text-3xl font-bold text-orange-700">
+                    <span id="baro-value">{{ baro_val }}</span>
+                </div>
+                <div class="text-sm text-orange-500">
+                    <span id="baro-unit">{{ baro_unit }}</span>
+                    <span class="ml-2" id="trend-value">{{ trend_val|safe }}</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">barometer</div>
+            </div>
+
+            <!-- Wind -->
+            <div class="bg-purple-50 rounded-lg p-4 text-center cursor-pointer" onclick="cycleUnit('speed')">
+                <div class="text-3xl font-bold text-purple-700">
+                    <span id="wind-value">{{ wind_val }}</span>
+                </div>
+                <div class="text-sm text-purple-500">
+                    <span id="wind-unit">{{ speed_unit }}</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">wind</div>
+            </div>
+
+            <!-- Humidity -->
+            <div class="bg-green-50 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-green-700">
+                    {{ humidity }}%
+                </div>
+                <div class="text-xs text-gray-500 mt-1">humidity</div>
+                {% if current.temp != current.windchill %}
+                <div class="text-xs text-gray-400 mt-2">
+                    windchill <span id="windchill-value">{{ windchill_val }}&deg;</span>
                 </div>
                 {% endif %}
-			</div> <!-- body -->
-		</div>  <!-- weatherItem -->
-	</div>  <!-- box -->
-
-    {% if cbtv %}
-    <div class="box">
-  	<div class="weatherItem">
-        <div class="header">
-            <div class="title">
-                CBTV-10 Forecast&nbsp;&nbsp;<span class="local">Local!</span>
-            </div> <!-- title -->
-
-            <div class="date">
-                {{ cbtv.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbtv.stale %}<span class="warning">{% endif %}{{ cbtv.timestamp|date:"D M j" }}{% if cbtv.stale %}</span>{% endif %}{{ cbtv.timestamp|date:", Y" }}
-            </div> <!-- date -->
-        </div> <!-- header -->
-
-        <div class="forecast">
-            {% if cbtv.warning %}
-            <div class="warning">
-                {{ cbtv.warning|safe }}
             </div>
-            {% endif %}
-            {% for sec in cbtv.sections %}
-            <div class="section">
-                <div class="body">
-                    {{ sec.body|safe }}
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border rounded p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-medium text-gray-700">Temperature</h3>
+                    <div class="flex gap-2 text-xs">
+                        <span class="text-blue-600">Today</span>
+                        <span class="text-sky-400">Yesterday</span>
+                        <span class="text-gray-400">Year Ago</span>
+                    </div>
                 </div>
+                <canvas id="chart-temp" height="200"></canvas>
             </div>
-            {% endfor %}
-        </div>  <!-- forecast -->
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
-    {% endif %}
-
-    {% if cbac %}
-    <div class="box">
-  	<div class="weatherItem">
-        <div class="header">
-            <div class="title">
-                CBAC Forecast&nbsp;&nbsp;<span class="local">Local!</span>
-            </div> <!-- title -->
-
-            <div class="date">
-                {{ cbac.timestamp|date:"H:i \M\T" }}&nbsp;{% if cbac.stale %}<span class="warning">{% endif %}{{ cbac.timestamp|date:"D M j" }}{% if cbac.stale %}</span>{% endif %}{{ cbac.timestamp|date:", Y" }}
-            </div> <!-- date -->
-        </div> <!-- header -->
-
-        <div class="forecast">
-            {% if cbac.warning %}
-            <div class="warning">
-                {{ cbac.warning }}
-            </div>
-            {% endif %}
-            {% for sec in cbac.sections %}
-            <div class="section">
-			    {% if sec.title %}
-                <div class="title">{{ sec.title }}</div>
-				{% endif %}
-                <div class="body">
-                    {{ sec.body|safe }}
+            <div class="border rounded p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-medium text-gray-700">Barometric Pressure</h3>
+                    <div class="flex gap-2 text-xs">
+                        <span class="text-orange-600">Today</span>
+                        <span class="text-orange-300">Yesterday</span>
+                        <span class="text-gray-400">Year Ago</span>
+                    </div>
                 </div>
+                <canvas id="chart-pressure" height="200"></canvas>
             </div>
-            {% endfor %}
-            {% if cbac.reported_by %}
-            <div class="reporter">
-            reported by {{ cbac.reported_by }}
-			</div>
-            {% endif %}
-        </div>  <!-- forecast -->
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
-    {% endif %}
+            <div class="border rounded p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-medium text-gray-700">Humidity</h3>
+                    <div class="flex gap-2 text-xs">
+                        <span class="text-green-600">Today</span>
+                        <span class="text-green-300">Yesterday</span>
+                        <span class="text-gray-400">Year Ago</span>
+                    </div>
+                </div>
+                <canvas id="chart-humidity" height="200"></canvas>
+            </div>
+            <div class="border rounded p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-medium text-gray-700">Wind</h3>
+                    <div class="flex gap-2 text-xs">
+                        <span class="text-purple-700">Today</span>
+                        <span class="text-fuchsia-500">Yesterday</span>
+                        <span class="text-gray-400">Year Ago</span>
+                    </div>
+                </div>
+                <canvas id="chart-wind" height="200"></canvas>
+            </div>
+        </div>
+    </div>
 
     {% if noaa %}
-    <div class="box">
-  	<div class="weatherItem">
-        <div class="header">
-            <div class="title">
-                NOAA Forecast
-            </div> <!-- title -->
-
-            <div class="date">
-                {{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}
-            </div> <!-- date -->
-        </div> <!-- header -->
-
-        <div class="forecast">
+    <details class="border rounded-lg" open>
+        <summary class="p-4 cursor-pointer font-semibold flex justify-between items-center">
+            NOAA Forecast
+            <span class="text-sm text-gray-500 font-normal">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span>
+        </summary>
+        <div class="px-4 pb-4 space-y-2">
             {% if noaa.warning %}
-            <div class="warning">
-                {{ noaa.warning }}
-            </div>
+            <div class="text-red-600 font-medium">{{ noaa.warning }}</div>
             {% endif %}
             {% for sec in noaa.sections %}
-            <div class="section">
-                <div class="title">{{ sec.title }}</div>
-                <div class="body">
-                    {{ sec.body }}
-                </div>
+            <div class="text-sm">
+                <div class="font-medium">{{ sec.title }}</div>
+                <div class="leading-relaxed">{{ sec.body }}</div>
             </div>
             {% endfor %}
-        </div>  <!-- forecast -->
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
+        </div>
+    </details>
     {% endif %}
 
-	{% if powcam %}
-    <div class="box">
-  	<div class="weatherItem">
-        <div class="header">
-            <div class="title">
-                Crested Butte PowCam
-            </div> <!-- title -->
-        </div> <!-- header -->
+    {% if sunmoon %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="border rounded-lg p-4">
+            <h3 class="font-semibold mb-3">Sun</h3>
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-center text-gray-500">
+                        <th></th>
+                        <th>Begin Twilight</th>
+                        <th>Sunrise</th>
+                        <th>Sunset</th>
+                        <th>End Twilight</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr>
+                        <th class="text-left">Today</th>
+                        <td>{{ sunmoon.today_rstt.twilight_begin|time:"P" }}</td>
+                        <td>{{ sunmoon.today_rstt.sunrise|time:"P" }}</td>
+                        <td>{{ sunmoon.today_rstt.sunset|time:"P" }}</td>
+                        <td>{{ sunmoon.today_rstt.twilight_end|time:"P" }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left">Tomorrow</th>
+                        <td>{{ sunmoon.tomorrow_rstt.twilight_begin|time:"P" }}</td>
+                        <td>{{ sunmoon.tomorrow_rstt.sunrise|time:"P" }}</td>
+                        <td>{{ sunmoon.tomorrow_rstt.sunset|time:"P" }}</td>
+                        <td>{{ sunmoon.tomorrow_rstt.twilight_end|time:"P" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <div class="forecast">
-            <div class="body">
-                <img src="{{ powcam }}" alt="CBMR powder cam" />
-            </div>
-        </div>  <!-- forecast -->
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
-	{% endif %}
+        <div class="border rounded-lg p-4">
+            <h3 class="font-semibold mb-3">Moon</h3>
+            <table class="w-full text-sm mb-3">
+                <thead>
+                    <tr class="text-center text-gray-500">
+                        <th></th>
+                        <th>Moonrise</th>
+                        <th>Moonset</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr>
+                        <th class="text-left">Today</th>
+                        <td>{{ sunmoon.today_rstt.moonrise|time:"P" }}</td>
+                        <td>{{ sunmoon.today_rstt.moonset|time:"P" }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left">Tomorrow</th>
+                        <td>{{ sunmoon.tomorrow_rstt.moonrise|time:"P" }}</td>
+                        <td>{{ sunmoon.tomorrow_rstt.moonset|time:"P" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% if moonphases %}
+            <table class="w-full text-sm">
+                {% for phase in moonphases.phases %}
+                <tr>
+                    <td class="py-0.5">{{ phase.date|naturalday:"l N j, Y" }} {{ phase.time|time:"P" }}</td>
+                    <td class="py-0.5">{{ phase.name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 
-	{% if sunmoon %}
-    <div class="box">
-  	<div class="weatherItem">
-        <div class="header">
-            <div class="title">
-                Sun
-            </div> <!-- title -->
-        </div> <!-- header -->
+</div>
 
-        <div class="forecast">
-            <div class="body">
-				<table bgcolor="white" border="0" cellpadding="3" width="600" margin="0">
-				<!-- Headers -->
-				<tr align="center">
-					<th>&nbsp</th>
-					<th>Begin<br>Twilight</th>
-					<th>Sunrise</th>
-					<th>Sunset</th>
-					<th>End<br>Twilight</th>
-				</tr>
-				<!-- Today -->
-				<tr align="center">
-					<th>Today:</th>
-					<td>{{ sunmoon.today_rstt.twilight_begin|time:"P" }}</td>
-					<td>{{ sunmoon.today_rstt.sunrise|time:"P" }}</td>
-					<td>{{ sunmoon.today_rstt.sunset|time:"P" }}</td>
-					<td>{{ sunmoon.today_rstt.twilight_end|time:"P" }}</td>
-				</tr>
-				<!-- Tomorrow -->
-				<tr align="center">
-					<th>Tomorrow:</th>
-					<td>{{ sunmoon.tomorrow_rstt.twilight_begin|time:"P" }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.sunrise|time:"P" }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.sunset|time:"P" }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.twilight_end|time:"P" }}</td>
-				</tr>
-				</table>
-            </div>
-        </div>  <!-- forecast -->
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
-	{% endif %}
+<script>
+// Current weather data from server
+const weatherData = {
+    tempUnits: {{ temp_units|safe }},
+    baroUnits: {{ baro_units|safe }},
+    speedUnits: {{ speed_units|safe }},
+    temp: {{ temp|safe }},
+    baro: {{ baro|safe }},
+    trend: {{ trend|safe }},
+    wind: {{ wind|safe }},
+    windchill: {{ windchill|safe }},
+    tempUnit: "{{ temp_unit }}",
+    baroUnit: "{{ baro_unit }}",
+    speedUnit: "{{ speed_unit }}",
+};
 
+function nextInArray(arr, current) {
+    const idx = arr.indexOf(current);
+    return arr[(idx + 1) % arr.length];
+}
 
-	{% if sunmoon or moonphases %}
-    <div class="box">
-  	<div class="weatherItem">
-		<div class="header">
-            <div class="title">
-                Moon
-            </div> <!-- title -->
-        </div> <!-- header -->
+function cycleUnit(type) {
+    if (type === 'temp') {
+        weatherData.tempUnit = nextInArray(weatherData.tempUnits, weatherData.tempUnit);
+        const idx = weatherData.tempUnits.indexOf(weatherData.tempUnit);
+        document.getElementById('temp-value').innerHTML = weatherData.temp[idx] + '&deg;';
+        document.getElementById('temp-unit').textContent = weatherData.tempUnit;
+        document.getElementById('windchill-value').innerHTML = weatherData.windchill[idx] + '&deg;';
+        document.cookie = `temp_unit=${weatherData.tempUnit};path=/;max-age=${7*86400}`;
+        loadChart('temp', weatherData.tempUnit);
+    } else if (type === 'baro') {
+        weatherData.baroUnit = nextInArray(weatherData.baroUnits, weatherData.baroUnit);
+        const idx = weatherData.baroUnits.indexOf(weatherData.baroUnit);
+        document.getElementById('baro-value').textContent = weatherData.baro[idx];
+        document.getElementById('baro-unit').textContent = weatherData.baroUnit;
+        document.getElementById('trend-value').innerHTML = weatherData.trend[idx];
+        document.cookie = `baro_unit=${weatherData.baroUnit};path=/;max-age=${7*86400}`;
+        loadChart('pressure', weatherData.baroUnit);
+    } else if (type === 'speed' && weatherData.speedUnit !== '') {
+        weatherData.speedUnit = nextInArray(weatherData.speedUnits, weatherData.speedUnit);
+        const idx = weatherData.speedUnits.indexOf(weatherData.speedUnit);
+        document.getElementById('wind-value').textContent = weatherData.wind[idx];
+        document.getElementById('wind-unit').textContent = weatherData.speedUnit;
+        document.cookie = `speed_unit=${weatherData.speedUnit};path=/;max-age=${7*86400}`;
+        loadChart('wind', weatherData.speedUnit);
+    }
+}
 
-		{% if sunmoon %}
-		<div class="forecast">
-            <div class="body">
-				<table bgcolor="white" border="0" cellpadding="3" width="420">
-				<!-- Headers -->
-				<tr align="center">
-					<th>&nbsp</th>
-					<th>Moonrise</th>
-					<th>Moonset</th>
-				</tr>
-				<!-- Today -->
-				<tr align="center">
-					<th>Today:</th>
-					<td>{{ sunmoon.today_rstt.moonrise|time:"P" }}</td>
-					<td>{{ sunmoon.today_rstt.moonset|time:"P" }}</td>
-				</tr>
-				<!-- Tomorrow -->
-				<tr align="center">
-					<th>Tomorrow:</th>
-					<td>{{ sunmoon.tomorrow_rstt.moonrise|time:"P" }}</td>
-					<td>{{ sunmoon.tomorrow_rstt.moonset|time:"P" }}</td>
-				</tr>
-				</table>
+// Chart.js rendering
+const charts = {};
 
-            </div>
-        </div>  <!-- forecast -->
-		{% endif %}
+function loadChart(type, unit) {
+    const url = `{% url 'weather:chartdata' %}?type=${type}&unit=${encodeURIComponent(unit)}`;
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            const canvasId = `chart-${type}`;
+            if (charts[canvasId]) {
+                charts[canvasId].data.labels = data.labels;
+                charts[canvasId].data.datasets = data.datasets;
+                charts[canvasId].update();
+            } else {
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                charts[canvasId] = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { ticks: { maxTicksLimit: 12, font: { size: 11 } } },
+                            y: { ticks: { font: { size: 11 } } },
+                        },
+                        interaction: { intersect: false, mode: 'index' },
+                    }
+                });
+            }
+        });
+}
 
-		{% if moonphases %}
-		<div class="forecast">
-			<div class="body">
-				<table bgcolor="white" border="0" cellpadding="3" width="800">
-				<!-- Phase name -->
-				{% for phase in moonphases.phases %}
-				<tr>
-					<td>{{ phase.date|naturalday:"l N j, Y" }} {{ phase.time|time:"P" }}</td><td>{{ phase.name }}</td>
-				</tr>
-				{% endfor %}
-				</table>
-			</div>
-		</div>  <!-- forecast -->
-		{% endif %}
-
-    </div>  <!-- weatherItem -->
-    </div>  <!-- box -->
-	{% endif %}
-
-	<!-- NASA Spot The Station -->
-    <div style='display:inline-block; border: 1px solid #CCC; border-radius: 6px; -webkit-border-radius: 6px; -o-border-radius: 6px; position: relative; overflow: hidden; width: 310px; height: 450px;'><iframe src='https://spotthestation.nasa.gov/widget/widget.cfm?country=United_States&region=Colorado&city=Gunnison' width='310' height='450' frameborder='0' ></iframe></div>
-
-<script type="text/javascript">
-    {% include "weather/iphone/weather.js" %}
-    YAHOO.util.Event.onAvailable('curr_weather', current_weather.init);
+// Load all charts on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadChart('temp', weatherData.tempUnit);
+    loadChart('pressure', weatherData.baroUnit);
+    loadChart('humidity', '%');
+    loadChart('wind', weatherData.speedUnit || 'mph');
+});
 </script>
-
-
 {% endblock %}

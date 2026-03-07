@@ -6,8 +6,6 @@ import pytz
 from fc3 import gchart
 from weatherstation.models import Weather
 
-from .models import ChartUrl
-
 TEMP_F = "F"
 TEMP_C = "C"
 temp_units = [TEMP_F, TEMP_C]
@@ -24,145 +22,59 @@ SPEED_FTS = "ft/s"
 speed_units = [SPEED_MPH, SPEED_KTS, SPEED_KMH, SPEED_MS, SPEED_FTS]
 
 
-def create_chart_url(date, data_type, size, plots, unit):
+def get_chart_data(date, data_type, unit):
     """
-    Return a chart URL for the given parameters.
-
+    Return chart data as a dict suitable for Chart.js.
+    Returns hourly data points for today, yesterday, and year-ago.
     """
     if type(date) is datetime.date:
         date = datetime.datetime(date.year, date.month, date.day)
     mountain_timezone = pytz.timezone("US/Mountain")
     db_date = mountain_timezone.localize(date)
 
-    plot_colors = []
-    qs_list = []
+    # Collect hourly data for today, yesterday, and year-ago
+    datasets = []
+    periods = [
+        ("Today", db_date, 0),
+        ("Yesterday", db_date - datetime.timedelta(days=1), 1),
+        ("Year Ago", db_date - datetime.timedelta(days=365), 2),
+    ]
 
-    if ChartUrl.PLOT_TODAY in plots:
-        wx_records = weather_on_date(db_date)
-        qs_list.append(gchart.hourly_data(wx_records, db_date))
-        if data_type == ChartUrl.DATA_TEMP:
-            plot_colors.append("0000FF")
-        elif data_type == ChartUrl.DATA_PRESS:
-            plot_colors.append("D96C00")
-        elif data_type == ChartUrl.DATA_HUMIDITY:
-            plot_colors.append("00CC00")
-        elif data_type == ChartUrl.DATA_WIND:
-            plot_colors.append("6A006A")
+    colors = {
+        "temp": ["#0000FF", "#87CEEB", "#BEBEBE"],
+        "pressure": ["#D96C00", "#FFCC99", "#BEBEBE"],
+        "humidity": ["#00CC00", "#88FF88", "#BEBEBE"],
+        "wind": ["#6A006A", "#FF00FF", "#BEBEBE"],
+    }
+
+    for label, d, idx in periods:
+        wx_records = weather_on_date(d)
+        hourly = gchart.hourly_data(wx_records, d)
+
+        if data_type == "temp":
+            values = convert_qs_temps(hourly, unit)
+        elif data_type == "pressure":
+            values = convert_qs_pressures(hourly, unit)
+        elif data_type == "humidity":
+            values = [rec.humidity if rec else None for rec in hourly]
+        elif data_type == "wind":
+            values = convert_qs_speeds(hourly, unit)
         else:
-            plot_colors.append("000000")
+            values = []
 
-    if ChartUrl.PLOT_YESTERDAY in plots:
-        one_day = datetime.timedelta(days=1)
-        db_yesterday = db_date - one_day
-        wx_records = weather_on_date(db_yesterday)
-        qs_list.append(gchart.hourly_data(wx_records, db_yesterday))
-        if data_type == ChartUrl.DATA_TEMP:
-            plot_colors.append("87CEEB")
-        elif data_type == ChartUrl.DATA_PRESS:
-            plot_colors.append("FFCC99")
-        elif data_type == ChartUrl.DATA_HUMIDITY:
-            plot_colors.append("88FF88")
-        elif data_type == ChartUrl.DATA_WIND:
-            plot_colors.append("FF00FF")
-        else:
-            plot_colors.append("888888")
+        datasets.append({
+            "label": label,
+            "data": values,
+            "borderColor": colors.get(data_type, ["#000"] * 3)[idx],
+            "borderWidth": 3 if idx == 0 else 2,
+            "pointRadius": 0,
+            "tension": 0.3,
+        })
 
-    if ChartUrl.PLOT_YEAR_AGO in plots:
-        one_year = datetime.timedelta(days=365)  # don't worry about leap years
-        db_year_ago = db_date - one_year
-        wx_records = weather_on_date(db_year_ago)
-        qs_list.append(gchart.hourly_data(wx_records, db_year_ago))
-        plot_colors.append("BEBEBE")
-
-    WIDTH_DEFAULT = 300
-    HEIGHT_DEFAULT = 110
-
-    if data_type == ChartUrl.DATA_TEMP:
-        if size == ChartUrl.SIZE_IPHONE:
-            width = 260
-            height = 100
-            plot_func = gchart.day_chart_iphone
-        elif size == ChartUrl.SIZE_NORMAL:
-            width = 600
-            height = 240
-            plot_func = gchart.day_chart_normal
-        else:
-            width = WIDTH_DEFAULT
-            height = HEIGHT_DEFAULT
-            plot_func = gchart.day_chart_normal
-        chart = day_temp_chart(qs_list, unit, plot_func, width, height, plot_colors)
-
-    elif data_type == ChartUrl.DATA_PRESS:
-        if size == ChartUrl.SIZE_IPHONE:
-            width = 292
-            height = 100
-            plot_func = gchart.day_chart_iphone
-        elif size == ChartUrl.SIZE_NORMAL:
-            width = 600
-            height = 240
-            plot_func = gchart.day_chart_normal
-        else:
-            width = WIDTH_DEFAULT
-            height = HEIGHT_DEFAULT
-            plot_func = gchart.day_chart_normal
-        chart = day_baro_chart(qs_list, unit, plot_func, width, height, plot_colors)
-
-    elif data_type == ChartUrl.DATA_HUMIDITY:
-        if size == ChartUrl.SIZE_IPHONE:
-            width = 260
-            height = 100
-            plot_func = gchart.day_chart_iphone
-        elif size == ChartUrl.SIZE_NORMAL:
-            width = 600
-            height = 240
-            plot_func = gchart.day_chart_normal
-        else:
-            width = WIDTH_DEFAULT
-            height = HEIGHT_DEFAULT
-            plot_func = gchart.day_chart_normal
-        chart = day_humidity_chart(qs_list, plot_func, width, height, plot_colors)
-
-    elif data_type == ChartUrl.DATA_WIND:
-        if size == ChartUrl.SIZE_IPHONE:
-            width = 292
-            height = 100
-            plot_func = gchart.day_chart_iphone
-        elif size == ChartUrl.SIZE_NORMAL:
-            width = 600
-            height = 240
-            plot_func = gchart.day_chart_normal
-        else:
-            width = WIDTH_DEFAULT
-            height = HEIGHT_DEFAULT
-            plot_func = gchart.day_chart_normal
-        chart = day_wind_chart(qs_list, unit, plot_func, width, height, plot_colors)
-
-    else:
-        return ""
-    return chart.get_url()
-
-
-def day_temp_chart(qs_list, unit, plot_func, width, height, colors):
-    """
-    Returns a URL which plots one line for each queryset in `qs_list`.
-
-    """
-    data_list = []  # list of value lists
-    for date_qs in qs_list:
-        if date_qs:  # only work on this if the queryset is not empty
-            data_list.append(convert_qs_temps(date_qs, unit))
-
-    floor = 200
-    ceil = -200
-    plot_list = []  # list of plot lines, each a list of values
-    for val_list in data_list:
-        # add list of temp values to list of plot lines
-        plot_list.append(val_list)
-        # determine the lowest and highest values seen for this unit type
-        floor = gchart.int_floor(val_list, floor)
-        ceil = gchart.int_ceil(val_list, ceil)
-    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4, 2, 2])
-    return chart
+    return {
+        "labels": gchart.HOUR_LABELS,
+        "datasets": datasets,
+    }
 
 
 def convert_qs_temps(qs, unit):
@@ -197,28 +109,6 @@ def round_temp(val):
         return int(round(float(val)))
 
 
-def day_baro_chart(qs_list, unit, plot_func, width, height, colors):
-    """
-    Returns a URL which produces one line for each queryset.
-
-    """
-    data_list = []  # list of value lists
-    for date_qs in qs_list:
-        if date_qs:  # only work on this if the queryset is not empty
-            data_list.append(convert_qs_pressures(date_qs, unit))
-
-    floor = 1500
-    ceil = 0
-    plot_list = []  # list of plot lines, each a list of values
-    for val_list in data_list:
-        # add list of temp values to list of plot lines
-        plot_list.append(val_list)
-        # determine the lowest and highest values seen for this unit type
-        floor = gchart.flex_floor(val_list, floor)
-        ceil = gchart.flex_ceil(val_list, ceil)
-    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4, 2, 2])
-    return chart
-
 
 def convert_qs_pressures(qs, unit):
     """
@@ -245,50 +135,6 @@ def in_to_mb(val):
         # TODO - make this value a named constant
         return int(round(float(val) * 33.8639))
 
-
-def day_humidity_chart(qs_list, plot_func, width, height, colors):
-    """
-    Returns a URL which produces one line for each queryset.
-
-    """
-    data_list = []  # list of value lists
-    for date_qs in qs_list:
-        humidity = []
-        for rec in date_qs:
-            if rec is None:
-                humidity.append(None)
-            else:
-                humidity.append(rec.humidity)
-        data_list.append(humidity)
-
-    plot_list = []  # list of plot lines, each a list of values
-    for val_list in data_list:
-        # add list of humidity values to list of plot lines
-        plot_list.append(val_list)
-    chart = plot_func(plot_list, 0, 100, width, height, colors, [4, 2, 2])
-    return chart
-
-
-def day_wind_chart(qs_list, unit, plot_func, width, height, colors):
-    """
-    Returns a URL which produces one line for each queryset.
-
-    """
-    data_list = []  # list of value lists
-    for date_qs in qs_list:
-        if date_qs:  # only work on this if the queryset is not empty
-            data_list.append(convert_qs_speeds(date_qs, unit))
-
-    floor = 0
-    ceil = 10
-    plot_list = []  # list of plot lines, each a list of values
-    for val_list in data_list:
-        # add list of speed values to list of plot lines
-        plot_list.append(val_list)
-        # determine the lowest and highest values seen for this unit type
-        ceil = gchart.flex_ceil(val_list, ceil)
-    chart = plot_func(plot_list, floor, ceil, width, height, colors, [4, 2, 2])
-    return chart
 
 
 def convert_qs_speeds(qs, unit):
@@ -494,25 +340,6 @@ def get_today_timestamp(request=None):
     mountain_timezone = pytz.timezone("US/Mountain")
     return datetime.datetime.now(mountain_timezone)
 
-
-def temp_chart_filename(unit, date, type, extra):
-    return weather_chart_filename(unit, date, "temp", type, extra)
-
-
-def baro_chart_filename(unit, date, type, extra):
-    return weather_chart_filename(unit, date, "baro", type, extra)
-
-
-def weather_chart_filename(unit, date, title, type, extra):
-    return "%d-%02d-%02d_%s_%s_%s%s.png" % (
-        date.year,
-        date.month,
-        date.day,
-        title,
-        unit,
-        type,
-        extra,
-    )
 
 
 def temp_dict(weather_records):
