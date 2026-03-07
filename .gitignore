@@ -5,3 +5,4 @@ MANIFEST
 cron_mail*.*
 secrets.json
 staticfiles/
+node_modules/
