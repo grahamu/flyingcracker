@@ -99,19 +99,14 @@ def get_current_weather(request):
         wind_dir = wind_dir.lower()
     wind_list = utils.calc_speeds(wind)
 
-    if wind == 0:
-        speed_unit = ""
-        wind_units = [""]
-    else:
-        speed_unit = request.COOKIES.get("speed_unit")
-        wind_units = utils.speed_units
-        if speed_unit is None:
-            speed_unit = utils.SPEED_MPH
+    speed_unit = request.COOKIES.get("speed_unit")
+    if speed_unit is None:
+        speed_unit = utils.SPEED_MPH
 
-    wind_val = wind_list[wind_units.index(speed_unit)]
+    wind_val = wind_list[utils.speed_units.index(speed_unit)]
 
     windchill_list = utils.calc_temp_strings(current.windchill)
-    windchill_val = windchill_list[wind_units.index(speed_unit)]
+    windchill_val = windchill_list[utils.temp_units.index(temp_unit)]
 
     temp_list = utils.calc_temp_strings(current.temp)
     temp_val = temp_list[utils.temp_units.index(temp_unit)]
@@ -127,7 +122,7 @@ def get_current_weather(request):
         "timestamp": timestamp,
         "temp_units": utils.temp_units,
         "baro_units": utils.baro_units,
-        "speed_units": wind_units,
+        "speed_units": utils.speed_units,
         "temp_val": temp_val,
         "baro_val": baro_val,
         "trend_val": trend_val,

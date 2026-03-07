@@ -68,7 +68,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="border rounded p-3">
                 <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-sm font-medium text-gray-700">Temperature</h3>
+                    <h3 class="text-sm font-medium text-gray-700">Temperature <span class="font-normal text-gray-400" id="chart-temp-unit">({{ temp_unit }})</span></h3>
                     <div class="flex gap-2 text-xs">
                         <span class="text-blue-600">Today</span>
                         <span class="text-sky-400">Yesterday</span>
@@ -79,7 +79,7 @@
             </div>
             <div class="border rounded p-3">
                 <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-sm font-medium text-gray-700">Barometric Pressure</h3>
+                    <h3 class="text-sm font-medium text-gray-700">Barometric Pressure <span class="font-normal text-gray-400" id="chart-pressure-unit">({{ baro_unit }})</span></h3>
                     <div class="flex gap-2 text-xs">
                         <span class="text-orange-600">Today</span>
                         <span class="text-orange-300">Yesterday</span>
@@ -101,7 +101,7 @@
             </div>
             <div class="border rounded p-3">
                 <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-sm font-medium text-gray-700">Wind</h3>
+                    <h3 class="text-sm font-medium text-gray-700">Wind <span class="font-normal text-gray-400" id="chart-wind-unit">({{ speed_unit }})</span></h3>
                     <div class="flex gap-2 text-xs">
                         <span class="text-purple-700">Today</span>
                         <span class="text-fuchsia-500">Yesterday</span>
@@ -232,7 +232,9 @@ function cycleUnit(type) {
         const idx = weatherData.tempUnits.indexOf(weatherData.tempUnit);
         document.getElementById('temp-value').innerHTML = weatherData.temp[idx] + '&deg;';
         document.getElementById('temp-unit').textContent = weatherData.tempUnit;
-        document.getElementById('windchill-value').innerHTML = weatherData.windchill[idx] + '&deg;';
+        var wc = document.getElementById('windchill-value');
+        if (wc) wc.innerHTML = weatherData.windchill[idx] + '&deg;';
+        document.getElementById('chart-temp-unit').textContent = '(' + weatherData.tempUnit + ')';
         document.cookie = `temp_unit=${weatherData.tempUnit};path=/;max-age=${7*86400}`;
         loadChart('temp', weatherData.tempUnit);
     } else if (type === 'baro') {
@@ -241,13 +243,15 @@ function cycleUnit(type) {
         document.getElementById('baro-value').textContent = weatherData.baro[idx];
         document.getElementById('baro-unit').textContent = weatherData.baroUnit;
         document.getElementById('trend-value').innerHTML = weatherData.trend[idx];
+        document.getElementById('chart-pressure-unit').textContent = '(' + weatherData.baroUnit + ')';
         document.cookie = `baro_unit=${weatherData.baroUnit};path=/;max-age=${7*86400}`;
         loadChart('pressure', weatherData.baroUnit);
-    } else if (type === 'speed' && weatherData.speedUnit !== '') {
+    } else if (type === 'speed') {
         weatherData.speedUnit = nextInArray(weatherData.speedUnits, weatherData.speedUnit);
         const idx = weatherData.speedUnits.indexOf(weatherData.speedUnit);
         document.getElementById('wind-value').textContent = weatherData.wind[idx];
         document.getElementById('wind-unit').textContent = weatherData.speedUnit;
+        document.getElementById('chart-wind-unit').textContent = '(' + weatherData.speedUnit + ')';
         document.cookie = `speed_unit=${weatherData.speedUnit};path=/;max-age=${7*86400}`;
         loadChart('wind', weatherData.speedUnit);
     }
@@ -291,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadChart('temp', weatherData.tempUnit);
     loadChart('pressure', weatherData.baroUnit);
     loadChart('humidity', '%');
-    loadChart('wind', weatherData.speedUnit || 'mph');
+    loadChart('wind', weatherData.speedUnit);
 });
 </script>
 {% endblock %}
