@@ -1,35 +1,35 @@
 {% extends "base.html" %}
 
 {% block body %}
-Please log in to {{ system_name }}:
-<br />
-<br />
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.<br />
-(Note: If you are not registered at {{ system_name }} you should <a href="{% url 'registration_register' %}">Sign up</a>.)
-{% endif %}
+<div class="max-w-md mx-auto">
+    <h2 class="text-xl font-semibold mb-4">Log in to {{ system_name }}</h2>
 
-<form method="post" action=".">{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-<br />
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-<br />
-Not a member of {{ system_name }}?  <a href="{% url 'registration_register' %}">Sign up</a> (it's fast and free!)
-<br />
-<br />
-Forgot your password?  <a href="{% url 'auth_password_reset' %}">Click here</a>
-<br />
-<br />
-(Note: You must be a member of {{ system_name }} to participate in Fantasy Races.)
+    {% if form.errors %}
+    <div class="bg-red-50 border border-red-200 text-red-700 rounded p-3 mb-4 text-sm">
+        Your username and password didn't match. Please try again.
+        <br>If you are not registered, <a href="{% url 'registration_register' %}" class="underline">sign up</a>.
+    </div>
+    {% endif %}
+
+    <form method="post" action="." class="space-y-4">
+        {% csrf_token %}
+        <div>
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div>
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+        <div class="flex items-center gap-4">
+            <button type="submit" class="bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700">Log in</button>
+            <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+    </form>
+
+    <div class="mt-6 text-sm text-gray-600 space-y-2">
+        <p>Not a member? <a href="{% url 'registration_register' %}" class="text-blue-600 hover:underline">Sign up</a> (it's fast and free!)</p>
+        <p>Forgot your password? <a href="{% url 'auth_password_reset' %}" class="text-blue-600 hover:underline">Reset it</a></p>
+    </div>
+</div>
 {% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="registration-thanks">
-    Thanks for registering with cracklyfinger.com.<br />
-    <br />
-    Your sign-up is *almost* complete.<br />
-    <br />
-    To verify your identity, please check your email for a message from cracklyfinger@flyingcracker.com.<br />
-    Click on the link in that email (or browse to the URL shown) to complete the registration process.
+<div class="max-w-md mx-auto">
+    <h2 class="text-xl font-semibold mb-4">Almost done!</h2>
+    <div class="text-gray-600 space-y-3">
+        <p>Thanks for registering with {{ system_name }}.</p>
+        <p>To verify your identity, please check your email for a message from cracklyfinger@flyingcracker.com.</p>
+        <p>Click the link in that email to complete the registration process.</p>
+    </div>
 </div>
 {% endblock %}

@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="registration-thanks">
-  <p>
-  Your cracklyfinger.com registration is now complete and your user account is active.
-  </p>
-  <p>Now please <a href="{% url 'auth_login' %}?next={% url 'home:home' %}">log in</a> and start having fun!</p>
+<div class="max-w-md mx-auto">
+    <h2 class="text-xl font-semibold mb-4">Registration complete</h2>
+    <p class="text-gray-600 mb-4">Your account is now active.</p>
+    <p><a href="{% url 'auth_login' %}?next={% url 'home:home' %}" class="text-blue-600 hover:underline">Log in</a> and start having fun!</p>
 </div>
 {% endblock %}

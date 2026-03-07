@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="registration-thanks">
-{% if account %}
-Welcome {{ account }}, your registration is now complete.<br />
-<br />
-Nice job!<br />
-<br />
-<p>Please <a href="{% url 'auth_login' %}?next={% url 'home:home' %}">log in</a> to access the advanced features of this site.</p>
-{% else %}
-Sorry, you must register within {{ expiration_days }} days. Please <a href="{% url 'registration_register' %}">try again</a>.
-{% endif %}</div>
+<div class="max-w-md mx-auto">
+    {% if account %}
+    <h2 class="text-xl font-semibold mb-4">Welcome, {{ account }}!</h2>
+    <p class="text-gray-600 mb-4">Your registration is now complete.</p>
+    <p><a href="{% url 'auth_login' %}?next={% url 'home:home' %}" class="text-blue-600 hover:underline">Log in</a> to get started.</p>
+    {% else %}
+    <h2 class="text-xl font-semibold mb-4">Activation expired</h2>
+    <p class="text-gray-600">Sorry, you must register within {{ expiration_days }} days. Please <a href="{% url 'registration_register' %}" class="text-blue-600 hover:underline">try again</a>.</p>
+    {% endif %}
+</div>
 {% endblock %}

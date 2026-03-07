@@ -1,24 +1,31 @@
 {% extends "base.html" %}
 
 {% block body %}
+<div class="max-w-md mx-auto">
+    <h2 class="text-xl font-semibold mb-4">Sign Up for {{ system_name }}</h2>
 
-<div class="section-header">
-    <div class="section-title">CracklyFinger Sign Up</div>
-</div>
-<div class="fantasy-form-help">
-Create a username for cracklyfinger.com and enter in the field below.<br />
-Enter your email address (required to verify your account).<br />
-Think up a good password and enter it twice.<br />
-Click on Submit and wait for an email from us...
-</div>
+    <div class="text-sm text-gray-600 mb-6 space-y-1">
+        <p>Create a username and enter it below.</p>
+        <p>Enter your email address (required to verify your account).</p>
+        <p>Choose a password and enter it twice.</p>
+        <p>Click Submit and wait for a verification email.</p>
+    </div>
 
-<div  class="fantasy-list-container">
-<form method="POST" action="">{% csrf_token %}
-
-{{ form.as_p }}
-
-<input type="submit" value="Submit" />
-
-</form>
+    <form method="post" action="" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+            <p class="text-red-600 text-sm mt-1">{{ field.errors.0 }}</p>
+            {% endif %}
+            {% if field.help_text %}
+            <p class="text-gray-500 text-xs mt-1">{{ field.help_text }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700">Submit</button>
+    </form>
 </div>
 {% endblock %}

@@ -29,7 +29,6 @@
             <nav class="hidden md:flex gap-6">
                 {% block navmenu %}
                 <a href="{% url 'weather:root' %}" class="hover:text-slate-300">Weather</a>
-                <a href="{% url 'cam:root' %}" class="hover:text-slate-300">WebCams</a>
                 <a href="{% url 'food:recipe-list' recipe_type="drink" %}" class="hover:text-slate-300">Drink</a>
                 <a href="{% url 'food:recipe-list' recipe_type="food" %}" class="hover:text-slate-300">Food</a>
                 {% endblock %}
@@ -44,7 +43,6 @@
                 </summary>
                 <div class="absolute right-0 top-full mt-2 w-48 bg-slate-800 rounded shadow-lg py-2 z-50">
                     <a href="{% url 'weather:root' %}" class="block px-4 py-2 hover:bg-slate-700">Weather</a>
-                    <a href="{% url 'cam:root' %}" class="block px-4 py-2 hover:bg-slate-700">WebCams</a>
                     <a href="{% url 'food:recipe-list' recipe_type="drink" %}" class="block px-4 py-2 hover:bg-slate-700">Drink</a>
                     <a href="{% url 'food:recipe-list' recipe_type="food" %}" class="block px-4 py-2 hover:bg-slate-700">Food</a>
                 </div>
