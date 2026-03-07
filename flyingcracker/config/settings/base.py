@@ -35,11 +35,6 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = "/media/"
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -47,7 +42,6 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "fc3.context_processors.yui_version",
                 "fc3.context_processors.system_version",
                 "django.contrib.messages.context_processors.messages",
                 "django.contrib.auth.context_processors.auth",
@@ -120,18 +114,11 @@ MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 ACCOUNT_ACTIVATION_DAYS = 10
 
-YUI_VERSION = "2.9.0"
-
 SYSTEM_NAME = "cracklyfinger.com"
-
-AUTH_PROFILE_MODULE = "fcprofile.FCProfile"
 
 ALLOWED_HOSTS = ["www.cracklyfinger.com", "cracklyfinger.com", "*"]
 
-TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
-NOSE_ARGS = [
-    "--logging-filter=-django.request",
-]
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
 # Email service credentials are secret.
 EMAIL_HOST = get_secret("EMAIL_HOST")

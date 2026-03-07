@@ -30,7 +30,7 @@ if pattern_views and settings.DEBUG:
 if settings.STATIC_URL[:5] != "http:":
     urlpatterns += [
         re_path(
-            r"^" + settings.STATIC_URL + "(?P<path>.*)$",
+            r"^" + settings.STATIC_URL.lstrip("/") + "(?P<path>.*)$",
             static_views.serve,
             {"document_root": settings.STATIC_ROOT},
         ),
