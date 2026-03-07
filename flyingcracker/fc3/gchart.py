@@ -44,9 +44,11 @@ def periodic_samples(qs, start, fudge, interval, periods):
             if target >= end:
                 break
 
-            # Database timestamps are naive UTC values.
-            # Convert this to a timezone-aware value.
-            ts = utc_tz.localize(rec.timestamp)
+            # Ensure timestamp is timezone-aware UTC
+            if rec.timestamp.tzinfo is None:
+                ts = utc_tz.localize(rec.timestamp)
+            else:
+                ts = rec.timestamp
 
             while ts > (target + fudge):
                 dataset.append(None)

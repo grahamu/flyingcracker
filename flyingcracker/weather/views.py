@@ -17,7 +17,6 @@ from .noaa import get_NOAA_forecast
 from .sunmoon import MoonPhases, SunMoon
 
 
-@cache_page(60 * 5)  # cache for 5 minutes
 def weather(request):
     show_titles = request.COOKIES.get("curr_weather_show_titles")
     if show_titles is None:
@@ -145,23 +144,30 @@ def get_current_weather(request):
         "windchill_val": windchill_val,
         "humidity": current.humidity,
         "morning": morning,
+        "chart_date": current.timestamp.strftime("%Y%m%d"),
     }
     return response_dict, current
 
 
-@cache_page(60 * 5)
 def chartdata(request):
     """
     JSON endpoint for Chart.js.
     GET parameters:
       type - temp, pressure, humidity, wind
       unit - F/C for temp, in/mb for pressure, mph/kts/etc for wind
-      date - YYYYMMDD (optional, defaults to today)
+      date - YYYYMMDD (optional, defaults to latest weather record's date)
     """
     data_type = request.GET.get("type", "temp")
     unit = request.GET.get("unit", "F")
     date_str = request.GET.get("date")
-    chart_date = utils.get_date(request, date_str)
+    if date_str:
+        chart_date = utils.get_date(request, date_str)
+    else:
+        try:
+            latest = Weather.objects.latest()
+            chart_date = latest.timestamp.date()
+        except Weather.DoesNotExist:
+            chart_date = utils.get_date(request)
     data = utils.get_chart_data(chart_date, data_type, unit)
     return JsonResponse(data)
 
