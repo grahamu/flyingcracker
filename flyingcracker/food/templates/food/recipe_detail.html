@@ -2,9 +2,19 @@
 {% load markup_tags %}
 
 {% block body %}
-<div class="space-y-4">
-    <h2 class="text-xl font-semibold">{{ recipe }}</h2>
+<nav class="text-sm text-gray-500 mb-4">
+    <a href="{% url 'food:recipe-list' recipe_type=recipe_type %}" class="text-xl font-semibold text-blue-600 hover:underline">{{ recipe_type|capfirst }}</a>
+    <span class="mx-1 text-xl">&rsaquo;</span>
+    <span class="text-xl font-semibold text-gray-900">{{ recipe.title }}</span>
+</nav>
 
+{% with show_recipe_filter=True %}
+{% include "food/food_select.html" %}
+{% endwith %}
+
+<hr class="my-6 border-gray-200">
+
+<div class="space-y-4">
     <table class="w-full text-sm">
         {% for i in ingredients %}
         <tr class="border-b border-gray-100">
@@ -36,7 +46,5 @@
     <div class="text-xs text-gray-400">
         added {{ recipe.pub_date|date:"F j, Y" }}
     </div>
-
-    {% include "food/food_select.html" %}
 </div>
 {% endblock %}

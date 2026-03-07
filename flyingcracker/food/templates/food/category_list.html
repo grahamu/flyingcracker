@@ -1,7 +1,17 @@
 {% extends "cocktail.html" %}
 
 {% block body %}
-<h2 class="text-xl font-semibold mb-4">{{ category|capfirst }} {{ recipe_type|capfirst }} Recipes</h2>
+<nav class="text-sm text-gray-500 mb-4">
+    <a href="{% url 'food:recipe-list' recipe_type=recipe_type %}" class="text-xl font-semibold text-blue-600 hover:underline">{{ recipe_type|capfirst }}</a>
+    <span class="mx-1 text-xl">&rsaquo;</span>
+    <span class="text-xl font-semibold text-gray-900">{{ category }}</span>
+</nav>
+
+{% with show_recipe_filter=True %}
+{% include "food/food_select.html" %}
+{% endwith %}
+
+<hr class="my-6 border-gray-200">
 
 {% if matching_recipes %}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -15,6 +25,4 @@
 {% else %}
 <p class="text-gray-500">No {{ recipe_type }} recipes in the database.</p>
 {% endif %}
-
-{% include "food/food_select.html" %}
 {% endblock %}

@@ -12,3 +12,12 @@ LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 
 INTERNAL_IPS = "127.0.0.1"
+
+# Disable cache middleware for development so template changes show immediately.
+MIDDLEWARE = tuple(
+    m for m in MIDDLEWARE
+    if m not in (
+        "django.middleware.cache.UpdateCacheMiddleware",
+        "django.middleware.cache.FetchFromCacheMiddleware",
+    )
+)

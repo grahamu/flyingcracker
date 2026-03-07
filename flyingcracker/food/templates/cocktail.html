@@ -2,11 +2,3 @@
 
 {% block extra_title %}{{ recipe_type|default:"Cocktails"|capfirst }}{% endblock %}
 
-{% block context_links %}
-   <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wide mb-2">Links</h3>
-   <ul class="space-y-1 text-sm">
-      {% for link in all_links %}
-      <li><a href="{{ link.url }}" class="text-blue-600 hover:underline">{{ link }}</a></li>
-      {% endfor %}
-   </ul>
-{% endblock %}
