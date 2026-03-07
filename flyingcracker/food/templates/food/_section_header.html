@@ -1,0 +1,130 @@
+{% comment %}
+Section header for all food/drink pages.
+Context variables:
+  - recipe_type: "drink" or "food"
+  - category_list: all categories
+  - active_category: current Category object (optional)
+  - page_title: displayed as heading below the header (optional)
+  - foodstuff_list: all ingredients for ingredient filter (optional)
+  - show_ingredient_filter: show ingredient filter expanded (optional)
+  - is_ingredient_page: search filters ingredients instead of recipes (optional)
+{% endcomment %}
+
+<div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-6">
+    {# Row 1: Toggle tabs, back link, search, ingredient link, filter toggle #}
+    <div class="flex items-center gap-3 flex-wrap">
+        {# Drink/Food toggle tabs #}
+        <div class="flex bg-slate-200 rounded-lg p-0.5">
+            <a href="{% url 'food:recipe-list' recipe_type='drink' %}"
+               class="px-3 py-1 text-sm font-medium rounded-md transition-colors {% if recipe_type == 'drink' %}bg-slate-800 text-white{% else %}text-slate-600 hover:text-slate-800{% endif %}">
+                Drink
+            </a>
+            <a href="{% url 'food:recipe-list' recipe_type='food' %}"
+               class="px-3 py-1 text-sm font-medium rounded-md transition-colors {% if recipe_type == 'food' %}bg-slate-800 text-white{% else %}text-slate-600 hover:text-slate-800{% endif %}">
+                Food
+            </a>
+        </div>
+
+        <div class="flex-1"></div>
+
+        {# Search input #}
+        <div class="relative">
+            <input type="text" id="section-search"
+                   placeholder="{% if is_ingredient_page %}Search ingredients...{% else %}Search recipes...{% endif %}"
+                   class="w-48 focus:w-64 transition-all duration-200 bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500">
+            <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+        </div>
+
+        {# Ingredients link #}
+        <a href="{% url 'food:ingredient-list' recipe_type=recipe_type %}"
+           class="text-sm text-blue-600 hover:underline hidden sm:inline">Ingredients</a>
+
+        {# Filter toggle button (hidden on ingredient detail pages) #}
+        {% if not hide_ingredient_filter %}
+        <button type="button" id="filter-toggle"
+                class="text-sm text-slate-600 hover:text-slate-800 border border-slate-300 rounded-lg px-2.5 py-1.5 bg-white"
+                onclick="document.getElementById('filter-row').classList.toggle('hidden')">
+            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            Filter
+        </button>
+        {% endif %}
+    </div>
+
+    {# Row 2: Category pills #}
+    {% if category_list %}
+    <div class="flex gap-2 overflow-x-auto mt-3 pb-1 -mb-1 scrollbar-hide">
+        <a href="{% url 'food:recipe-list' recipe_type=recipe_type %}"
+           class="shrink-0 px-3 py-1 rounded-full text-sm font-medium transition-colors {% if not active_category %}bg-slate-800 text-white{% else %}bg-white text-slate-600 border border-slate-300 hover:bg-slate-100{% endif %}">
+            All
+        </a>
+        {% for cat in category_list %}
+        <a href="{% url 'food:category-detail' recipe_type=recipe_type slug=cat.slug %}"
+           class="shrink-0 px-3 py-1 rounded-full text-sm font-medium transition-colors {% if active_category.slug == cat.slug %}bg-slate-800 text-white{% elif cat.slug in recipe_category_slugs %}bg-slate-600 text-white{% else %}bg-white text-slate-600 border border-slate-300 hover:bg-slate-100{% endif %}">
+            {{ cat.title }}
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Row 3: Ingredient filter (hidden by default unless show_ingredient_filter) #}
+    {% if not hide_ingredient_filter %}
+    <div id="filter-row" class="{% if not show_ingredient_filter %}hidden{% endif %} mt-3 pt-3 border-t border-slate-200">
+        <div class="max-w-xs">
+            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Filter by ingredient</label>
+            <select onchange="if(this.value)window.location=this.value"
+                class="w-full appearance-none bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 cursor-pointer bg-[length:1.25rem] bg-[position:right_0.5rem_center] bg-no-repeat pr-8"
+                style="background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E&quot;)">
+                <option value="">Select an ingredient...</option>
+                {% for item in foodstuff_list %}
+                <option value="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=item.slug %}">{{ item.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if page_title %}
+<h1 class="text-2xl font-bold text-gray-900 mb-4">{{ page_title }}</h1>
+{% endif %}
+
+{# No-results message (hidden by default, shown by search JS) #}
+<p id="no-results-msg" class="hidden text-gray-500 text-center py-8">No matches found.</p>
+
+<script>
+(function() {
+    var input = document.getElementById('section-search');
+    if (!input) return;
+    var isIngredient = {{ is_ingredient_page|yesno:"true,false" }};
+    var noMsg = document.getElementById('no-results-msg');
+
+    input.addEventListener('input', function() {
+        var q = this.value.toLowerCase().trim();
+        if (isIngredient) {
+            // Filter ingredient links
+            var items = document.querySelectorAll('[data-ingredient]');
+            var visible = 0;
+            items.forEach(function(el) {
+                var match = !q || el.getAttribute('data-ingredient').toLowerCase().indexOf(q) !== -1;
+                el.classList.toggle('hidden', !match);
+                if (match) visible++;
+            });
+            noMsg.classList.toggle('hidden', visible > 0 || !q);
+        } else {
+            // Filter recipe cards
+            var cards = document.querySelectorAll('[data-title]');
+            var visible = 0;
+            cards.forEach(function(el) {
+                var match = !q || el.getAttribute('data-title').toLowerCase().indexOf(q) !== -1;
+                el.classList.toggle('hidden', !match);
+                if (match) visible++;
+            });
+            noMsg.classList.toggle('hidden', visible > 0 || !q);
+        }
+    });
+})();
+</script>

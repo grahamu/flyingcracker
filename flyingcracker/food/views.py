@@ -60,6 +60,7 @@ def recipe_detail(request, slug, recipe_type=""):
         r.ingredients.all().select_related("foodstuff").order_by("rank")
     )
 
+    recipe_category_slugs = set(r.categories.values_list("slug", flat=True))
     context = {
         "recipe_list": all_recipes,
         "foodstuff_list": all_foodstuff,
@@ -67,6 +68,7 @@ def recipe_detail(request, slug, recipe_type=""):
         "recipe_type": recipe_type,
         "recipe": r,
         "ingredients": ingredient_list,
+        "recipe_category_slugs": recipe_category_slugs,
     }
     return render(request, "food/recipe_detail.html", context)
 
@@ -89,7 +91,7 @@ def foodstuff_detail(request, recipe_type, slug):
 
     recipe_list = Recipe.objects.filter(
         ingredients__foodstuff=f, rclass=db_recipe_type(recipe_type)
-    ).order_by(Lower("title"))
+    ).prefetch_related("categories").order_by(Lower("title"))
 
     context = {
         "recipe_list": all_recipes,
@@ -111,7 +113,7 @@ def category_detail(request, recipe_type, slug):
         )
     category_recipes = Recipe.objects.filter(
         rclass=db_recipe_type(recipe_type), categories=category
-    ).order_by(Lower("title"))
+    ).prefetch_related("categories").order_by(Lower("title"))
 
     all_recipes, all_foodstuff, all_categories = get_all_lists(recipe_type)
     context = {
@@ -126,7 +128,7 @@ def category_detail(request, recipe_type, slug):
 
 
 def get_all_lists(recipe_type):
-    all_recipes = Recipe.objects.filter(rclass=db_recipe_type(recipe_type)).order_by(
+    all_recipes = Recipe.objects.filter(rclass=db_recipe_type(recipe_type)).prefetch_related("categories").order_by(
         Lower("title")
     )
     all_foodstuffs = (

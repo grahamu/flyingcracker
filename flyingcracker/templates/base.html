@@ -50,6 +50,7 @@
         </div>
     </header>
 
+    {% block layout %}
     <div class="flex flex-1 max-w-5xl mx-auto w-full px-4 gap-6">
         <aside class="w-48 shrink-0 hidden md:block py-6">
             {% block leftbar %}
@@ -61,6 +62,7 @@
             {% block body %}{% endblock %}
         </main>
     </div>
+    {% endblock layout %}
 
     <footer class="bg-slate-100 text-sm text-center py-2 text-gray-600">
         <p>{{ system_name }} v{{ system_version }} Django v{{ django_version }}</p>

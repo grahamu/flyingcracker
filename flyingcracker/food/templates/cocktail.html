@@ -2,3 +2,10 @@
 
 {% block extra_title %}{{ recipe_type|default:"Cocktails"|capfirst }}{% endblock %}
 
+{% block layout %}
+<div class="max-w-5xl mx-auto w-full px-4">
+    <main class="py-6">
+        {% block body %}{% endblock %}
+    </main>
+</div>
+{% endblock layout %}

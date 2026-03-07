@@ -1,28 +1,30 @@
 {% extends "cocktail.html" %}
 
 {% block body %}
-<nav class="text-sm text-gray-500 mb-4">
-    <a href="{% url 'food:recipe-list' recipe_type=recipe_type %}" class="text-xl font-semibold text-blue-600 hover:underline">{{ recipe_type|capfirst }}</a>
-    <span class="mx-1 text-xl">&rsaquo;</span>
-    <span class="text-xl font-semibold text-gray-900">{{ category }}</span>
-</nav>
-
-{% with show_recipe_filter=True %}
-{% include "food/food_select.html" %}
+{% with page_title=category.title active_category=category %}
+{% include "food/_section_header.html" %}
 {% endwith %}
 
-<hr class="my-6 border-gray-200">
-
 {% if matching_recipes %}
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<p class="text-sm text-gray-500 mb-4">{{ matching_recipes|length }} recipe{{ matching_recipes|length|pluralize }}</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {% for recipe in matching_recipes %}
-    <a href="{% url 'food:recipe-detail' recipe_type=recipe_type slug=recipe.slug %}" class="block border rounded-lg p-4 hover:shadow-md">
+    <a href="{% url 'food:recipe-detail' recipe_type=recipe_type slug=recipe.slug %}"
+       class="block border rounded-lg p-4 hover:shadow-md transition-shadow"
+       data-title="{{ recipe.title }}">
         <h3 class="font-semibold text-lg">{{ recipe.title }}</h3>
-        <p class="text-gray-600 text-sm">{{ recipe.teaser }}</p>
+        {% if recipe.teaser %}<p class="text-gray-600 text-sm mt-1">{{ recipe.teaser }}</p>{% endif %}
+        {% if recipe.categories.all %}
+        <div class="flex flex-wrap gap-1 mt-2">
+            {% for cat in recipe.categories.all %}
+            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{{ cat.title }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
     </a>
     {% endfor %}
 </div>
 {% else %}
-<p class="text-gray-500">No {{ recipe_type }} recipes in the database.</p>
+<p class="text-gray-500">No {{ recipe_type }} recipes in this category.</p>
 {% endif %}
 {% endblock %}
