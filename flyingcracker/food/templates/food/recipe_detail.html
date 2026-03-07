@@ -2,46 +2,41 @@
 {% load markup_tags %}
 
 {% block body %}
-<div class="cocktail">
-	<div class="box">
-		<div class="header">
-			<div class="title">
-				{{ recipe }}
-			</div>
-		</div>
+<div class="space-y-4">
+    <h2 class="text-xl font-semibold">{{ recipe }}</h2>
 
-		<table>
-			{% for i in ingredients %}
-			<tr>
-				<td><span class="qty">{{ i.quantity }}</span></td>
-				<td><span class="name">
-						<a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=i.slug %}">
-							{{ i.title }}</a>
-					</span></td>
-				<td><span class="modifier">{{ i.modifier }}</span></td>
-			</tr>
-			{% endfor %}
-		</table>
+    <table class="w-full text-sm">
+        {% for i in ingredients %}
+        <tr class="border-b border-gray-100">
+            <td class="py-1 pr-3 text-right w-20 text-gray-600">{{ i.quantity }}</td>
+            <td class="py-1">
+                <a href="{% url 'food:ingredient-detail' recipe_type=recipe_type slug=i.slug %}" class="text-blue-600 hover:underline">{{ i.title }}</a>
+            </td>
+            <td class="py-1 pl-3 text-gray-500 italic">{{ i.modifier }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-		<div class="directions">
-			{{ recipe.directions|apply_markup:"markdown" }}
-		</div>
-		{% if recipe.description %}
-		<div class="description">
-			{{ recipe.description|apply_markup:"markdown" }}
-		</div>
-		{% endif %}
-		{% if recipe.credit %}
-		<div class="credit">
-			{{ recipe.credit|apply_markup:"markdown" }}
-		</div>
-		{% endif %}
-		<div class="pubdate">
-			added {{ recipe.pub_date|date:"F j, Y" }}
-		</div>
-		<div>
-			{% include "food/food_select.html" %}
-		</div>
-	</div> <!-- box -->
-</div> <!-- cocktail -->
+    <div class="leading-relaxed">
+        {{ recipe.directions|apply_markup:"markdown" }}
+    </div>
+
+    {% if recipe.description %}
+    <div class="text-gray-600 italic leading-relaxed">
+        {{ recipe.description|apply_markup:"markdown" }}
+    </div>
+    {% endif %}
+
+    {% if recipe.credit %}
+    <div class="text-sm text-amber-800">
+        {{ recipe.credit|apply_markup:"markdown" }}
+    </div>
+    {% endif %}
+
+    <div class="text-xs text-gray-400">
+        added {{ recipe.pub_date|date:"F j, Y" }}
+    </div>
+
+    {% include "food/food_select.html" %}
+</div>
 {% endblock %}

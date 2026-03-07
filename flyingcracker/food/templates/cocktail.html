@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 
-{% block extra_title %}Cocktails{% endblock %}
+{% block extra_title %}{{ recipe_type|default:"Cocktails"|capfirst }}{% endblock %}
 
 {% block context_links %}
-   <h3 class="select"><span>Links</span></h3>
-   <ul class="fcContext">
+   <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wide mb-2">Links</h3>
+   <ul class="space-y-1 text-sm">
       {% for link in all_links %}
-      <li><a href="{{ link.url }}">{{ link }}</a></li>
+      <li><a href="{{ link.url }}" class="text-blue-600 hover:underline">{{ link }}</a></li>
       {% endfor %}
    </ul>
-{% endblock %}
-
-{% block footer_mission %}
-            The flyingcracker staff is dedicated to providing you with recipes for high quality libations. Our selection criteria is simple: All drinks submitted must pass a rigorous multiple session taste test before they can be added. If we find a drink sufficiently delectable it gets added. If we yawn, or like the taste but never bother to mix it again, the drink is not added. If you have a suggestion for our drink list please email us: graham at flyingcracker dot com. Please drink responsibly.
 {% endblock %}
