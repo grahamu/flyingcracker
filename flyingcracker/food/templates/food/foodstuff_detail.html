@@ -12,13 +12,13 @@
     {% endif %}
 
     {% if matching_recipes %}
-    <div>
-        <h3 class="font-medium mb-2">Recipes</h3>
-        <ul class="space-y-1 text-sm">
-            {% for recipe in matching_recipes %}
-            <li><a href="{{ recipe.get_absolute_url }}" class="text-blue-600 hover:underline">{{ recipe }}</a></li>
-            {% endfor %}
-        </ul>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for recipe in matching_recipes %}
+        <a href="{{ recipe.get_absolute_url }}" class="block border rounded-lg p-4 hover:shadow-md">
+            <h3 class="font-semibold text-lg">{{ recipe.title }}</h3>
+            <p class="text-gray-600 text-sm">{{ recipe.teaser }}</p>
+        </a>
+        {% endfor %}
     </div>
     {% else %}
     <p class="text-gray-500">No recipes use {{ foodstuff }}</p>
