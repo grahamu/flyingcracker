@@ -90,7 +90,6 @@ PREREQ_APPS = [
 ]
 
 PROJECT_APPS = [
-    "cam",
     "food",
     "home",
     "weather",

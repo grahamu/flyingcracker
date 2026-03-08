@@ -1,6 +1,0 @@
-Someone suggested a new webcam!
-
-URL: {{ cam_url }}
-
-Description:
-{{ cam_description }}

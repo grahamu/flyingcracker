@@ -11,7 +11,6 @@ urlpatterns = [
     re_path(r"^admin/doc/", include("django.contrib.admindocs.urls")),
     re_path(r"^admin/", admin.site.urls),
     # Application URLs
-    re_path(r"^cam/", include("cam.urls")),
     re_path(r"^(?P<recipe_type>drink|food)/", include("food.urls")),
     re_path(r"^weatherstation/", include("weatherstation.urls")),
     re_path(r"^weather/", include("weather.urls")),
