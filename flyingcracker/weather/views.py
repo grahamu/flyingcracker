@@ -1,12 +1,10 @@
 import datetime
-import json
-from decimal import ROUND_HALF_EVEN, Decimal
+from decimal import Decimal
 
 from django import forms
 from django.forms import ModelForm
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.decorators.cache import cache_page
 from pytz import timezone
 
 from fc3.utils import ElapsedTime
