@@ -138,7 +138,9 @@ def get_all_lists(recipe_type):
         .distinct()
         .order_by(Lower("title"))
     )
-    all_categories = Category.objects.all().order_by("title")
+    all_categories = Category.objects.filter(
+        recipe__rclass=db_recipe_type(recipe_type)
+    ).distinct().order_by("title")
     return all_recipes, all_foodstuffs, all_categories
 
 
