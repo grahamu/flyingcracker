@@ -3,7 +3,9 @@ import datetime
 from operator import itemgetter
 
 import ephem
-import pytz
+from datetime import timezone as dt_timezone
+from zoneinfo import ZoneInfo
+
 from django.conf import settings
 
 from .forecast import DataBlock
@@ -35,11 +37,11 @@ class EphemMixin(object):
         Convert an ephem.Date object, specified in UTC but without
         timezone awareness, to a timezone correct string.
         """
-        utc_date = date.datetime().replace(tzinfo=pytz.UTC)
+        utc_date = date.datetime().replace(tzinfo=dt_timezone.utc)
         # Convert to Mountain Time
         # Someday convert to user's timezone, as seen in
         # fcprofile.user_tags.user_time.
-        mt_date = utc_date.astimezone(pytz.timezone("US/Mountain"))
+        mt_date = utc_date.astimezone(ZoneInfo("US/Mountain"))
         return mt_date
 
 
@@ -120,7 +122,7 @@ class MoonPhaseData(object):
 class MoonPhases(DataBlock, EphemMixin):
 
     url_pattern = "http://api.usno.navy.mil/moon/phase?ID=CBSOUTH" "&date={date}&nump=4"
-    filename = settings.WEATHER_ROOT.child("moonphases.txt")
+    filename = settings.WEATHER_ROOT / "moonphases.txt"
 
     def __init__(self, **kwargs):
         """

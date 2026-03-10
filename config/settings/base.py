@@ -1,14 +1,14 @@
-from unipath import Path
+from pathlib import Path
 
 from .secrets import get_secret
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-BASE_DIR = Path(__file__).ancestor(3)
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-MEDIA_ROOT = BASE_DIR.child("media")
-STATIC_ROOT = BASE_DIR.child("staticfiles")
-STATICFILES_DIRS = (BASE_DIR.child("static"),)
+MEDIA_ROOT = BASE_DIR / "media"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = (BASE_DIR / "static",)
 
 MEDIA_URL = "media/"
 STATIC_URL = "static/"
@@ -38,7 +38,7 @@ USE_I18N = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR.child("templates")],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

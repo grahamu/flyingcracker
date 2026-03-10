@@ -1,7 +1,9 @@
-import pytz
+from datetime import timezone as dt_timezone
+from zoneinfo import ZoneInfo
+
 from django import template
 from django.conf import settings
-from django.utils.encoding import smart_bytes
+from django.utils.encoding import smart_str
 
 register = template.Library()
 
@@ -20,5 +22,5 @@ def as_timezone(dt, timezone=None):
     if timezone is None:
         timezone = settings.TIME_ZONE
     if dt.tzinfo is None:
-        dt = pytz.utc.localize(dt)
-    return dt.astimezone(pytz.timezone(smart_bytes(timezone)))
+        dt = dt.replace(tzinfo=dt_timezone.utc)
+    return dt.astimezone(ZoneInfo(smart_str(timezone)))

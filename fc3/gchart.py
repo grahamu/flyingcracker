@@ -1,7 +1,7 @@
 import datetime
 import math
 
-from pytz import timezone
+from datetime import timezone as dt_timezone
 
 HOUR_LABELS = [
     "12a", "1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a",
@@ -35,7 +35,7 @@ def periodic_samples(qs, start, fudge, interval, periods):
 
     """
     dataset = []
-    utc_tz = timezone("UTC")
+    utc_tz = dt_timezone.utc
 
     if len(qs):
         target = start
@@ -46,7 +46,7 @@ def periodic_samples(qs, start, fudge, interval, periods):
 
             # Ensure timestamp is timezone-aware UTC
             if rec.timestamp.tzinfo is None:
-                ts = utc_tz.localize(rec.timestamp)
+                ts = rec.timestamp.replace(tzinfo=utc_tz)
             else:
                 ts = rec.timestamp
 

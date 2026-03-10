@@ -4,9 +4,9 @@ DEBUG = True
 
 LOCAL_URL = "local"
 
-BASE_DIR = Path(__file__).ancestor(3)
-LOCAL_ROOT = BASE_DIR.ancestor(1).child("media")
-WEATHER_ROOT = LOCAL_ROOT.child("weather")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+LOCAL_ROOT = BASE_DIR.parent / "media"
+WEATHER_ROOT = LOCAL_ROOT / "weather"
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"

@@ -1,7 +1,7 @@
 import datetime
 from decimal import Decimal
 
-import pytz
+from zoneinfo import ZoneInfo
 
 from fc3 import gchart
 from weatherstation.models import Weather
@@ -29,8 +29,8 @@ def get_chart_data(date, data_type, unit):
     """
     if type(date) is datetime.date:
         date = datetime.datetime(date.year, date.month, date.day)
-    mountain_timezone = pytz.timezone("US/Mountain")
-    db_date = mountain_timezone.localize(date)
+    mountain_timezone = ZoneInfo("US/Mountain")
+    db_date = date.replace(tzinfo=mountain_timezone)
 
     # Collect hourly data for today, yesterday, and year-ago
     datasets = []
@@ -271,13 +271,13 @@ def weather_on_date(date):
     Return all Weather records for a specific date.
 
     """
-    mountain_timezone = pytz.timezone("US/Mountain")
+    mountain_timezone = ZoneInfo("US/Mountain")
     if type(date) is datetime.datetime:
         date = date.date()
     start = datetime.datetime.combine(date, datetime.time.min)
-    start = mountain_timezone.localize(start)
+    start = start.replace(tzinfo=mountain_timezone)
     end = datetime.datetime.combine(date, datetime.time.max)
-    end = mountain_timezone.localize(end)
+    end = end.replace(tzinfo=mountain_timezone)
 
     return Weather.objects.filter(timestamp__range=(start, end))
 
@@ -303,7 +303,7 @@ def get_date(request=None, date=None):
     Returns a datetime.date object corresponding to `date`.
     If the date is not provided or is invalid, today is returned.
     """
-    mountain_timezone = pytz.timezone("US/Mountain")
+    mountain_timezone = ZoneInfo("US/Mountain")
     today = datetime.datetime.now(mountain_timezone).date()
 
     if not date:
@@ -329,7 +329,7 @@ def get_today(request=None):
     """
     Returns a datetime.date object corresponding to today.
     """
-    mountain_timezone = pytz.timezone("US/Mountain")
+    mountain_timezone = ZoneInfo("US/Mountain")
     return datetime.datetime.now(mountain_timezone).date()
 
 
@@ -337,7 +337,7 @@ def get_today_timestamp(request=None):
     """
     Returns a datetime.datetime object corresponding to today.
     """
-    mountain_timezone = pytz.timezone("US/Mountain")
+    mountain_timezone = ZoneInfo("US/Mountain")
     return datetime.datetime.now(mountain_timezone)
 
 

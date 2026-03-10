@@ -5,7 +5,7 @@ from django import forms
 from django.forms import ModelForm
 from django.http import JsonResponse
 from django.shortcuts import render
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from fc3.utils import ElapsedTime
 from weatherstation.models import Weather
@@ -32,7 +32,7 @@ def weather(request):
         unit_state = "true"
 
     # Get time in MT for forecast timestamp comparison
-    mountain_tz = timezone("US/Mountain")
+    mountain_tz = ZoneInfo("US/Mountain")
     now = datetime.datetime.now(mountain_tz)
 
     et = ElapsedTime()

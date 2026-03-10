@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from django.http import HttpResponse
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from .models import Weather
 
@@ -21,7 +21,7 @@ def upload_data(request):
     urltimestamp = request.GET.get("timestamp", None)
     dateutc = request.GET.get("datemtn", None)
 
-    mountain_tz = timezone("US/Mountain")
+    mountain_tz = ZoneInfo("US/Mountain")
 
     if urltimestamp is not None:
         dbtimestamp = datetime.fromtimestamp(int(urltimestamp), mountain_tz)
@@ -31,7 +31,7 @@ def upload_data(request):
         dbtimestamp = datetime(
             int(year), int(month), int(day), int(hour), int(minute), int(second)
         )
-        dbtimestamp = mountain_tz.localize(dbtimestamp)
+        dbtimestamp = dbtimestamp.replace(tzinfo=mountain_tz)
 
     if dbtimestamp:
         wind_dir = request.GET.get("winddir", None)

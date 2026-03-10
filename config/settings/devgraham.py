@@ -11,7 +11,7 @@ DATABASES = {
 }
 
 LOCAL_ROOT = Path("/Users/graham/code/flyingcracker/testing/web/media")
-WEATHER_ROOT = LOCAL_ROOT + "/weather/"
+WEATHER_ROOT = LOCAL_ROOT / "weather"
 
 # Just dump emails to the console.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

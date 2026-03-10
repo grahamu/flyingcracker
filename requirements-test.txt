@@ -1,7 +1,7 @@
-black==24.4.2
-coverage==7.5.3
-factory-boy==3.3.0
-flake8==7.1.0
-isort==5.13.2
+black==26.3.0
+coverage==7.13.4
+factory-boy==3.3.3
+flake8==7.3.0
+isort==8.0.1
 mccabe==0.7.0
 django-test-plus==2.4.1

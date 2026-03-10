@@ -204,7 +204,7 @@ def get_NOAA_data(state, zname):
     Get data from disk file if it exists, but
     ignore the data if it is more than 4 hours old.
     """
-    filename = settings.WEATHER_ROOT.child("noaa-" + zname + ".txt")
+    filename = settings.WEATHER_ROOT / ("noaa-" + zname + ".txt")
     if not os.path.isfile(filename):
         return save_NOAA_data(state, zname)
 
@@ -241,7 +241,7 @@ def save_NOAA_data(state, zname):
         return None
     else:
         # save the retrieved data
-        filename = settings.WEATHER_ROOT.child("noaa-" + zname + ".txt")
+        filename = settings.WEATHER_ROOT / ("noaa-" + zname + ".txt")
         f = open(filename, "w")
         f.writelines(lines)
         f.close()

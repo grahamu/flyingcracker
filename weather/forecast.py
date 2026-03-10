@@ -3,7 +3,7 @@ import datetime
 from dateutil import parser as dateutilparser
 from dateutil.tz import tzlocal
 from django.utils.encoding import smart_bytes
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 
 class DataBlock(object):
@@ -21,7 +21,7 @@ class DataBlock(object):
         if pubdate is None:
             pubdate = self.pubdate
         if pubdate:
-            mountain_tz = timezone("US/Mountain")
+            mountain_tz = ZoneInfo("US/Mountain")
             timestamp = dateutilparser.parse(pubdate)
             self.timestamp = timestamp.astimezone(mountain_tz)
 

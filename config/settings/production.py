@@ -1,13 +1,13 @@
 import os
 
 import dj_database_url
-from unipath import Path
+from pathlib import Path
 
 from .base import *
 
 DEBUG = False
 
-BASE_DIR = Path(__file__).ancestor(3)
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 DATABASES = {
     "default": dj_database_url.config(conn_max_age=600),
@@ -19,8 +19,8 @@ EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 
-MEDIA_ROOT = BASE_DIR.child("media")
-WEATHER_ROOT = MEDIA_ROOT.child("weather")
+MEDIA_ROOT = BASE_DIR / "media"
+WEATHER_ROOT = MEDIA_ROOT / "weather"
 
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"

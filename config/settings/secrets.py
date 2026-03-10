@@ -2,12 +2,12 @@ import json
 import os
 
 from django.core.exceptions import ImproperlyConfigured
-from unipath import Path
+from pathlib import Path
 
-SECRETS_DIR = Path(__file__).parent
+SECRETS_DIR = Path(__file__).resolve().parent
 
 try:
-    with open(SECRETS_DIR.child("secrets.json")) as f:
+    with open(SECRETS_DIR / "secrets.json") as f:
         secrets = json.loads(f.read())
 except FileNotFoundError:
     secrets = {}
