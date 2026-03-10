@@ -115,7 +115,7 @@ ACCOUNT_ACTIVATION_DAYS = 10
 
 SYSTEM_NAME = "cracklyfinger.com"
 
-ALLOWED_HOSTS = ["www.cracklyfinger.com", "cracklyfinger.com", "*"]
+ALLOWED_HOSTS = ["www.cracklyfinger.com", "cracklyfinger.com", ".railway.app", "*"]
 
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
@@ -141,3 +141,10 @@ SILKY_MAX_REQUEST_BODY_SIZE = -1  # Silk takes anything <0 as no limit
 SILKY_MAX_RESPONSE_BODY_SIZE = 1024  # If response body>1024 bytes, ignore
 SILKY_META = True  # Record and display silky overhead
 SILKY_PYTHON_PROFILER = True  # Set to False to use another profiler
+
+# django-markup: disable safe_mode to avoid bleach dependency
+MARKUP_SETTINGS = {
+    "markdown": {
+        "safe_mode": False,
+    }
+}
