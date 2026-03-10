@@ -19,7 +19,8 @@ urlpatterns = [
     re_path(r"^(?P<recipe_type>cocktail)/", include("food.redirect_urls")),
 ]
 
-urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
+if "silk" in settings.INSTALLED_APPS:
+    urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 
 if pattern_views and settings.DEBUG:
     urlpatterns += [
