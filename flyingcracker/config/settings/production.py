@@ -1,21 +1,24 @@
+import os
+
+import dj_database_url
 from unipath import Path
 
 from .base import *
 
 DEBUG = False
 
+BASE_DIR = Path(__file__).ancestor(3)
+
 DATABASES = {
-    "default": {
-        "NAME": "postgres",
-        "ENGINE": "django.db.backends.postgresql",
-        "USER": "fc3_graham",
-        "PASSWORD": "PHI-peephole-tavern-aglow",
-        "HOST": "grahamu-1981.postgres.pythonanywhere-services.com",
-        "PORT": 11981,
-    }
+    "default": dj_database_url.config(conn_max_age=600),
 }
 
-# Where are media and weather files?
+# Read secrets from environment variables on Railway
+SECRET_KEY = os.environ["SECRET_KEY"]
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+
 MEDIA_ROOT = BASE_DIR.child("media")
 WEATHER_ROOT = MEDIA_ROOT.child("weather")
 
@@ -25,19 +28,14 @@ MEDIA_URL = "/media/"
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 
-MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+# Remove silk in production
+INSTALLED_APPS = [app for app in INSTALLED_APPS if app not in ("silk",)]
+MIDDLEWARE = tuple(
+    m for m in MIDDLEWARE if m != "silk.middleware.SilkyMiddleware"
+)
 
-ACCOUNT_ACTIVATION_DAYS = 10
-
-YUI_VERSION = "2.9.0"
-
-SYSTEM_NAME = "cracklyfinger.com"
-
-AUTH_PROFILE_MODULE = "fcprofile.FCProfile"
-
-ALLOWED_HOSTS = [
-    "www.cracklyfinger.com",
-    "cracklyfinger.com",
-    "www.ullrichsoftware.com",
-    "*",
-]
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
