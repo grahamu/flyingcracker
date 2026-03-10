@@ -34,7 +34,7 @@ class DataBlock(object):
         self.error = True
         self.add_section("Problem obtaining valid data", error_str)
         self.timestamp = datetime.datetime.now(tzlocal())
-        mountain_tz = timezone("US/Mountain")
+        mountain_tz = ZoneInfo("US/Mountain")
         self.timestamp = self.timestamp.astimezone(mountain_tz)
 
 
