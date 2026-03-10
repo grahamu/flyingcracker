@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build:css": "npx @tailwindcss/cli -i ./flyingcracker/static/css/src/tailwind.css -o ./flyingcracker/static/css/tailwind.css --minify",
-    "watch:css": "npx @tailwindcss/cli -i ./flyingcracker/static/css/src/tailwind.css -o ./flyingcracker/static/css/tailwind.css --watch"
+    "build:css": "npx @tailwindcss/cli -i ./static/css/src/tailwind.css -o ./static/css/tailwind.css --minify",
+    "watch:css": "npx @tailwindcss/cli -i ./static/css/src/tailwind.css -o ./static/css/tailwind.css --watch"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.2.1",
