@@ -4,3 +4,4 @@ factory-boy==3.3.0
 flake8==7.1.0
 isort==5.13.2
 mccabe==0.7.0
+django-test-plus==2.4.1
