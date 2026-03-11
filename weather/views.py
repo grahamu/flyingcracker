@@ -66,6 +66,8 @@ def weather(request, noaa_zone=None, noaa_zip=None):
 
     area_name = get_zone_name(noaa_zone)
 
+    river_gauge = request.COOKIES.get("river_gauge", "")
+
     context = dict(current_dict)
     context.update(
         {
@@ -80,6 +82,7 @@ def weather(request, noaa_zone=None, noaa_zip=None):
             "noaa_zone": noaa_zone,
             "noaa_zip": noaa_zip,
             "default_zone": settings.NWS_DEFAULT_ZONE,
+            "river_gauge": river_gauge,
             "sunmoon": sunmoon,
             "moonphases": moonphases,
             "elapsed": et.list(),
@@ -87,6 +90,33 @@ def weather(request, noaa_zone=None, noaa_zip=None):
     )
 
     return render(request, "weather/current.html", context)
+
+
+def set_river_gauge(request):
+    """
+    POST: save river gauge ID to cookie, redirect.
+    GET with ?reset=1: clear cookie, redirect.
+    """
+    if request.GET.get("reset"):
+        response = HttpResponseRedirect(reverse("weather:root"))
+        response.delete_cookie("river_gauge")
+        return response
+
+    if request.method != "POST":
+        return HttpResponseRedirect(reverse("weather:root"))
+
+    gauge_id = request.POST.get("river_gauge", "").strip().upper()
+
+    if not re.match(r"^[A-Z0-9]{3,8}$", gauge_id):
+        messages.error(request, "Please enter a valid gauge identifier (3-8 alphanumeric characters).")
+        return HttpResponseRedirect(reverse("weather:root"))
+
+    response = HttpResponseRedirect(reverse("weather:root"))
+    response.set_cookie(
+        "river_gauge", gauge_id,
+        max_age=90 * 24 * 60 * 60, path="/", httponly=False, samesite="Lax",
+    )
+    return response
 
 
 def set_zone(request):
