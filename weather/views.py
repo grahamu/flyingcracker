@@ -16,7 +16,12 @@ from fc3.utils import ElapsedTime
 from weatherstation.models import Weather
 
 from . import utils
-from .noaa import get_zone_forecast, lookup_zone_for_zip
+from .noaa import (
+    get_current_observations,
+    get_zone_forecast,
+    get_zone_name,
+    lookup_zone_for_zip,
+)
 from .sunmoon import MoonPhases, SunMoon
 
 
@@ -46,6 +51,7 @@ def weather(request, noaa_zone=None, noaa_zip=None):
         noaa_zone = request.COOKIES.get("noaa_zone", settings.NWS_DEFAULT_ZONE)
     if noaa_zip is None:
         noaa_zip = request.COOKIES.get("noaa_zip", "")
+    is_default_zone = noaa_zone == settings.NWS_DEFAULT_ZONE
     noaa = get_zone_forecast(noaa_zone)
 
     et.mark_time("forecasts")
@@ -53,11 +59,19 @@ def weather(request, noaa_zone=None, noaa_zip=None):
     sunmoon = SunMoon(user=request.user)
     moonphases = MoonPhases(user=request.user)
 
-    current_dict, current = get_current_weather(request)
+    if is_default_zone:
+        current_dict, current = get_current_weather(request)
+    else:
+        current_dict, current = get_nws_current_weather(request, noaa_zone)
+
+    area_name = get_zone_name(noaa_zone)
+
     context = dict(current_dict)
     context.update(
         {
             "current": current,
+            "is_default_zone": is_default_zone,
+            "area_name": area_name,
             "show_titles": show_titles,
             "title_state": title_state,
             "show_units": show_units,
@@ -101,6 +115,13 @@ def set_zone(request):
             request, f"Could not find a forecast zone for zip code {zip_code}."
         )
         return HttpResponseRedirect(reverse("weather:root"))
+
+    # If zip resolves to the default zone, treat as reset
+    if zone_id == settings.NWS_DEFAULT_ZONE:
+        response = weather(request, noaa_zone=settings.NWS_DEFAULT_ZONE, noaa_zip="")
+        response.delete_cookie("noaa_zone")
+        response.delete_cookie("noaa_zip")
+        return response
 
     # Render weather page directly with the new zone to avoid
     # Railway's proxy following the redirect server-side.
@@ -184,10 +205,107 @@ def get_current_weather(request):
         "windchill": windchill_list,
         "windchill_val": windchill_val,
         "humidity": current.humidity,
+        "show_windchill": current.temp != current.windchill,
         "morning": morning,
         "chart_date": current.timestamp.strftime("%Y%m%d"),
     }
     return response_dict, current
+
+
+def get_nws_current_weather(request, zone_id):
+    """
+    Returns a dictionary of weather information from NWS observations
+    for a non-default zone. Same dict shape as get_current_weather().
+    """
+    from django.template.defaultfilters import date as date_filter
+    from templatetags.as_timezone import as_timezone
+
+    obs = get_current_observations(zone_id)
+    if obs is None:
+        return {}, None
+
+    # Format timestamp
+    timestamp = ""
+    if obs["timestamp"]:
+        ts = as_timezone(obs["timestamp"], "US/Mountain")
+        timestamp = date_filter(ts, r"H:i \M\T D M j")
+
+    temp_unit = request.COOKIES.get("temp_unit") or utils.TEMP_F
+    baro_unit = request.COOKIES.get("baro_unit") or utils.PRESS_IN
+    speed_unit = request.COOKIES.get("speed_unit") or utils.SPEED_MPH
+
+    # Temperature
+    if obs["temp"] is not None:
+        temp_list = utils.calc_temp_strings(obs["temp"])
+        temp_val = temp_list[utils.temp_units.index(temp_unit)]
+    else:
+        temp_list = ["\u2014"] * len(utils.temp_units)
+        temp_val = "\u2014"
+
+    # Barometer
+    if obs["barometer"] is not None:
+        baro_list = utils.calc_baro_strings(obs["barometer"])
+        baro_val = baro_list[utils.baro_units.index(baro_unit)]
+    else:
+        baro_list = ["\u2014"] * len(utils.baro_units)
+        baro_val = "\u2014"
+
+    # Baro trend - not available from NWS
+    trend_list = ["\u2014"] * len(utils.baro_units)
+    trend_val = "\u2014"
+
+    # Wind
+    if obs["wind_speed"] is not None and float(obs["wind_speed"]) >= 1:
+        wind_list = utils.calc_speeds(obs["wind_speed"])
+        wind_val = wind_list[utils.speed_units.index(speed_unit)]
+        if obs["wind_dir"] is not None:
+            wind_dir = "img/wind-%s.png" % utils.wind_dir_to_english(obs["wind_dir"])
+            wind_dir = wind_dir.lower()
+        else:
+            wind_dir = None
+    else:
+        wind_list = utils.calc_speeds(0)
+        wind_val = wind_list[utils.speed_units.index(speed_unit)]
+        wind_dir = None
+
+    # Windchill
+    if obs["windchill"] is not None:
+        windchill_list = utils.calc_temp_strings(obs["windchill"])
+        windchill_val = windchill_list[utils.temp_units.index(temp_unit)]
+    else:
+        windchill_list = temp_list
+        windchill_val = temp_val
+
+    today = utils.get_today_timestamp(request)
+    morning = today.hour < 12
+
+    response_dict = {
+        "timestamp": timestamp,
+        "temp_units": utils.temp_units,
+        "baro_units": utils.baro_units,
+        "speed_units": utils.speed_units,
+        "temp_val": temp_val,
+        "baro_val": baro_val,
+        "trend_val": trend_val,
+        "temp_unit": temp_unit,
+        "baro_unit": baro_unit,
+        "speed_unit": speed_unit,
+        "temp": temp_list,
+        "baro": baro_list,
+        "trend": trend_list,
+        "wind": wind_list,
+        "wind_val": wind_val,
+        "wind_dir": wind_dir,
+        "windchill": windchill_list,
+        "windchill_val": windchill_val,
+        "humidity": obs["humidity"],
+        "show_windchill": windchill_val != temp_val,
+        "morning": morning,
+        "chart_date": today.strftime("%Y%m%d"),
+        "station_name": obs["station_name"],
+        "description": obs["description"],
+    }
+    return response_dict, None
 
 
 def chartdata(request):

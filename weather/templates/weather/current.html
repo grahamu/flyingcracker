@@ -2,7 +2,7 @@
 {% load humanize static %}
 
 {% block javascript %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+{% if is_default_zone %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>{% endif %}
 {% endblock %}
 
 {% block body %}
@@ -11,7 +11,12 @@
     <!-- Current Conditions -->
     <div class="border rounded-lg p-4">
         <div class="flex justify-between items-baseline mb-4">
-            <h2 class="text-xl font-semibold">Crested Butte South Current Conditions</h2>
+            <div>
+                <h2 class="text-xl font-semibold">{{ area_name }} Current Conditions</h2>
+                {% if not is_default_zone and description %}
+                <div class="text-sm text-gray-500">{{ description }}{% if station_name %} &mdash; {{ station_name }}{% endif %}</div>
+                {% endif %}
+            </div>
             <span class="text-sm text-gray-500">{{ timestamp }}</span>
         </div>
 
@@ -56,7 +61,7 @@
                     {{ humidity }}%
                 </div>
                 <div class="text-xs text-gray-500 mt-1">humidity</div>
-                {% if current.temp != current.windchill %}
+                {% if show_windchill %}
                 <div class="text-xs text-gray-400 mt-2">
                     windchill <span id="windchill-value">{{ windchill_val }}&deg;</span>
                 </div>
@@ -64,6 +69,7 @@
             </div>
         </div>
 
+        {% if is_default_zone %}
         <!-- Charts -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="border rounded p-3">
@@ -111,6 +117,7 @@
                 <div class="h-48"><canvas id="chart-wind"></canvas></div>
             </div>
         </div>
+        {% endif %}
     </div>
 
     {% if noaa %}
@@ -238,6 +245,7 @@
 
 <script>
 // Current weather data from server
+const hasCharts = {% if is_default_zone %}true{% else %}false{% endif %};
 const weatherData = {
     tempUnits: {{ temp_units|safe }},
     baroUnits: {{ baro_units|safe }},
@@ -265,29 +273,36 @@ function cycleUnit(type) {
         document.getElementById('temp-unit').textContent = weatherData.tempUnit;
         var wc = document.getElementById('windchill-value');
         if (wc) wc.innerHTML = weatherData.windchill[idx] + '&deg;';
-        document.getElementById('chart-temp-unit').textContent = '(' + weatherData.tempUnit + ')';
         document.cookie = `temp_unit=${weatherData.tempUnit};path=/;max-age=${7*86400}`;
-        loadChart('temp', weatherData.tempUnit);
+        if (hasCharts) {
+            document.getElementById('chart-temp-unit').textContent = '(' + weatherData.tempUnit + ')';
+            loadChart('temp', weatherData.tempUnit);
+        }
     } else if (type === 'baro') {
         weatherData.baroUnit = nextInArray(weatherData.baroUnits, weatherData.baroUnit);
         const idx = weatherData.baroUnits.indexOf(weatherData.baroUnit);
         document.getElementById('baro-value').textContent = weatherData.baro[idx];
         document.getElementById('baro-unit').textContent = weatherData.baroUnit;
         document.getElementById('trend-value').innerHTML = weatherData.trend[idx];
-        document.getElementById('chart-pressure-unit').textContent = '(' + weatherData.baroUnit + ')';
         document.cookie = `baro_unit=${weatherData.baroUnit};path=/;max-age=${7*86400}`;
-        loadChart('pressure', weatherData.baroUnit);
+        if (hasCharts) {
+            document.getElementById('chart-pressure-unit').textContent = '(' + weatherData.baroUnit + ')';
+            loadChart('pressure', weatherData.baroUnit);
+        }
     } else if (type === 'speed') {
         weatherData.speedUnit = nextInArray(weatherData.speedUnits, weatherData.speedUnit);
         const idx = weatherData.speedUnits.indexOf(weatherData.speedUnit);
         document.getElementById('wind-value').textContent = weatherData.wind[idx];
         document.getElementById('wind-unit').textContent = weatherData.speedUnit;
-        document.getElementById('chart-wind-unit').textContent = '(' + weatherData.speedUnit + ')';
         document.cookie = `speed_unit=${weatherData.speedUnit};path=/;max-age=${7*86400}`;
-        loadChart('wind', weatherData.speedUnit);
+        if (hasCharts) {
+            document.getElementById('chart-wind-unit').textContent = '(' + weatherData.speedUnit + ')';
+            loadChart('wind', weatherData.speedUnit);
+        }
     }
 }
 
+{% if is_default_zone %}
 // Chart.js rendering
 const charts = {};
 
@@ -328,5 +343,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadChart('humidity', '%');
     loadChart('wind', weatherData.speedUnit);
 });
+{% endif %}
 </script>
 {% endblock %}
