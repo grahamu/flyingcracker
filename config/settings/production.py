@@ -1,7 +1,7 @@
 import os
+from pathlib import Path
 
 import dj_database_url
-from pathlib import Path
 
 from .base import *
 
@@ -37,5 +37,21 @@ MIDDLEWARE = tuple(
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
     },
 }
