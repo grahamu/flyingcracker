@@ -117,6 +117,12 @@ SYSTEM_NAME = "cracklyfinger.com"
 
 ALLOWED_HOSTS = ["www.cracklyfinger.com", "cracklyfinger.com", ".railway.app", "*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.cracklyfinger.com",
+    "https://cracklyfinger.com",
+    "https://*.railway.app",
+]
+
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
 # Email service credentials are secret.
