@@ -1,9 +1,8 @@
 import datetime
-import os
 from urllib.request import urlopen
 
 from dateutil import parser as dateutilparser
-from django.conf import settings
+from django.core.cache import cache
 
 from .forecast import Forecast
 
@@ -201,32 +200,16 @@ def get_NOAA_forecast(state, zone):
 
 def get_NOAA_data(state, zname):
     """
-    Get data from disk file if it exists, but
-    ignore the data if it is more than 4 hours old.
+    Get NOAA data from cache, or fetch from NOAA and cache for 3 hours.
     """
-    filename = settings.WEATHER_ROOT / ("noaa-" + zname + ".txt")
-    if not os.path.isfile(filename):
-        return save_NOAA_data(state, zname)
-
-    filetime_t = os.path.getmtime(filename)
-    filestamp = datetime.datetime.fromtimestamp(filetime_t)
-    now = datetime.datetime.now()
-    if (now - filestamp) > datetime.timedelta(hours=3) or (now < filestamp):
-        return save_NOAA_data(state, zname)
-
-    try:
-        f = open(filename, "r")
-    except IOError:
-        lines = save_NOAA_data(state, zname)
-    else:
-        try:
-            lines = f.read().splitlines()
-        except IOError:
-            lines = save_NOAA_data(state, zname)
-    return lines
+    cache_key = f"noaa-{zname}"
+    lines = cache.get(cache_key)
+    if lines is not None:
+        return lines
+    return fetch_NOAA_data(state, zname)
 
 
-def save_NOAA_data(state, zname):
+def fetch_NOAA_data(state, zname):
     url = (
         "http://tgftp.nws.noaa.gov/data/forecasts/zone/"
         + state.lower()
@@ -240,11 +223,8 @@ def save_NOAA_data(state, zname):
     except IOError:
         return None
     else:
-        # save the retrieved data
-        filename = settings.WEATHER_ROOT / ("noaa-" + zname + ".txt")
-        f = open(filename, "w")
-        f.writelines(lines)
-        f.close()
+        cache_key = f"noaa-{zname}"
+        cache.set(cache_key, lines, timeout=3 * 60 * 60)  # 3 hours
         return lines
 
 
@@ -271,7 +251,7 @@ if __name__ == "__main__":
         for cmd in arguments:
             if cmd.lower() == "save":
                 state = options.state.upper()
-                save_NOAA_data(state, state + "Z%03d" % options.zone)
+                fetch_NOAA_data(state, state + "Z%03d" % options.zone)
             elif cmd.lower() == "get":
                 state = options.state.upper()
                 print((get_NOAA_data(state, state + "Z%03d" % options.zone)))

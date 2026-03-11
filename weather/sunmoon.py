@@ -122,7 +122,6 @@ class MoonPhaseData(object):
 class MoonPhases(DataBlock, EphemMixin):
 
     url_pattern = "http://api.usno.navy.mil/moon/phase?ID=CBSOUTH" "&date={date}&nump=4"
-    filename = settings.WEATHER_ROOT / "moonphases.txt"
 
     def __init__(self, **kwargs):
         """
