@@ -20,7 +20,7 @@ from .noaa import get_zone_forecast, lookup_zone_for_zip
 from .sunmoon import MoonPhases, SunMoon
 
 
-def weather(request):
+def weather(request, noaa_zone=None, noaa_zip=None):
     show_titles = request.COOKIES.get("curr_weather_show_titles")
     if show_titles is None:
         show_titles = "hidden"
@@ -42,7 +42,10 @@ def weather(request):
 
     et = ElapsedTime()
 
-    noaa_zone = request.COOKIES.get("noaa_zone", settings.NWS_DEFAULT_ZONE)
+    if noaa_zone is None:
+        noaa_zone = request.COOKIES.get("noaa_zone", settings.NWS_DEFAULT_ZONE)
+    if noaa_zip is None:
+        noaa_zip = request.COOKIES.get("noaa_zip", "")
     noaa = get_zone_forecast(noaa_zone)
 
     et.mark_time("forecasts")
@@ -61,7 +64,7 @@ def weather(request):
             "unit_state": unit_state,
             "noaa": noaa,
             "noaa_zone": noaa_zone,
-            "noaa_zip": request.COOKIES.get("noaa_zip", ""),
+            "noaa_zip": noaa_zip,
             "default_zone": settings.NWS_DEFAULT_ZONE,
             "sunmoon": sunmoon,
             "moonphases": moonphases,
@@ -99,7 +102,9 @@ def set_zone(request):
         )
         return HttpResponseRedirect(reverse("weather:root"))
 
-    response = HttpResponseRedirect(reverse("weather:root"))
+    # Render weather page directly with the new zone to avoid
+    # Railway's proxy following the redirect server-side.
+    response = weather(request, noaa_zone=zone_id, noaa_zip=zip_code)
     cookie_kwargs = dict(max_age=90 * 24 * 60 * 60, path="/", httponly=False, samesite="Lax")
     response.set_cookie("noaa_zone", zone_id, **cookie_kwargs)
     response.set_cookie("noaa_zip", zip_code, **cookie_kwargs)
