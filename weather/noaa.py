@@ -105,15 +105,15 @@ def get_zone_name(zone_id):
 
 def lookup_zone_for_zip(zip_code):
     """
-    Convert a US zip code to an NWS forecast zone ID.
+    Convert a US zip code to an NWS forecast zone ID and coordinates.
     Uses pgeocode for offline lat/lon lookup, then NWS /points API.
-    Returns zone ID string (e.g., 'COZ012') or None on failure.
+    Returns dict with 'zone_id', 'lat', 'lon', 'timezone' keys, or None on failure.
     Cached for 30 days.
     """
     cache_key = f"nws-zip-zone-{zip_code}"
-    zone_id = cache.get(cache_key)
-    if zone_id is not None:
-        return zone_id
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
 
     import pgeocode
 
@@ -137,11 +137,14 @@ def lookup_zone_for_zip(zip_code):
 
     # Extract zone ID from forecastZone URL
     # e.g., "https://api.weather.gov/zones/forecast/COZ012"
-    forecast_zone_url = data.get("properties", {}).get("forecastZone", "")
+    props = data.get("properties", {})
+    forecast_zone_url = props.get("forecastZone", "")
     if forecast_zone_url:
         zone_id = forecast_zone_url.rstrip("/").split("/")[-1]
-        cache.set(cache_key, zone_id, timeout=ZIP_ZONE_CACHE_TIMEOUT)
-        return zone_id
+        timezone = props.get("timeZone", "US/Mountain")
+        result = {"zone_id": zone_id, "lat": lat, "lon": lon, "timezone": timezone}
+        cache.set(cache_key, result, timeout=ZIP_ZONE_CACHE_TIMEOUT)
+        return result
 
     return None
 

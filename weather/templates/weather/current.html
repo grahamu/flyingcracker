@@ -127,29 +127,6 @@
             <span class="text-sm text-gray-500 font-normal">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span>
         </summary>
         <div class="px-4 pb-4 space-y-3">
-            <!-- Zone selector -->
-            <div class="flex items-center gap-3 text-sm">
-                <form method="post" action="{% url 'weather:set-zone' %}" class="flex items-center gap-2">
-                    {% csrf_token %}
-                    <label for="zip_code" class="text-gray-600">Zip:</label>
-                    <input type="text" name="zip_code" id="zip_code"
-                           pattern="\d{5}" maxlength="5" inputmode="numeric"
-                           placeholder="81224"
-                           {% if noaa_zip %}value="{{ noaa_zip }}"{% endif %}
-                           class="w-20 px-2 py-1 border rounded text-sm">
-                    <button type="submit"
-                            class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
-                        Go
-                    </button>
-                </form>
-                {% if noaa_zone != default_zone %}
-                <a href="{% url 'weather:set-zone' %}?reset=1"
-                   class="text-sm text-gray-500 hover:text-gray-700 underline">
-                    Reset
-                </a>
-                {% endif %}
-            </div>
-
             {% if messages %}
             {% for message in messages %}
             <div class="text-sm {% if message.tags == 'error' %}text-red-600{% else %}text-green-600{% endif %}">
@@ -167,6 +144,28 @@
                 <div class="leading-relaxed">{{ sec.body }}</div>
             </div>
             {% endfor %}
+
+            <!-- Zone selector -->
+            <form method="post" action="{% url 'weather:set-zone' %}" class="text-sm">
+                {% csrf_token %}
+                <div class="flex items-center gap-2 flex-wrap">
+                    <label for="zip_code" class="text-gray-600">Zipcode:</label>
+                    <input type="text" name="zip_code" id="zip_code"
+                           pattern="\d{5}" maxlength="5" inputmode="numeric"
+                           value="{{ noaa_zip }}"
+                           class="w-20 px-2 py-1 border rounded text-sm">
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700">
+                        Set
+                    </button>
+                    {% if noaa_zone != default_zone %}
+                    <a href="{% url 'weather:set-zone' %}?reset=1"
+                       class="text-gray-500 hover:text-gray-700 underline">
+                        Reset
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
         </div>
     </details>
     {% endif %}
@@ -177,31 +176,6 @@
             River Gauge{% if river_gauge %} &mdash; {{ river_gauge }}{% endif %}
         </summary>
         <div class="px-4 pb-4 space-y-3">
-            <div class="flex items-center gap-3 text-sm">
-                <form method="post" action="{% url 'weather:set-river-gauge' %}" class="flex items-center gap-2">
-                    {% csrf_token %}
-                    <label for="river_gauge" class="text-gray-600">Gauge ID:</label>
-                    <input type="text" name="river_gauge" id="river_gauge"
-                           pattern="[A-Za-z0-9]{3,8}" maxlength="8"
-                           placeholder="e.g. CCNO1"
-                           {% if river_gauge %}value="{{ river_gauge }}"{% endif %}
-                           class="w-24 px-2 py-1 border rounded text-sm uppercase">
-                    <button type="submit"
-                            class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
-                        Go
-                    </button>
-                </form>
-                {% if river_gauge %}
-                <a href="{% url 'weather:set-river-gauge' %}?reset=1"
-                   class="text-sm text-gray-500 hover:text-gray-700 underline">
-                    Clear
-                </a>
-                {% endif %}
-            </div>
-            <div class="text-xs text-gray-500">
-                Find gauge IDs at <a href="https://water.noaa.gov" target="_blank" rel="noopener"
-                   class="underline hover:text-gray-700">water.noaa.gov</a>
-            </div>
             {% if river_gauge %}
             <div class="space-y-4">
                 <div>
@@ -224,6 +198,32 @@
                 </div>
             </div>
             {% endif %}
+
+            <form method="post" action="{% url 'weather:set-river-gauge' %}" class="text-sm">
+                {% csrf_token %}
+                <div class="flex items-center gap-2 flex-wrap">
+                    <label for="river_gauge" class="text-gray-600">Gauge ID:</label>
+                    <input type="text" name="river_gauge" id="river_gauge"
+                           pattern="[A-Za-z0-9]{3,8}" maxlength="8" enterkeyhint="go"
+                           placeholder="e.g. CCNO1"
+                           {% if river_gauge %}value="{{ river_gauge }}"{% endif %}
+                           class="w-24 px-2 py-1 border rounded text-sm uppercase">
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700">
+                        Set
+                    </button>
+                    {% if river_gauge %}
+                    <a href="{% url 'weather:set-river-gauge' %}?reset=1"
+                       class="text-gray-500 hover:text-gray-700 underline">
+                        Clear
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+            <div class="text-xs text-gray-500">
+                Find gauge IDs at <a href="https://water.noaa.gov" target="_blank" rel="noopener"
+                   class="underline hover:text-gray-700">water.noaa.gov</a>
+            </div>
         </div>
     </details>
 

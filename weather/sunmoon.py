@@ -22,27 +22,30 @@ class SunMoonTimes(object):
     moonset = None
 
 
+DEFAULT_LAT = "38.813125"
+DEFAULT_LON = "-106.8972617"
+DEFAULT_ELEVATION = 2600  # Crested Butte, meters ASL
+DEFAULT_TIMEZONE = "US/Mountain"
+
+
 class EphemMixin(object):
-    def _get_observer(self, user):
+    def _get_observer(self):
         observer = ephem.Observer()
         observer.pressure = 0
-        # Location is hard coded to Crested Butte for now
-        # Someday convert to user's location.
-        observer.lat, observer.lon = "38.813125", "-106.8972617"
-        observer.elevation = 2600  # meters ASL
+        observer.lat = str(self.lat)
+        observer.lon = str(self.lon)
+        observer.elevation = self.elevation
         return observer
 
     def observed_time(self, date):
         """
-        Convert an ephem.Date object, specified in UTC but without
-        timezone awareness, to a timezone correct string.
+        Convert an ephem.Date object (UTC, naive) to a naive datetime
+        in the observer's local timezone. Returned as naive so Django's
+        template engine won't re-convert to settings.TIME_ZONE.
         """
         utc_date = date.datetime().replace(tzinfo=dt_timezone.utc)
-        # Convert to Mountain Time
-        # Someday convert to user's timezone, as seen in
-        # fcprofile.user_tags.user_time.
-        mt_date = utc_date.astimezone(ZoneInfo("US/Mountain"))
-        return mt_date
+        local_date = utc_date.astimezone(ZoneInfo(self.timezone))
+        return local_date.replace(tzinfo=None)
 
 
 class SunMoon(DataBlock, EphemMixin):
@@ -53,9 +56,12 @@ class SunMoon(DataBlock, EphemMixin):
     def __init__(self, **kwargs):
         """
         Obtain "Rise Set Transit Times" for Sun and Moon, based
-        on user location.
+        on location (lat/lon).
         """
-        self.user = kwargs.pop("user")
+        self.lat = kwargs.pop("lat", DEFAULT_LAT)
+        self.lon = kwargs.pop("lon", DEFAULT_LON)
+        self.elevation = kwargs.pop("elevation", DEFAULT_ELEVATION)
+        self.timezone = kwargs.pop("timezone", DEFAULT_TIMEZONE)
         super(SunMoon, self).__init__(**kwargs)
 
         today = datetime.date.today()
@@ -68,7 +74,7 @@ class SunMoon(DataBlock, EphemMixin):
 
     def set_times(self, times, date):
         """"""
-        observer = self._get_observer(self.user)
+        observer = self._get_observer()
         observer.date = date.strftime("%Y/%m/%d 19:00")  # 7pm UTC, mid-day in Colorado
 
         # sun rise and set
@@ -125,9 +131,12 @@ class MoonPhases(DataBlock, EphemMixin):
 
     def __init__(self, **kwargs):
         """
-        Obtain latest aa.usno.navy.mil "Phases of the Moon".
+        Obtain upcoming moon phases.
         """
-        self.user = kwargs.pop("user")
+        self.lat = kwargs.pop("lat", DEFAULT_LAT)
+        self.lon = kwargs.pop("lon", DEFAULT_LON)
+        self.elevation = kwargs.pop("elevation", DEFAULT_ELEVATION)
+        self.timezone = kwargs.pop("timezone", DEFAULT_TIMEZONE)
         super(MoonPhases, self).__init__(**kwargs)
 
         today = datetime.date.today()
