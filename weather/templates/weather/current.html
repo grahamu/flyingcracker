@@ -116,7 +116,7 @@
     {% if noaa %}
     <details class="border rounded-lg" open>
         <summary class="p-4 cursor-pointer font-semibold flex justify-between items-center">
-            NOAA Forecast
+            NOAA Forecast{% if noaa.area_name %} — {{ noaa.area_name }}{% endif %}
             <span class="text-sm text-gray-500 font-normal">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span>
         </summary>
         <div class="px-4 pb-4 space-y-2">

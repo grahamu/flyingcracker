@@ -42,6 +42,7 @@ class Forecast(DataBlock):
     def __init__(self):
         super(Forecast, self).__init__()
         self.area = None
+        self.area_name = None
         self.warning = None
         self.reported_by = None
 

@@ -61,9 +61,10 @@ class NOAAForecastArea(object):
         forecast.pubdate = pubdate
         forecast.timestamp = dateutilparser.parse(forecast.pubdate)
 
-        area = self.area.pop(0).capitalize()  # first item is area
+        area = self.area.pop(0).title()  # first item is area
         if area.endswith("-"):
             area = area[:-1]
+        forecast.area_name = area  # zone name only, for display in title
 
         if len(self.area) > 0:  # middle is cities of interest
             interest = "".join(self.area)
