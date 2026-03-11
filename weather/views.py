@@ -81,7 +81,7 @@ def set_zone(request):
     GET with ?reset=1: clear cookie back to default, redirect.
     """
     if request.GET.get("reset"):
-        response = HttpResponseRedirect(reverse("weather:root"))
+        response = weather(request, noaa_zone=settings.NWS_DEFAULT_ZONE, noaa_zip="")
         response.delete_cookie("noaa_zone")
         response.delete_cookie("noaa_zip")
         return response
