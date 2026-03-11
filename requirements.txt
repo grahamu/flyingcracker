@@ -17,4 +17,5 @@ markdown==3.10.2
 # psycopg2==2.9.9 --no-binary psycopg2
 psycopg[binary,pool]
 python-dateutil==2.9.0.post0
+pgeocode
 whitenoise==6.12.0

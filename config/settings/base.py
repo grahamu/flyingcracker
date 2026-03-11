@@ -142,6 +142,10 @@ SILKY_MAX_RESPONSE_BODY_SIZE = 1024  # If response body>1024 bytes, ignore
 SILKY_META = True  # Record and display silky overhead
 SILKY_PYTHON_PROFILER = True  # Set to False to use another profiler
 
+# NWS API configuration
+NWS_API_USER_AGENT = "(cracklyfinger.com, graham@flyingcracker.com)"
+NWS_DEFAULT_ZONE = "COZ012"
+
 # django-markup: disable safe_mode to avoid bleach dependency
 MARKUP_SETTINGS = {
     "markdown": {

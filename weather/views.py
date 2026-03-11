@@ -1,17 +1,22 @@
 import datetime
 from decimal import Decimal
 
+import re
+
 from django import forms
+from django.conf import settings
+from django.contrib import messages
 from django.forms import ModelForm
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 from zoneinfo import ZoneInfo
 
 from fc3.utils import ElapsedTime
 from weatherstation.models import Weather
 
 from . import utils
-from .noaa import get_NOAA_forecast
+from .noaa import get_zone_forecast, lookup_zone_for_zip
 from .sunmoon import MoonPhases, SunMoon
 
 
@@ -37,7 +42,8 @@ def weather(request):
 
     et = ElapsedTime()
 
-    noaa = get_NOAA_forecast("CO", 12)  # Crested Butte area
+    noaa_zone = request.COOKIES.get("noaa_zone", settings.NWS_DEFAULT_ZONE)
+    noaa = get_zone_forecast(noaa_zone)
 
     et.mark_time("forecasts")
 
@@ -54,6 +60,9 @@ def weather(request):
             "show_units": show_units,
             "unit_state": unit_state,
             "noaa": noaa,
+            "noaa_zone": noaa_zone,
+            "noaa_zip": request.COOKIES.get("noaa_zip", ""),
+            "default_zone": settings.NWS_DEFAULT_ZONE,
             "sunmoon": sunmoon,
             "moonphases": moonphases,
             "elapsed": et.list(),
@@ -61,6 +70,40 @@ def weather(request):
     )
 
     return render(request, "weather/current.html", context)
+
+
+def set_zone(request):
+    """
+    POST: look up NWS zone from zip code, set cookie, redirect.
+    GET with ?reset=1: clear cookie back to default, redirect.
+    """
+    if request.GET.get("reset"):
+        response = HttpResponseRedirect(reverse("weather:root"))
+        response.delete_cookie("noaa_zone")
+        response.delete_cookie("noaa_zip")
+        return response
+
+    if request.method != "POST":
+        return HttpResponseRedirect(reverse("weather:root"))
+
+    zip_code = request.POST.get("zip_code", "").strip()
+
+    if not re.match(r"^\d{5}$", zip_code):
+        messages.error(request, "Please enter a valid 5-digit zip code.")
+        return HttpResponseRedirect(reverse("weather:root"))
+
+    zone_id = lookup_zone_for_zip(zip_code)
+    if zone_id is None:
+        messages.error(
+            request, f"Could not find a forecast zone for zip code {zip_code}."
+        )
+        return HttpResponseRedirect(reverse("weather:root"))
+
+    response = HttpResponseRedirect(reverse("weather:root"))
+    cookie_kwargs = dict(max_age=90 * 24 * 60 * 60, path="/", httponly=False, samesite="Lax")
+    response.set_cookie("noaa_zone", zone_id, **cookie_kwargs)
+    response.set_cookie("noaa_zip", zip_code, **cookie_kwargs)
+    return response
 
 
 def get_current_weather(request):

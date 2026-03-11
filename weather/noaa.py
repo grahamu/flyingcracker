@@ -1,258 +1,142 @@
-import datetime
-from urllib.request import urlopen
+import json
+import logging
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
-from dateutil import parser as dateutilparser
+from django.conf import settings
 from django.core.cache import cache
 
 from .forecast import Forecast
 
-#
-# This code parses weather data from NOAA
-#
+logger = logging.getLogger(__name__)
+
+NWS_API_BASE = "https://api.weather.gov"
+FORECAST_CACHE_TIMEOUT = 3 * 60 * 60  # 3 hours
+ZONE_NAME_CACHE_TIMEOUT = 30 * 24 * 60 * 60  # 30 days
+ZIP_ZONE_CACHE_TIMEOUT = 30 * 24 * 60 * 60  # 30 days
 
 
-class NOAAForecastPreamble(object):
+def _nws_get(url):
+    """Fetch JSON from the NWS API with required User-Agent header."""
+    req = Request(url)
+    req.add_header("User-Agent", settings.NWS_API_USER_AGENT)
+    req.add_header("Accept", "application/geo+json")
+    response = urlopen(req, timeout=10)
+    return json.loads(response.read().decode())
+
+
+def get_zone_forecast(zone_id):
     """
-    Parses (eats) junk data before NOAA forecast.
+    Fetch the NWS zone forecast for the given zone ID (e.g., 'COZ012').
+    Returns a Forecast object. Uses 3-hour cache.
     """
+    cache_key = f"nws-forecast-{zone_id}"
+    forecast = cache.get(cache_key)
+    if forecast is not None:
+        return forecast
 
-    def __init__(self, zname):
-        self.zname = zname
-
-    def parse_line(self, line, forecast):
-        if str(line).startswith(self.zname):
-            return NOAAForecastArea, False
-        else:
-            return False, False
-
-
-class NOAAForecastArea(object):
-    """
-    Parses NOAA forecast area section.
-    """
-
-    def __init__(self):
-        self.area = []
-
-    def parse_line(self, line, forecast):
-        if line.startswith("."):
-            self.parse_area(forecast)
-            # recycle this line because it is the start
-            # of a different section.
-            return NOAAForecastBody, True
-        else:
-            line = line.strip()
-            if len(line) > 0 and not line.startswith("$$"):
-                self.area.append(line)
-            return False, False
-
-    def parse_area(self, forecast):
-        """
-        Parse the area section of the NOAA forecast.
-        The first line is always the area.
-        Next is an optional line including cities of interest.
-        Next is a timestamp.
-        """
-        pubdate = self.area.pop()  # last item is pubdate
-        time_of_day, remainder = pubdate.split(" ", 1)
-        # insert colon so parser recognizes the time string
-        time_of_day = time_of_day[0:-2] + ":" + time_of_day[-2:]
-        pubdate = " ".join([time_of_day, remainder])
-        forecast.pubdate = pubdate
-        forecast.timestamp = dateutilparser.parse(forecast.pubdate)
-
-        area = self.area.pop(0).title()  # first item is area
-        if area.endswith("-"):
-            area = area[:-1]
-        forecast.area_name = area  # zone name only, for display in title
-
-        if len(self.area) > 0:  # middle is cities of interest
-            interest = "".join(self.area)
-            interest = interest.split("...")
-            city_list = []
-            for city in interest[1:]:
-                city_list.append(capitalize_all(city))
-            cities = ", ".join(city_list)
-            area_list = [area]
-            area_list.append(interest[0].lower())
-            area_list.append(cities)
-            area = " ".join(area_list)
-
-        forecast.area = area
-
-
-def capitalize_all(str):
-    word_list = str.split(" ")
-    word_list = [word.capitalize() for word in word_list]
-    return " ".join(word_list)
-
-
-class NOAAForecastBody(object):
-    """
-    Parses NOAA forecast body.
-    """
-
-    def __init__(self):
-        self.title = ""
-        self.body = []
-
-    def parse_line(self, line, forecast):
-        if len(line) == 0:  # ignore this line
-            return False, False
-
-        if line.startswith("..."):
-            # recycle this line, it starts a warning.
-            return NOAAForecastWarning, True
-
-        if line == "$$":  # end of the forecast sections
-            self.add_section(forecast)
-            return False, False
-
-        if line == "&&":
-            # Indicates some extra NOAA data, ignore all subsequent lines.
-            self.add_section(forecast)
-            return NOAAForecastIgnore, False
-
-        if line[0] == "." and line[1] != " ":  # start of a new section
-            self.add_section(forecast)
-            title, body = line.split("...", 1)
-            self.title = title[1:]
-            self.body.append(body)
-        else:
-            self.body.append(line)
-        return False, False
-
-    def add_section(self, forecast):
-        if self.title != "":
-            body_str = " ".join(self.body)
-            sentences = body_str.split(". ")
-            sentences = [s.capitalize() for s in sentences]
-            body_str = ". ".join(sentences)
-            forecast.add_section(self.title.capitalize(), body_str)
-            # reset temporary section info
-            self.body = []
-            self.title = ""
-
-
-class NOAAForecastWarning(object):
-    """
-    Parses NOAA warnings.
-    """
-
-    def __init__(self):
-        self.warning = []
-        pass
-
-    def parse_line(self, line, forecast):
-        self.warning.append(line)
-        if line.endswith("..."):
-            self.warning = " ".join(self.warning)
-            self.warning.replace("...", "")
-            forecast.warning = self.warning
-            return NOAAForecastBody, False  # done with the warning
-        else:
-            return False, False  # ignore line for now
-
-
-class NOAAForecastIgnore(object):
-    def parse_line(self, line, forecast):
-        return False, False
-
-
-class NOAAForecast(Forecast):
-    def __init__(self, zname):
-        super(NOAAForecast, self).__init__()
-        self.state = NOAAForecastPreamble(zname)
-
-    def set_state(self, state):
-        self.state = state
-
-    def parse_line(self, line):
-        """
-        Calls the ``parseLine`` method of class ``self.state``.
-        If a new state is indicated, set self.state.
-        Use recursion to recycle the input line if necessary.
-        """
-        newState, recycle_line = self.state.parse_line(line, self)
-        if newState is not False:
-            self.set_state(newState())
-            if recycle_line:
-                self.parse_line(line)
-
-
-def get_NOAA_forecast(state, zone):
-    """
-    Obtain NOAA textual forecast.
-    Parse into parts: area, [optional] warning, section array.
-    Returns a Forecast object if successful, otherwise returns None.
-    """
-    zname = state.upper() + "Z%03d" % zone
-    lines = get_NOAA_data(state, zname)
-    if not lines:
-        return None
-
-    forecast = NOAAForecast(zname)
-    for line in lines:
-        forecast.parse_line(line.strip())
-
-    # when we're finished with all lines the forecast attributes should be set
+    forecast = _fetch_zone_forecast(zone_id)
+    if forecast and not forecast.error:
+        cache.set(cache_key, forecast, timeout=FORECAST_CACHE_TIMEOUT)
     return forecast
 
 
-def get_NOAA_data(state, zname):
-    """
-    Get NOAA data from cache, or fetch from NOAA and cache for 3 hours.
-    """
-    cache_key = f"noaa-{zname}"
-    lines = cache.get(cache_key)
-    if lines is not None:
-        return lines
-    return fetch_NOAA_data(state, zname)
-
-
-def fetch_NOAA_data(state, zname):
-    url = (
-        "http://tgftp.nws.noaa.gov/data/forecasts/zone/"
-        + state.lower()
-        + "/"
-        + zname.lower()
-        + ".txt"
-    )
+def _fetch_zone_forecast(zone_id):
+    """Fetch and parse zone forecast from NWS API."""
+    forecast = Forecast()
+    url = f"{NWS_API_BASE}/zones/forecast/{zone_id}/forecast"
     try:
-        lines = urlopen(url).readlines()
-        lines = [raw_line.decode() for raw_line in lines]
-    except IOError:
+        data = _nws_get(url)
+    except (URLError, HTTPError, json.JSONDecodeError, OSError) as e:
+        logger.warning("NWS forecast fetch failed for %s: %s", zone_id, e)
+        forecast.report_error(f"Unable to fetch forecast for zone {zone_id}")
+        return forecast
+
+    props = data.get("properties", {})
+
+    # Set timestamp from 'updated' field (ISO 8601)
+    updated = props.get("updated")
+    if updated:
+        forecast.pubdate = updated
+        forecast.set_timestamp(updated)
+
+    # Set area name from zone metadata
+    forecast.area_name = get_zone_name(zone_id)
+    forecast.area = forecast.area_name
+
+    # Parse periods into sections
+    for period in props.get("periods", []):
+        title = period.get("name", "")
+        body = period.get("detailedForecast", "")
+        if title and body:
+            forecast.add_section(title, body)
+
+    if not forecast.sections:
+        forecast.report_error(f"No forecast periods available for zone {zone_id}")
+
+    return forecast
+
+
+def get_zone_name(zone_id):
+    """
+    Get the human-readable name for a forecast zone.
+    Cached for 30 days since zone names rarely change.
+    """
+    cache_key = f"nws-zone-name-{zone_id}"
+    name = cache.get(cache_key)
+    if name is not None:
+        return name
+
+    url = f"{NWS_API_BASE}/zones/forecast/{zone_id}"
+    try:
+        data = _nws_get(url)
+        name = data.get("properties", {}).get("name", zone_id)
+    except (URLError, HTTPError, json.JSONDecodeError, OSError) as e:
+        logger.warning("NWS zone name fetch failed for %s: %s", zone_id, e)
+        name = zone_id  # Fallback to zone ID as display name
+
+    cache.set(cache_key, name, timeout=ZONE_NAME_CACHE_TIMEOUT)
+    return name
+
+
+def lookup_zone_for_zip(zip_code):
+    """
+    Convert a US zip code to an NWS forecast zone ID.
+    Uses pgeocode for offline lat/lon lookup, then NWS /points API.
+    Returns zone ID string (e.g., 'COZ012') or None on failure.
+    Cached for 30 days.
+    """
+    cache_key = f"nws-zip-zone-{zip_code}"
+    zone_id = cache.get(cache_key)
+    if zone_id is not None:
+        return zone_id
+
+    import pgeocode
+
+    nomi = pgeocode.Nominatim("us")
+    result = nomi.query_postal_code(zip_code)
+
+    if result is None or result.latitude != result.latitude:  # NaN check
         return None
-    else:
-        cache_key = f"noaa-{zname}"
-        cache.set(cache_key, lines, timeout=3 * 60 * 60)  # 3 hours
-        return lines
 
+    lat, lon = round(result.latitude, 4), round(result.longitude, 4)
 
-def test():
-    forecast = get_NOAA_forecast("CO", 12)
-    print((repr(forecast)))
-    forecast = get_NOAA_forecast("CA", 1)
-    print((repr(forecast)))
-    forecast = get_NOAA_forecast("OR", 1)
-    print((repr(forecast)))
+    # Call NWS points API
+    url = f"{NWS_API_BASE}/points/{lat},{lon}"
+    try:
+        data = _nws_get(url)
+    except (URLError, HTTPError, json.JSONDecodeError, OSError) as e:
+        logger.warning(
+            "NWS points lookup failed for %s (%s,%s): %s", zip_code, lat, lon, e
+        )
+        return None
 
+    # Extract zone ID from forecastZone URL
+    # e.g., "https://api.weather.gov/zones/forecast/COZ012"
+    forecast_zone_url = data.get("properties", {}).get("forecastZone", "")
+    if forecast_zone_url:
+        zone_id = forecast_zone_url.rstrip("/").split("/")[-1]
+        cache.set(cache_key, zone_id, timeout=ZIP_ZONE_CACHE_TIMEOUT)
+        return zone_id
 
-if __name__ == "__main__":
-    import optparse
-
-    p = optparse.OptionParser()
-    p.add_option("--zone", "-z", type="int", default=12)
-    p.add_option("--state", "-s", default="CO")
-    options, arguments = p.parse_args()
-
-    if not arguments:
-        test()
-    else:
-        for cmd in arguments:
-            if cmd.lower() == "save":
-                state = options.state.upper()
-                fetch_NOAA_data(state, state + "Z%03d" % options.zone)
-            elif cmd.lower() == "get":
-                state = options.state.upper()
-                print((get_NOAA_data(state, state + "Z%03d" % options.zone)))
+    return None
