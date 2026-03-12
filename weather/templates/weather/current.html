@@ -157,26 +157,20 @@
                     <thead>
                         <tr class="text-center text-gray-500">
                             <th></th>
-                            <th>Begin Twilight</th>
                             <th>Sunrise</th>
                             <th>Sunset</th>
-                            <th>End Twilight</th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
                         <tr>
                             <th class="text-left">Today</th>
-                            <td>{{ sunmoon.today_rstt.twilight_begin|time:"P" }}</td>
                             <td>{{ sunmoon.today_rstt.sunrise|time:"P" }}</td>
                             <td>{{ sunmoon.today_rstt.sunset|time:"P" }}</td>
-                            <td>{{ sunmoon.today_rstt.twilight_end|time:"P" }}</td>
                         </tr>
                         <tr>
                             <th class="text-left">Tomorrow</th>
-                            <td>{{ sunmoon.tomorrow_rstt.twilight_begin|time:"P" }}</td>
                             <td>{{ sunmoon.tomorrow_rstt.sunrise|time:"P" }}</td>
                             <td>{{ sunmoon.tomorrow_rstt.sunset|time:"P" }}</td>
-                            <td>{{ sunmoon.tomorrow_rstt.twilight_end|time:"P" }}</td>
                         </tr>
                     </tbody>
                 </table>
