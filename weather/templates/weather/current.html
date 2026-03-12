@@ -2,14 +2,24 @@
 {% load humanize static %}
 
 {% block javascript %}
-{% if is_default_zone %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 {% endblock %}
 
 {% block body %}
 <div class="space-y-6">
 
+    <div id="messages">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="text-sm p-3 rounded-lg {% if message.tags == 'error' %}bg-red-50 text-red-600{% else %}bg-green-50 text-green-600{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    </div>
+
     <!-- Current Conditions -->
-    <details class="border rounded-lg" data-section="current" open>
+    <details id="section-current" class="border rounded-lg" data-section="current" open>
         <summary class="list-none p-4 cursor-pointer font-semibold flex justify-between items-center">
             <span>{{ area_name }} Current Conditions</span>
             <span class="text-sm text-gray-500 font-normal">{{ timestamp }}</span>
@@ -117,9 +127,26 @@
                 </div>
             </div>
             {% endif %}
+            <script>
+            window.hasCharts = {% if is_default_zone %}true{% else %}false{% endif %};
+            window.weatherData = {
+                tempUnits: {{ temp_units|safe }},
+                baroUnits: {{ baro_units|safe }},
+                speedUnits: {{ speed_units|safe }},
+                temp: {{ temp|safe }},
+                baro: {{ baro|safe }},
+                trend: {{ trend|safe }},
+                wind: {{ wind|safe }},
+                windchill: {{ windchill|safe }},
+                tempUnit: "{{ temp_unit }}",
+                baroUnit: "{{ baro_unit }}",
+                speedUnit: "{{ speed_unit }}",
+            };
+            </script>
         </div>
     </details>
 
+    <div id="section-forecast">
     {% if noaa %}
     <details class="border rounded-lg" data-section="forecast" open>
         <summary class="list-none p-4 cursor-pointer font-semibold flex justify-between items-center">
@@ -127,14 +154,6 @@
             <span class="text-sm text-gray-500 font-normal">{{ noaa.timestamp|date:"H:i \M\T D M j, Y" }}</span>
         </summary>
         <div class="px-4 pb-4 space-y-3">
-            {% if messages %}
-            {% for message in messages %}
-            <div class="text-sm {% if message.tags == 'error' %}text-red-600{% else %}text-green-600{% endif %}">
-                {{ message }}
-            </div>
-            {% endfor %}
-            {% endif %}
-
             {% if noaa.warning %}
             <div class="text-red-600 font-medium">{{ noaa.warning }}</div>
             {% endif %}
@@ -147,7 +166,9 @@
         </div>
     </details>
     {% endif %}
+    </div>
 
+    <div id="section-sunmoon">
     {% if sunmoon %}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <details class="border rounded-lg" data-section="sun" open>
@@ -215,12 +236,18 @@
         </details>
     </div>
     {% endif %}
+    </div>
 
     <!-- Location -->
-    <details class="border rounded-lg" data-section="location" open>
+    <details id="section-location" class="border rounded-lg" data-section="location" open>
         <summary class="list-none p-4 cursor-pointer font-semibold">Set Location</summary>
         <div class="px-4 pb-4">
-            <form method="post" action="{% url 'weather:set-zone' %}" class="text-sm">
+            <form method="post" action="{% url 'weather:set-zone' %}"
+                  hx-post="{% url 'weather:set-zone' %}"
+                  hx-target="#section-current" hx-select="#section-current" hx-swap="outerHTML"
+                  hx-select-oob="#section-forecast,#section-sunmoon,#section-location,#messages"
+                  hx-disabled-elt="find button"
+                  class="text-sm">
                 {% csrf_token %}
                 <div class="flex items-center gap-2 flex-wrap">
                     <label for="zip_code" class="text-gray-600">Zipcode:</label>
@@ -234,6 +261,9 @@
                     </button>
                     {% if noaa_zone != default_zone %}
                     <a href="{% url 'weather:set-zone' %}?reset=1"
+                       hx-get="{% url 'weather:set-zone' %}?reset=1"
+                       hx-target="#section-current" hx-select="#section-current" hx-swap="outerHTML"
+                       hx-select-oob="#section-forecast,#section-sunmoon,#section-location,#messages"
                        class="text-gray-500 hover:text-gray-700 underline">
                         Reset
                     </a>
@@ -244,7 +274,7 @@
     </details>
 
     <!-- River Gauge -->
-    <details class="border rounded-lg" data-section="river-gauge" open>
+    <details id="section-river-gauge" class="border rounded-lg" data-section="river-gauge" open>
         <summary class="list-none p-4 cursor-pointer font-semibold">
             River Gauge{% if river_gauge %} &mdash; {{ river_gauge }}{% endif %}
         </summary>
@@ -272,7 +302,12 @@
             </div>
             {% endif %}
 
-            <form method="post" action="{% url 'weather:set-river-gauge' %}" class="text-sm">
+            <form method="post" action="{% url 'weather:set-river-gauge' %}"
+                  hx-post="{% url 'weather:set-river-gauge' %}"
+                  hx-target="#section-river-gauge" hx-select="#section-river-gauge" hx-swap="outerHTML"
+                  hx-select-oob="#messages"
+                  hx-disabled-elt="find button"
+                  class="text-sm">
                 {% csrf_token %}
                 <div class="flex items-center gap-2 flex-wrap">
                     <label for="river_gauge" class="text-gray-600">Gauge ID:</label>
@@ -287,6 +322,9 @@
                     </button>
                     {% if river_gauge %}
                     <a href="{% url 'weather:set-river-gauge' %}?reset=1"
+                       hx-get="{% url 'weather:set-river-gauge' %}?reset=1"
+                       hx-target="#section-river-gauge" hx-select="#section-river-gauge" hx-swap="outerHTML"
+                       hx-select-oob="#messages"
                        class="text-gray-500 hover:text-gray-700 underline">
                         Clear
                     </a>
@@ -303,45 +341,33 @@
 </div>
 
 <script>
-(function() {
-    const STORAGE_KEY = 'weatherSectionState';
-    function getSaved() {
-        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-        catch { return {}; }
-    }
-    function save(states) {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(states)); }
-        catch {}
-    }
-    const sections = document.querySelectorAll('details[data-section]');
-    const states = getSaved();
-    sections.forEach(function(el) {
-        const id = el.dataset.section;
+// Section state — event delegation (capture phase for toggle)
+var STORAGE_KEY = 'weatherSectionState';
+function getSaved() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+}
+function save(states) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(states)); }
+    catch {}
+}
+function restoreSectionStates() {
+    var states = getSaved();
+    document.querySelectorAll('details[data-section]').forEach(function(el) {
+        var id = el.dataset.section;
         if (id in states) el.open = states[id];
-        el.addEventListener('toggle', function() {
-            const s = getSaved();
-            s[id] = el.open;
-            save(s);
-        });
     });
-})();
+}
+document.addEventListener('toggle', function(e) {
+    if (e.target.matches && e.target.matches('details[data-section]')) {
+        var s = getSaved();
+        s[e.target.dataset.section] = e.target.open;
+        save(s);
+    }
+}, true);
+restoreSectionStates();
 
-// Current weather data from server
-const hasCharts = {% if is_default_zone %}true{% else %}false{% endif %};
-const weatherData = {
-    tempUnits: {{ temp_units|safe }},
-    baroUnits: {{ baro_units|safe }},
-    speedUnits: {{ speed_units|safe }},
-    temp: {{ temp|safe }},
-    baro: {{ baro|safe }},
-    trend: {{ trend|safe }},
-    wind: {{ wind|safe }},
-    windchill: {{ windchill|safe }},
-    tempUnit: "{{ temp_unit }}",
-    baroUnit: "{{ baro_unit }}",
-    speedUnit: "{{ speed_unit }}",
-};
-
+// Unit cycling
 function nextInArray(arr, current) {
     const idx = arr.indexOf(current);
     return arr[(idx + 1) % arr.length];
@@ -356,7 +382,7 @@ function cycleUnit(type) {
         var wc = document.getElementById('windchill-value');
         if (wc) wc.innerHTML = weatherData.windchill[idx] + '&deg;';
         document.cookie = `temp_unit=${weatherData.tempUnit};path=/;max-age=${7*86400}`;
-        if (hasCharts) {
+        if (window.hasCharts) {
             document.getElementById('chart-temp-unit').textContent = '(' + weatherData.tempUnit + ')';
             loadChart('temp', weatherData.tempUnit);
         }
@@ -367,7 +393,7 @@ function cycleUnit(type) {
         document.getElementById('baro-unit').textContent = weatherData.baroUnit;
         document.getElementById('trend-value').innerHTML = weatherData.trend[idx];
         document.cookie = `baro_unit=${weatherData.baroUnit};path=/;max-age=${7*86400}`;
-        if (hasCharts) {
+        if (window.hasCharts) {
             document.getElementById('chart-pressure-unit').textContent = '(' + weatherData.baroUnit + ')';
             loadChart('pressure', weatherData.baroUnit);
         }
@@ -377,29 +403,30 @@ function cycleUnit(type) {
         document.getElementById('wind-value').textContent = weatherData.wind[idx];
         document.getElementById('wind-unit').textContent = weatherData.speedUnit;
         document.cookie = `speed_unit=${weatherData.speedUnit};path=/;max-age=${7*86400}`;
-        if (hasCharts) {
+        if (window.hasCharts) {
             document.getElementById('chart-wind-unit').textContent = '(' + weatherData.speedUnit + ')';
             loadChart('wind', weatherData.speedUnit);
         }
     }
 }
 
-{% if is_default_zone %}
 // Chart.js rendering
-const charts = {};
+var charts = {};
 
 function loadChart(type, unit) {
-    const url = `{% url 'weather:chartdata' %}?type=${type}&unit=${encodeURIComponent(unit)}`;
+    if (typeof Chart === 'undefined') return;
+    var canvasId = 'chart-' + type;
+    if (!document.getElementById(canvasId)) return;
+    var url = '{% url "weather:chartdata" %}?type=' + type + '&unit=' + encodeURIComponent(unit);
     fetch(url)
-        .then(r => r.json())
-        .then(data => {
-            const canvasId = `chart-${type}`;
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
             if (charts[canvasId]) {
                 charts[canvasId].data.labels = data.labels;
                 charts[canvasId].data.datasets = data.datasets;
                 charts[canvasId].update();
             } else {
-                const ctx = document.getElementById(canvasId).getContext('2d');
+                var ctx = document.getElementById(canvasId).getContext('2d');
                 charts[canvasId] = new Chart(ctx, {
                     type: 'line',
                     data: data,
@@ -418,20 +445,33 @@ function loadChart(type, unit) {
         });
 }
 
-// Load all charts on page load
-document.addEventListener('DOMContentLoaded', function() {
-    loadChart('temp', weatherData.tempUnit);
-    loadChart('pressure', weatherData.baroUnit);
-    loadChart('humidity', '%');
-    loadChart('wind', weatherData.speedUnit);
-});
+function initCharts() {
+    Object.keys(charts).forEach(function(k) { charts[k].destroy(); });
+    charts = {};
+    if (window.hasCharts && document.getElementById('chart-temp')) {
+        loadChart('temp', weatherData.tempUnit);
+        loadChart('pressure', weatherData.baroUnit);
+        loadChart('humidity', '%');
+        loadChart('wind', weatherData.speedUnit);
+    }
+}
 
 // Resize charts when Current Conditions section is toggled open
-document.querySelector('details[data-section="current"]').addEventListener('toggle', function() {
-    if (this.open) {
-        Object.values(charts).forEach(c => c.resize());
+document.addEventListener('toggle', function(e) {
+    if (e.target.id === 'section-current' && e.target.open && Object.keys(charts).length) {
+        Object.values(charts).forEach(function(c) { c.resize(); });
+    }
+}, true);
+
+// Initial load
+document.addEventListener('DOMContentLoaded', initCharts);
+
+// HTMX post-swap: restore section states and re-init charts
+document.body.addEventListener('htmx:afterSettle', function(evt) {
+    restoreSectionStates();
+    if (evt.detail.target && evt.detail.target.id === 'section-current') {
+        initCharts();
     }
 });
-{% endif %}
 </script>
 {% endblock %}

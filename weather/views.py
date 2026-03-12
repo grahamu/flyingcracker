@@ -25,7 +25,7 @@ from .noaa import (
 from .sunmoon import MoonPhases, SunMoon
 
 
-def weather(request, noaa_zone=None, noaa_zip=None, noaa_lat=None, noaa_lon=None, noaa_tz=None):
+def weather(request, noaa_zone=None, noaa_zip=None, noaa_lat=None, noaa_lon=None, noaa_tz=None, river_gauge=None):
     show_titles = request.COOKIES.get("curr_weather_show_titles")
     if show_titles is None:
         show_titles = "hidden"
@@ -77,7 +77,8 @@ def weather(request, noaa_zone=None, noaa_zip=None, noaa_lat=None, noaa_lon=None
 
     area_name = get_zone_name(noaa_zone)
 
-    river_gauge = request.COOKIES.get("river_gauge", "")
+    if river_gauge is None:
+        river_gauge = request.COOKIES.get("river_gauge", "")
 
     context = dict(current_dict)
     context.update(
@@ -105,11 +106,11 @@ def weather(request, noaa_zone=None, noaa_zip=None, noaa_lat=None, noaa_lon=None
 
 def set_river_gauge(request):
     """
-    POST: save river gauge ID to cookie, redirect.
-    GET with ?reset=1: clear cookie, redirect.
+    POST: save river gauge ID to cookie, render weather page.
+    GET with ?reset=1: clear cookie, render weather page.
     """
     if request.GET.get("reset"):
-        response = HttpResponseRedirect(reverse("weather:root"))
+        response = weather(request, river_gauge="")
         response.delete_cookie("river_gauge")
         return response
 
@@ -122,7 +123,7 @@ def set_river_gauge(request):
         messages.error(request, "Please enter a valid gauge identifier (3-8 alphanumeric characters).")
         return HttpResponseRedirect(reverse("weather:root"))
 
-    response = HttpResponseRedirect(reverse("weather:root"))
+    response = weather(request, river_gauge=gauge_id)
     response.set_cookie(
         "river_gauge", gauge_id,
         max_age=90 * 24 * 60 * 60, path="/", httponly=False, samesite="Lax",
