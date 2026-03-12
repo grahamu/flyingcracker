@@ -1,3 +1,7 @@
 @import "tailwindcss";
 @source "../templates/**/*.html";
 @source "../**/templates/**/*.html";
+
+details summary.list-none::-webkit-details-marker {
+    display: none;
+}
