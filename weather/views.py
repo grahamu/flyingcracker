@@ -51,14 +51,14 @@ def weather(request, noaa_zone=None, noaa_zip=None, noaa_lat=None, noaa_lon=None
         noaa_zone = request.COOKIES.get("noaa_zone", settings.NWS_DEFAULT_ZONE)
     if noaa_zip is None:
         noaa_zip = request.COOKIES.get("noaa_zip", "")
-    is_default_zone = noaa_zone == settings.NWS_DEFAULT_ZONE
+    use_local_data = noaa_zip in ("", "cbsouth")
     noaa = get_zone_forecast(noaa_zone)
 
     et.mark_time("forecasts")
 
     # Get location for sun/moon calculations
     location_kwargs = {}
-    if not is_default_zone:
+    if not use_local_data:
         lat = noaa_lat or request.COOKIES.get("noaa_lat")
         lon = noaa_lon or request.COOKIES.get("noaa_lon")
         tz = noaa_tz or request.COOKIES.get("noaa_tz")
@@ -70,7 +70,7 @@ def weather(request, noaa_zone=None, noaa_zip=None, noaa_lat=None, noaa_lon=None
     sunmoon = SunMoon(**location_kwargs)
     moonphases = MoonPhases(**location_kwargs)
 
-    if is_default_zone:
+    if use_local_data:
         current_dict, current = get_current_weather(request)
     else:
         current_dict, current = get_nws_current_weather(request, noaa_zone)
@@ -84,7 +84,7 @@ def weather(request, noaa_zone=None, noaa_zip=None, noaa_lat=None, noaa_lon=None
     context.update(
         {
             "current": current,
-            "is_default_zone": is_default_zone,
+            "use_local_data": use_local_data,
             "area_name": area_name,
             "show_titles": show_titles,
             "title_state": title_state,
@@ -150,6 +150,17 @@ def set_zone(request):
 
     zip_code = request.POST.get("zip_code", "").strip()
 
+    # "cbsouth" → show local station data (default zone)
+    if zip_code.lower() == "cbsouth":
+        response = weather(request, noaa_zone=settings.NWS_DEFAULT_ZONE, noaa_zip=zip_code.lower())
+        cookie_kwargs = dict(max_age=90 * 24 * 60 * 60, path="/", httponly=False, samesite="Lax")
+        response.set_cookie("noaa_zip", zip_code.lower(), **cookie_kwargs)
+        response.delete_cookie("noaa_zone")
+        response.delete_cookie("noaa_lat")
+        response.delete_cookie("noaa_lon")
+        response.delete_cookie("noaa_tz")
+        return response
+
     if not re.match(r"^\d{5}$", zip_code):
         messages.error(request, "Please enter a valid 5-digit zip code.")
         return HttpResponseRedirect(reverse("weather:root"))
@@ -162,16 +173,6 @@ def set_zone(request):
         return HttpResponseRedirect(reverse("weather:root"))
 
     zone_id = location["zone_id"]
-
-    # If zip resolves to the default zone, treat as reset
-    if zone_id == settings.NWS_DEFAULT_ZONE:
-        response = weather(request, noaa_zone=settings.NWS_DEFAULT_ZONE, noaa_zip="")
-        response.delete_cookie("noaa_zone")
-        response.delete_cookie("noaa_zip")
-        response.delete_cookie("noaa_lat")
-        response.delete_cookie("noaa_lon")
-        response.delete_cookie("noaa_tz")
-        return response
 
     # Render weather page directly with the new zone to avoid
     # Railway's proxy following the redirect server-side.

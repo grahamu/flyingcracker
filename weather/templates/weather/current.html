@@ -25,7 +25,7 @@
             <span class="text-sm text-gray-500 font-normal">{{ timestamp }}</span>
         </summary>
         <div class="px-4 pb-4">
-            {% if not is_default_zone and description %}
+            {% if not use_local_data and description %}
             <div class="text-sm text-gray-500 mb-4">{{ description }}{% if station_name %} &mdash; {{ station_name }}{% endif %}</div>
             {% endif %}
 
@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            {% if is_default_zone %}
+            {% if use_local_data %}
             <!-- Charts -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="border rounded p-3">
@@ -128,7 +128,7 @@
             </div>
             {% endif %}
             <script>
-            window.hasCharts = {% if is_default_zone %}true{% else %}false{% endif %};
+            window.hasCharts = {% if use_local_data %}true{% else %}false{% endif %};
             window.weatherData = {
                 tempUnits: {{ temp_units|safe }},
                 baroUnits: {{ baro_units|safe }},
@@ -250,16 +250,17 @@
                   class="text-sm">
                 {% csrf_token %}
                 <div class="flex items-center gap-2 flex-wrap">
-                    <label for="zip_code" class="text-gray-600">Zipcode:</label>
+                    <label for="zip_code" class="text-gray-600">Location:</label>
                     <input type="text" name="zip_code" id="zip_code"
-                           pattern="\d{5}" maxlength="5" inputmode="numeric"
+                           maxlength="7"
                            value="{{ noaa_zip }}"
-                           class="w-20 px-2 py-1 border rounded text-sm">
+                           placeholder="zip or cbsouth"
+                           class="w-28 px-2 py-1 border rounded text-sm">
                     <button type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700">
                         Set
                     </button>
-                    {% if noaa_zone != default_zone %}
+                    {% if noaa_zip %}
                     <a href="{% url 'weather:set-zone' %}?reset=1"
                        hx-get="{% url 'weather:set-zone' %}?reset=1"
                        hx-target="#section-current" hx-select="#section-current" hx-swap="outerHTML"
